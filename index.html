@@ -2,7 +2,7 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Emlak Taciri - Online Multiplayer & Lobi</title>
 <!-- Gerçek Zamanlı Online P2P Bağlantı İçin PeerJS Kütüphanesi -->
 <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
@@ -23,6 +23,7 @@
     --left-col-w: 330px;
     --right-col-w: 345px;
     --left-log-h: 195px;
+    --left-chat-h: 185px;
     --right-trade-h: 185px;
     --neon-intensity: 0.35;
   }
@@ -62,20 +63,22 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 20px;
+    padding: 15px;
+    overflow-y: auto;
   }
 
   .lobby-container {
     background: rgba(15, 23, 42, 0.96);
     border: 2px solid rgba(56, 189, 248, 0.45);
     border-radius: 22px;
-    width: 680px;
+    width: 760px;
     max-width: 96vw;
-    padding: 26px 30px;
+    padding: 22px 26px;
     box-shadow: 0 30px 80px rgba(0,0,0,0.92), 0 0 40px rgba(56, 189, 248, 0.2);
     display: flex;
     flex-direction: column;
-    gap: 18px;
+    gap: 15px;
+    margin: auto;
   }
 
   .lobby-header {
@@ -84,6 +87,8 @@
     align-items: center;
     border-bottom: 1px solid rgba(255,255,255,0.12);
     padding-bottom: 12px;
+    flex-wrap: wrap;
+    gap: 10px;
   }
 
   .lobby-header h1 {
@@ -112,7 +117,7 @@
 
   .lobby-input {
     flex: 1;
-    min-width: 180px;
+    min-width: 150px;
     background: #090d18;
     border: 1.5px solid rgba(255,255,255,0.22);
     color: #fff;
@@ -160,6 +165,52 @@
     font-weight: 900;
     letter-spacing: 1px;
     cursor: pointer;
+  }
+
+  /* Lobi Sohbet Kutusu */
+  .lobby-chat-panel {
+    display: flex;
+    flex-direction: column;
+    height: 250px;
+    background: rgba(0,0,0,0.3);
+    border-radius: 12px;
+    padding: 10px;
+    border: 1px solid rgba(255,255,255,0.1);
+  }
+  
+  .chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding-right: 4px;
+  }
+  
+  .chat-msg {
+    background: rgba(255,255,255,0.05);
+    padding: 5px 8px;
+    border-radius: 6px;
+    font-size: 11.5px;
+    word-break: break-word;
+    border-left: 2px solid rgba(255,255,255,0.2);
+  }
+
+  .chat-input-row {
+    display: flex;
+    gap: 6px;
+    margin-top: 8px;
+  }
+
+  .chat-input-row input {
+    flex: 1;
+    background: #090d18;
+    border: 1px solid rgba(255,255,255,0.2);
+    color: #fff;
+    padding: 8px 10px;
+    border-radius: 8px;
+    font-size: 12px;
+    user-select: text;
   }
 
   /* =========================================================
@@ -435,6 +486,20 @@
     box-shadow: 0 12px 35px rgba(0,0,0,0.6);
   }
 
+  .chat-panel {
+    height: var(--left-chat-h);
+    min-height: 120px;
+    max-height: 350px;
+    flex-shrink: 0;
+    background: rgba(15, 23, 42, 0.92);
+    border: 1px solid var(--border-subtle);
+    border-radius: 14px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 12px 35px rgba(0,0,0,0.6);
+  }
+
   .sidebar-header {
     padding: 7px 11px;
     background: rgba(0, 0, 0, 0.35);
@@ -523,9 +588,15 @@
   /* =========================================================
      ORTA ALAN: 12x8 BÜYÜK TAHTA
      ========================================================= */
-  .board-wrapper {
+  .board-container {
     flex: 1;
     height: calc(100vh - 16px);
+    display: flex;
+    overflow: hidden;
+  }
+
+  .board-wrapper {
+    flex: 1;
     display: grid;
     grid-template-columns: repeat(12, 1fr);
     grid-template-rows: repeat(8, 1fr);
@@ -1029,6 +1100,7 @@
     align-items: center;
     margin-bottom: 5px;
     gap: 5px;
+    flex-wrap: wrap;
   }
 
   .timer-label {
@@ -1389,6 +1461,48 @@
     from { opacity: 1; }
     to { opacity: 0.4; }
   }
+
+  /* =========================================================
+     MOBİL UYUMLULUK (RESPONSIVE) KODLARI
+     ========================================================= */
+  @media (max-width: 1100px) {
+    body {
+      flex-direction: column;
+      overflow-y: auto;
+      height: auto;
+      padding: 8px;
+      gap: 8px;
+    }
+    .left-sidebar, .right-sidebar {
+      width: 100% !important;
+      max-width: 100%;
+      height: auto;
+      flex: none;
+    }
+    .board-container {
+      width: 100%;
+      height: 75vh;
+      min-height: 500px;
+      overflow: auto;
+      display: block;
+      border-radius: 18px;
+      border: 1px solid rgba(255,255,255,0.12);
+    }
+    .board-wrapper {
+      width: 1100px;
+      height: 720px;
+      display: grid;
+      border: none;
+      padding: 0;
+    }
+    .col-resizer, .row-resizer { display: none !important; }
+    .lobby-players-grid { grid-template-columns: 1fr; }
+    .lobby-container { padding: 15px; width: 98vw; }
+    #lobbyStepRoom > div[style*="grid-template-columns"] { grid-template-columns: 1fr !important; }
+    .fs-stats-row { grid-template-columns: repeat(2, 1fr); }
+    .fs-Hero { flex-direction: column; align-items: flex-start; gap: 10px; }
+    .single-center-screen { grid-column: 2 / 12; grid-row: 2 / 8; }
+  }
 </style>
 </head>
 <body>
@@ -1401,7 +1515,7 @@
       <div class="lobby-header">
         <div>
           <h1>🌐 EMLAK TACİRİ — ONLINE LOBİ</h1>
-          <p style="font-size:12px; color:#94a3b8; margin-top:2px;">Minimum 2, Maksimum 4 Oyuncu • Tüm Oyuncular Hazır Verdiğinde Oyun Başlar</p>
+          <p style="font-size:12px; color:#94a3b8; margin-top:2px;">Minimum 2, Maksimum 4 Oyuncu • Oda Kurucusu Başlatır</p>
         </div>
         <span id="lobbyNetStatus" class="fs-pill" style="background:#3b82f6;">Lobi Hazır</span>
       </div>
@@ -1430,7 +1544,7 @@
       <div class="lobby-step-box" id="lobbyStepRoom" style="display:none;">
         <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
           <div>
-            <span style="font-size:11.5px; color:#94a3b8; font-weight:800;">ODA KODU (Arkadaşlarınla Paylaş):</span>
+            <span style="font-size:11.5px; color:#94a3b8; font-weight:800;">ODA KODU:</span>
             <span class="room-code-pill" id="lblRoomCode" onclick="copyRoomCode()" title="Kopyalamak için tıkla">-----</span>
           </div>
           <div style="display:flex; gap:6px;" id="hostBotControls">
@@ -1439,15 +1553,39 @@
           </div>
         </div>
 
-        <div class="lobby-players-grid" id="lobbySlotsGrid"></div>
-
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:4px; gap:10px;">
-          <div id="lobbyWaitHint" style="font-size:12px; color:#fde68a; font-weight:800;">
-            ⏳ Oyunun başlaması için en az 2 oyuncu olmalı ve herkes "HAZIR" vermelidir.
+        <!-- Grid Düzeni: Sol taraf oyuncular, sağ taraf sohbet -->
+        <div style="display:grid; grid-template-columns: 1.3fr 1fr; gap:15px; margin-top:10px;">
+          <!-- Sol: Oyuncular ve Butonlar -->
+          <div>
+            <div class="lobby-players-grid" id="lobbySlotsGrid"></div>
+            
+            <div style="display:flex; gap:8px; margin-top:12px; flex-wrap:wrap;">
+              <button class="act-btn bg-gold" id="btnToggleReady" style="flex:1; justify-content:center; font-size:14px;" onclick="toggleMyReadyState()">
+                ✋ HAZIR OL
+              </button>
+              <!-- Oda Kurucusu İçin Başlat Butonu -->
+              <button class="act-btn bg-green" id="btnHostStart" style="display:none; flex:1; justify-content:center; font-size:14px;" onclick="hostStartMatch()">
+                🚀 OYUNU BAŞLAT
+              </button>
+              <button class="act-btn bg-crimson" style="flex:0.5; justify-content:center; font-size:14px;" onclick="leaveLobby()">
+                🚪 AYRIL
+              </button>
+            </div>
+            
+            <div id="lobbyWaitHint" style="font-size:11px; color:#fde68a; font-weight:800; margin-top:10px; text-align:center;">
+              ⏳ Oyunun başlaması için en az 2 oyuncu olmalı ve herkes "HAZIR" vermelidir.
+            </div>
           </div>
-          <button class="act-btn bg-gold" id="btnToggleReady" style="min-width:170px; justify-content:center; font-size:14px;" onclick="toggleMyReadyState()">
-            ✋ HAZIR OL
-          </button>
+
+          <!-- Sağ: Lobi Sohbeti -->
+          <div class="lobby-chat-panel">
+            <div style="font-size:12px; font-weight:900; color:#fde68a; margin-bottom:8px;">💬 LOBİ SOHBETİ</div>
+            <div id="lobbyChatMessages" class="chat-messages"></div>
+            <div class="chat-input-row">
+              <input type="text" id="inpLobbyChat" placeholder="Mesaj yaz..." onkeypress="if(event.key==='Enter') sendLobbyChat()">
+              <button class="act-btn bg-blue" style="padding:6px 12px;" onclick="sendLobbyChat()">Gönder</button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -1477,6 +1615,11 @@
         <label for="chkWinLog">📜 Son Bildirimler Penceresi</label>
         <input type="checkbox" id="chkWinLog" checked style="width:17px; height:17px; cursor:pointer;" onchange="togglePanelFromSettings('leftLogPanel', this.checked)">
       </div>
+      
+      <div class="setting-row">
+        <label for="chkWinChat">💬 Canlı Sohbet Penceresi</label>
+        <input type="checkbox" id="chkWinChat" checked style="width:17px; height:17px; cursor:pointer;" onchange="togglePanelFromSettings('leftChatPanel', this.checked)">
+      </div>
 
       <div class="setting-row">
         <label for="chkWinPlayers">👥 Oyuncular ve Mülk Listesi Penceresi</label>
@@ -1503,21 +1646,6 @@
       <div class="setting-row">
         <label for="chkBwMode">🎬 Siyah - Beyaz Modu (Renkleri Sil)</label>
         <input type="checkbox" id="chkBwMode" style="width:17px; height:17px; cursor:pointer;" onchange="applyVisualSettings()">
-      </div>
-
-      <div class="setting-row">
-        <label>🌌 Sayfa Arkaplan Rengi</label>
-        <input type="color" id="colBgMain" value="#070b16" oninput="applyVisualSettings()">
-      </div>
-
-      <div class="setting-row">
-        <label>🎲 Oyun Tahtası Zemin Rengi</label>
-        <input type="color" id="colBoardBg" value="#090d18" oninput="applyVisualSettings()">
-      </div>
-
-      <div class="setting-row">
-        <label>🃏 Kartların İç Rengi</label>
-        <input type="color" id="colTileBg" value="#162032" oninput="applyVisualSettings()">
       </div>
 
       <div style="display:flex; justify-content:space-between; gap:8px; margin-top:4px;">
@@ -1631,112 +1759,127 @@
       <div class="log-container" id="gameLog"></div>
     </div>
 
+    <!-- 4) EN ALT PANEL: CANLI OYUN SOHBETİ -->
+    <div class="chat-panel" id="leftChatPanel">
+      <div class="sidebar-header">
+        <h3>💬 Canlı Sohbet</h3>
+        <button class="panel-close-x" onclick="setPanelVisibility('leftChatPanel', false)" title="Pencereyi Kapat">✖</button>
+      </div>
+      <div class="chat-messages" id="chatMessages" style="padding:6px;"></div>
+      <div class="chat-input-row" style="padding:6px;">
+        <input type="text" id="inpChat" placeholder="Mesaj yaz..." onkeypress="if(event.key==='Enter') sendGameChat()">
+        <button class="act-btn bg-blue" style="padding:6px 12px; font-size:11px;" onclick="sendGameChat()">Gönder</button>
+      </div>
+    </div>
+
   </aside>
 
   <div class="col-resizer" id="leftColResizer"></div>
 
   <!-- ORTA ALAN: 12x8 TAHTA VE ORTA CANLI OYUN AKIŞ EKRANI -->
-  <main class="board-wrapper" id="boardGrid">
+  <div class="board-container" id="boardContainer">
+    <main class="board-wrapper" id="boardGrid">
 
-    <section class="single-center-screen" id="centerScreen">
+      <section class="single-center-screen" id="centerScreen">
 
-      <!-- OYBİRLİĞİ ONAYLI OYUNU DURDURMA / BAŞLATMA EKRANI -->
-      <div class="auction-overlay" id="pauseVoteOverlay">
-        <div class="auction-box">
-          <div style="font-size:12px; font-weight:900; color:var(--gold); letter-spacing:1px;" id="pauseModalTag">⏸️ OYUN DURAKLATMA OYLAMASI</div>
-          <h2 id="pauseModalTitle" style="font-size:23px; font-weight:900;">Oyuncuların Onayı Bekleniyor...</h2>
-          <p id="pauseModalDesc" style="font-size:13px; color:#cbd5e1;">Tüm oyuncular onay verdiğinde işlem gerçekleşir.</p>
-          <div id="pauseVotesList" style="display:flex; flex-direction:column; gap:7px; margin:6px 0;"></div>
-          <div id="pauseModalBtns" style="display:flex; gap:8px; justify-content:center;"></div>
-        </div>
-      </div>
-
-      <!-- AÇIK ARTTIRMA CANLI EKRANI -->
-      <div class="auction-overlay" id="auctionOverlay">
-        <div class="auction-box">
-          <div style="display:flex; justify-content:space-between; align-items:center;">
-            <span style="font-size:12px; font-weight:900; color:var(--gold); letter-spacing:1px;">🔨 CANLI AÇIK ARTTIRMA</span>
-            <span id="aucTimerBadge" style="background:#ef4444; color:#fff; padding:4px 12px; border-radius:99px; font-size:14px; font-weight:900;">⏱️ 20 sn</span>
+        <!-- OYBİRLİĞİ ONAYLI OYUNU DURDURMA / BAŞLATMA EKRANI -->
+        <div class="auction-overlay" id="pauseVoteOverlay">
+          <div class="auction-box">
+            <div style="font-size:12px; font-weight:900; color:var(--gold); letter-spacing:1px;" id="pauseModalTag">⏸️ OYUN DURAKLATMA OYLAMASI</div>
+            <h2 id="pauseModalTitle" style="font-size:23px; font-weight:900;">Oyuncuların Onayı Bekleniyor...</h2>
+            <p id="pauseModalDesc" style="font-size:13px; color:#cbd5e1;">Tüm oyuncular onay verdiğinde işlem gerçekleşir.</p>
+            <div id="pauseVotesList" style="display:flex; flex-direction:column; gap:7px; margin:6px 0;"></div>
+            <div id="pauseModalBtns" style="display:flex; gap:8px; justify-content:center;"></div>
           </div>
-          <h2 id="aucTileTitle" style="font-size:24px; font-weight:900;">🇶🇦 Katar</h2>
-          <p id="aucStatusText" style="font-size:13.5px; color:#e2e8f0;">Teklifler alınıyor...</p>
-          <div style="background:rgba(0,0,0,0.45); padding:12px; border-radius:12px; border:1px solid rgba(255,255,255,0.12);">
-            <div style="font-size:11px; color:#94a3b8;">EN YÜKSEK TEKLİF</div>
-            <div id="aucHighestBid" style="font-size:30px; font-weight:900; color:#10b981; margin-top:2px;">0 ₺</div>
-            <div id="aucHighestBidder" style="font-size:13px; color:#fde68a; font-weight:800; margin-top:2px;">Henüz teklif yok</div>
+        </div>
+
+        <!-- AÇIK ARTTIRMA CANLI EKRANI -->
+        <div class="auction-overlay" id="auctionOverlay">
+          <div class="auction-box">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span style="font-size:12px; font-weight:900; color:var(--gold); letter-spacing:1px;">🔨 CANLI AÇIK ARTTIRMA</span>
+              <span id="aucTimerBadge" style="background:#ef4444; color:#fff; padding:4px 12px; border-radius:99px; font-size:14px; font-weight:900;">⏱️ 20 sn</span>
+            </div>
+            <h2 id="aucTileTitle" style="font-size:24px; font-weight:900;">🇶🇦 Katar</h2>
+            <p id="aucStatusText" style="font-size:13.5px; color:#e2e8f0;">Teklifler alınıyor...</p>
+            <div style="background:rgba(0,0,0,0.45); padding:12px; border-radius:12px; border:1px solid rgba(255,255,255,0.12);">
+              <div style="font-size:11px; color:#94a3b8;">EN YÜKSEK TEKLİF</div>
+              <div id="aucHighestBid" style="font-size:30px; font-weight:900; color:#10b981; margin-top:2px;">0 ₺</div>
+              <div id="aucHighestBidder" style="font-size:13px; color:#fde68a; font-weight:800; margin-top:2px;">Henüz teklif yok</div>
+            </div>
+            <div style="display:flex; gap:8px; justify-content:center; flex-wrap:wrap;" id="aucActionBtns"></div>
           </div>
-          <div style="display:flex; gap:8px; justify-content:center; flex-wrap:wrap;" id="aucActionBtns"></div>
-        </div>
-      </div>
-
-      <!-- DURUM 1: ZAR ATMA SAHNESİ -->
-      <div class="dice-screen-mode" id="diceView">
-        <div class="wb-pool-banner" id="wbBannerDice">🏦 Dünya Bankası Vergi Fonu: 2.500 ₺</div>
-        <div class="econ-cycle-banner" id="econCycleBanner">📈 Enflasyona Kalan Süre: 10:00 • Maaş: +5.000 ₺</div>
-        <p style="color:#cbd5e1; font-size:14px; max-width:520px;" id="dicePromptText">
-          Sıra sende! Zar atınca mevcut sürene <b>+5 sn</b>, kareye inince <b>+5 sn</b> daha eklenir.
-        </p>
-
-        <div class="dice-cubes-holder">
-          <div class="big-die" id="die1">1</div>
-          <div class="big-die" id="die2">6</div>
         </div>
 
-        <div style="display:flex; gap:12px; flex-wrap:wrap; justify-content:center;" id="diceScreenButtons">
-          <button class="roll-main-btn" id="btnRollMain" onclick="triggerRoll()">🎲 ZAR AT</button>
-        </div>
-      </div>
+        <!-- DURUM 1: ZAR ATMA SAHNESİ -->
+        <div class="dice-screen-mode" id="diceView">
+          <div class="wb-pool-banner" id="wbBannerDice">🏦 Dünya Bankası Vergi Fonu: 2.500 ₺</div>
+          <div class="econ-cycle-banner" id="econCycleBanner">📈 Enflasyona Kalan Süre: 10:00 • Maaş: +5.000 ₺</div>
+          <p style="color:#cbd5e1; font-size:14px; max-width:520px;" id="dicePromptText">
+            Sıra sende! Zar atınca mevcut sürene <b>+5 sn</b>, kareye inince <b>+5 sn</b> daha eklenir.
+          </p>
 
-      <!-- DURUM 2: GELİNEN KARENİN CANLI GÖRÜNÜMÜ -->
-      <div class="card-fullscreen-mode" id="cardView">
-        <div class="fs-top-bar">
-          <div class="fs-badges">
-            <span class="fs-pill" id="fsRegionBadge" style="background:#3b82f6;">KÖRFEZ BÖLGESİ</span>
-            <span class="fs-pill" id="fsWorldBankPill" style="background:rgba(16,185,129,0.85);">
-              🏦 Dünya Bankası: 2.500 ₺
-            </span>
-          </div>
-          <div class="fs-occupants-bar" id="fsOccupantsBar"></div>
-        </div>
-
-        <div class="fs-Hero">
-          <div class="fs-title-area">
-            <h1 id="fsCountryTitle">🇹🇷 Türkiye</h1>
-            <p id="fsCountryDesc">Boğaziçi Köprüsü & Avrasya Ticaret Merkezi</p>
-          </div>
-          <div id="fsSpecialBox"></div>
-        </div>
-
-        <div class="fs-bottom-area">
-          <div class="fs-stats-row">
-            <div class="fs-stat-card">
-              <span>ÜLKE DEĞERİ</span>
-              <strong id="fsPrice">3.200 ₺</strong>
-            </div>
-            <div class="fs-stat-card">
-              <span>GÜNCEL KİRA</span>
-              <strong id="fsRent" style="color:#fde047;">820 ₺</strong>
-            </div>
-            <div class="fs-stat-card">
-              <span>EV MALİYETİ</span>
-              <strong id="fsHouseCost">1.500 ₺</strong>
-            </div>
-            <div class="fs-stat-card">
-              <span>YAPI & İPOTEK</span>
-              <strong id="fsBuildings">Bina Yok</strong>
-            </div>
-            <div class="fs-stat-card">
-              <span>TAPU & KİRA PAYLAŞIMI</span>
-              <strong id="fsRentShares" style="font-size:12px; color:#fde68a;">Satılık</strong>
-            </div>
+          <div class="dice-cubes-holder">
+            <div class="big-die" id="die1">1</div>
+            <div class="big-die" id="die2">6</div>
           </div>
 
-          <div class="fs-actions-bar" id="fsActionButtons"></div>
+          <div style="display:flex; gap:12px; flex-wrap:wrap; justify-content:center;" id="diceScreenButtons">
+            <button class="roll-main-btn" id="btnRollMain" onclick="triggerRoll()">🎲 ZAR AT</button>
+          </div>
         </div>
-      </div>
 
-    </section>
-  </main>
+        <!-- DURUM 2: GELİNEN KARENİN CANLI GÖRÜNÜMÜ -->
+        <div class="card-fullscreen-mode" id="cardView">
+          <div class="fs-top-bar">
+            <div class="fs-badges">
+              <span class="fs-pill" id="fsRegionBadge" style="background:#3b82f6;">KÖRFEZ BÖLGESİ</span>
+              <span class="fs-pill" id="fsWorldBankPill" style="background:rgba(16,185,129,0.85);">
+                🏦 Dünya Bankası: 2.500 ₺
+              </span>
+            </div>
+            <div class="fs-occupants-bar" id="fsOccupantsBar"></div>
+          </div>
+
+          <div class="fs-Hero">
+            <div class="fs-title-area">
+              <h1 id="fsCountryTitle">🇹🇷 Türkiye</h1>
+              <p id="fsCountryDesc">Boğaziçi Köprüsü & Avrasya Ticaret Merkezi</p>
+            </div>
+            <div id="fsSpecialBox"></div>
+          </div>
+
+          <div class="fs-bottom-area">
+            <div class="fs-stats-row">
+              <div class="fs-stat-card">
+                <span>ÜLKE DEĞERİ</span>
+                <strong id="fsPrice">3.200 ₺</strong>
+              </div>
+              <div class="fs-stat-card">
+                <span>GÜNCEL KİRA</span>
+                <strong id="fsRent" style="color:#fde047;">820 ₺</strong>
+              </div>
+              <div class="fs-stat-card">
+                <span>EV MALİYETİ</span>
+                <strong id="fsHouseCost">1.500 ₺</strong>
+              </div>
+              <div class="fs-stat-card">
+                <span>YAPI & İPOTEK</span>
+                <strong id="fsBuildings">Bina Yok</strong>
+              </div>
+              <div class="fs-stat-card">
+                <span>TAPU & KİRA PAYLAŞIMI</span>
+                <strong id="fsRentShares" style="font-size:12px; color:#fde68a;">Satılık</strong>
+              </div>
+            </div>
+
+            <div class="fs-actions-bar" id="fsActionButtons"></div>
+          </div>
+        </div>
+
+      </section>
+    </main>
+  </div>
 
   <div class="col-resizer" id="rightColResizer"></div>
 
@@ -1746,10 +1889,11 @@
     <div class="top-timer-widget">
       <div class="timer-head">
         <span class="timer-label" id="turnStatusText">LOBİ BEKLENİYOR</span>
-        <div style="display:flex; align-items:center; gap:5px;">
+        <div style="display:flex; align-items:center; gap:5px; flex-wrap:wrap;">
           <button class="icon-ctrl-btn" onclick="openSettingsModal()" title="Pencereleri ve Görünümü Özelleştir">⚙️</button>
           <button class="pause-play-btn" id="btnPausePlay" onclick="requestPauseOrResumeVote()">⏸️ Durdur</button>
           <span class="timer-clock" id="timerClock">30 sn</span>
+          <button class="icon-ctrl-btn bg-crimson" style="color:#fff; border:none; margin-left:5px;" onclick="leaveGame()">🚪 Ayrıl</button>
         </div>
       </div>
       <div class="timer-bar-track">
@@ -1812,29 +1956,27 @@
 
   /* =========================================================
      2. ONLINE MULTIPLAYER (PEERJS + BROADCASTCHANNEL) & LOBİ SİSTEMİ
-        - Açılışta İsim İster
-        - Minimum 2, Maksimum 4 Oyuncu Sınırı
-        - Herkes "HAZIR" Verdiğinde Oyun Başlar
-        - Botlarla Kurulan Tüm Kurallar ve Altyapı Birebir Geçerlidir
      ========================================================= */
   const NEON_PALETTE = ["#f59e0b", "#00f5d4", "#ff2a85", "#a855f7", "#22c55e", "#38bdf8", "#f97316"];
   const BOT_NAMES_POOL = ["El-Tacir", "Şahin Bey", "Kleopatra"];
 
-  let myPlayerId = 0;            // Bu ekrandaki oyuncunun indeks numarası (0..3)
+  let myPlayerId = 0;            
   let mySelectedColor = NEON_PALETTE[0];
-  let isOnlineHost = true;       // Oda kurucusu (Host) mu?
-  let isClientPeer = false;      // Başka bir odaya katılan istemci mi?
+  let isOnlineHost = true;       
+  let isClientPeer = false;      
   let currentRoomCode = "";
   let peerInstance = null;
-  let hostConnections = [];      // Host'un bağlı olduğu istemci bağlantıları
-  let clientConnToHost = null;   // İstemcinin Host'a bağlantısı
-  let localBus = null;           // Aynı tarayıcıdaki farklı sekmeler arası anlık kanal
-  let lobbyPlayers = [];         // Lobideki 2..4 oyuncu listesi
+  let hostConnections = [];      
+  let clientConnToHost = null;   
+  let localBus = null;           
+  let lobbyPlayers = [];         
   let gameHasStarted = false;
-  let syncedLogsList = [];       // Tüm oyunculara senkronize edilen bildirim geçmişi
+  let syncedLogsList = [];       
   let lastSyncedEventCard = null;
-  let syncedAuctionUI = null;    // Açık arttırma ekranı senkronizasyonu
-  let syncedPauseVoteUI = null;  // Duraklatma oylaması senkronizasyonu
+  let syncedAuctionUI = null;    
+  let syncedPauseVoteUI = null;  
+  let chatHistory = []; // Sohbet geçmişi
+  let connMap = new Map(); // PeerJS bağlantısı -> Oyuncu ID eşleşmesi
 
   function initLobbyUI() {
     const swatchBox = document.getElementById("lobbyColorSwatches");
@@ -1893,7 +2035,8 @@
         isBot: false,
         ready: false,
         color: mySelectedColor,
-        code: myName.charAt(0).toUpperCase()
+        code: myName.charAt(0).toUpperCase(),
+        isConnected: true
       }
     ];
 
@@ -1901,6 +2044,7 @@
     document.getElementById("lobbyStepRoom").style.display = "flex";
     document.getElementById("lblRoomCode").textContent = currentRoomCode;
     document.getElementById("hostBotControls").style.display = "flex";
+    document.getElementById("btnHostStart").style.display = "block";
 
     setupLocalBroadcastChannel(currentRoomCode);
 
@@ -1912,6 +2056,25 @@
       peerInstance.on("connection", (conn) => {
         conn.on("data", (data) => handleHostReceivedData(data, conn));
         conn.on("close", () => {
+          const pId = connMap.get(conn.peer);
+          if (pId !== undefined) {
+            connMap.delete(conn.peer);
+            if (gameHasStarted) {
+              const p = players.find(x => x.id === pId);
+              if (p && !p.bankrupt) {
+                p.isConnected = false;
+                p.disconnectTime = Date.now();
+                addLog(`⚠️ ${p.name} bağlantısı koptu! 1 dakika içinde dönmezse elenecek.`);
+                syncGameStateToClients();
+              }
+            } else {
+              // Lobi aşamasında koparsa direkt çıkar
+              lobbyPlayers = lobbyPlayers.filter(p => p.id !== pId);
+              lobbyPlayers.forEach((p, i) => p.id = i);
+              broadcastLobbyState();
+              renderLobbySlots();
+            }
+          }
           hostConnections = hostConnections.filter(c => c !== conn);
         });
         hostConnections.push(conn);
@@ -1939,6 +2102,7 @@
     document.getElementById("lobbyStepRoom").style.display = "flex";
     document.getElementById("lblRoomCode").textContent = currentRoomCode;
     document.getElementById("hostBotControls").style.display = "none";
+    document.getElementById("btnHostStart").style.display = "none";
     document.getElementById("lobbyNetStatus").textContent = "⏳ Odaya Bağlanılıyor...";
 
     setupLocalBroadcastChannel(currentRoomCode);
@@ -2009,14 +2173,38 @@
     if (!data || !data.type) return;
 
     if (data.type === "JOIN_REQ") {
-      if (gameHasStarted) return;
-      let existing = lobbyPlayers.find(p => p.name === data.name && !p.isBot);
-      if (!existing) {
-        if (lobbyPlayers.length >= 4) {
-          const botIdx = lobbyPlayers.findIndex(p => p.isBot);
-          if (botIdx !== -1) lobbyPlayers.splice(botIdx, 1);
-          else return;
+      if (gameHasStarted) {
+        // Oyun başladıysa yeniden bağlanma kontrolü
+        let existing = players.find(p => p.name === data.name);
+        if (existing && !existing.isConnected) {
+          // Yeniden bağlanma başarılı
+          existing.isConnected = true;
+          existing.disconnectTime = null;
+          if (conn) connMap.set(conn.peer, existing.id);
+          
+          if (conn) {
+            conn.send({ type: "RECONNECT_SUCCESS", playerId: existing.id });
+            setTimeout(() => {
+              if (conn.open) conn.send({ type: "GAME_SYNC", state: getFullState() });
+            }, 200);
+          }
+          addLog(`🔄 ${existing.name} yeniden bağlandı!`);
+          syncGameStateToClients();
+        } else if (conn) {
+          conn.send({ type: "JOIN_REJECTED", reason: "Oyun başladı veya isim kullanımda!" });
+          setTimeout(() => conn.close(), 1000);
         }
+        return;
+      }
+
+      // Lobiye katılma
+      if (lobbyPlayers.length >= 4 && !lobbyPlayers.find(p => p.name === data.name)) {
+        if (conn) conn.send({ type: "JOIN_REJECTED", reason: "Lobi dolu!" });
+        return;
+      }
+      
+      let existing = lobbyPlayers.find(p => p.name === data.name);
+      if (!existing) {
         const newId = lobbyPlayers.length;
         existing = {
           id: newId,
@@ -2024,11 +2212,14 @@
           isBot: false,
           ready: false,
           color: data.color || NEON_PALETTE[newId % NEON_PALETTE.length],
-          code: data.name.charAt(0).toUpperCase()
+          code: data.name.charAt(0).toUpperCase(),
+          isConnected: true
         };
         lobbyPlayers.push(existing);
-        lobbyPlayers.forEach((pl, i) => pl.id = i);
+      } else {
+        existing.isConnected = true;
       }
+      if (conn) connMap.set(conn.peer, existing.id);
 
       broadcastLobbyState();
       renderLobbySlots();
@@ -2039,8 +2230,36 @@
         pl.ready = !pl.ready;
         broadcastLobbyState();
         renderLobbySlots();
-        checkIfAllReadyToStart();
+        updateHostStartButton();
       }
+    }
+    else if (data.type === "LEAVE_LOBBY") {
+      lobbyPlayers = lobbyPlayers.filter(p => p.name !== data.name);
+      lobbyPlayers.forEach((p, i) => p.id = i);
+      broadcastLobbyState();
+      renderLobbySlots();
+      updateHostStartButton();
+    }
+    else if (data.type === "LEAVE_GAME") {
+      const p = players[data.actorId];
+      if (p && !p.bankrupt) {
+        p.bankrupt = true;
+        p.money = 0;
+        TILES.forEach(t => {
+          if (t.houseOwners) t.houseOwners = t.houseOwners.filter(id => id !== p.id);
+          if (t.owner === p.id) {
+            if (t.houseOwners && t.houseOwners.length > 0) t.owner = t.houseOwners[0];
+            else { delete t.owner; t.mortgaged = false; }
+          }
+        });
+        addLog(`🚪 ${p.name} oyundan ayrıldı. Mülkleri boşa çıktı.`);
+        if (currentTurn === p.id) nextTurn();
+        renderBoard(); renderRightPlayersList(); syncGameStateToClients();
+      }
+    }
+    else if (data.type === "CHAT_MSG") {
+      renderChatMessage(data.name, data.text, data.color);
+      broadcastFromHost(data);
     }
     else if (data.type === "PLAYER_ACTION") {
       executeRemotePlayerActionOnHost(data);
@@ -2050,7 +2269,11 @@
   function handleClientReceivedData(data) {
     if (!data || !data.type) return;
 
-    if (data.type === "LOBBY_STATE") {
+    if (data.type === "JOIN_REJECTED") {
+      alert(data.reason);
+      location.reload();
+    }
+    else if (data.type === "LOBBY_STATE") {
       lobbyPlayers = data.lobbyPlayers;
       const myName = (document.getElementById("inpPlayerName").value || "").trim();
       const me = lobbyPlayers.find(p => p.name === myName);
@@ -2067,8 +2290,16 @@
       if (me) myPlayerId = me.id;
       launchMatchFromLobby(data.lobbyPlayers);
     }
+    else if (data.type === "RECONNECT_SUCCESS") {
+      myPlayerId = data.playerId;
+      document.getElementById("lobbyBackdrop").style.display = "none";
+      gameHasStarted = true;
+    }
     else if (data.type === "GAME_SYNC") {
       applyFullStateFromHost(data.state);
+    }
+    else if (data.type === "CHAT_MSG") {
+      renderChatMessage(data.name, data.text, data.color);
     }
   }
 
@@ -2088,13 +2319,14 @@
       id: newId,
       name: botName,
       isBot: true,
-      ready: true, // Botlar her zaman hazır
+      ready: true, 
       color: NEON_PALETTE[(newId + 1) % NEON_PALETTE.length],
-      code: botName.charAt(0).toUpperCase()
+      code: botName.charAt(0).toUpperCase(),
+      isConnected: true
     });
     broadcastLobbyState();
     renderLobbySlots();
-    checkIfAllReadyToStart();
+    updateHostStartButton();
   }
 
   function hostRemoveBotFromLobby() {
@@ -2108,6 +2340,7 @@
     lobbyPlayers.forEach((pl, idx) => pl.id = idx);
     broadcastLobbyState();
     renderLobbySlots();
+    updateHostStartButton();
   }
 
   function toggleMyReadyState() {
@@ -2118,7 +2351,7 @@
         me.ready = !me.ready;
         broadcastLobbyState();
         renderLobbySlots();
-        checkIfAllReadyToStart();
+        updateHostStartButton();
       }
     } else {
       sendToHost({ type: "TOGGLE_READY", name: myName });
@@ -2140,7 +2373,7 @@
             <div class="p-badge" style="background:${pl.color};">${pl.code}</div>
             <div>
               <div style="font-size:14px; font-weight:900; color:#fff;">${pl.name} ${pl.id === myPlayerId ? "(Sen)" : ""}</div>
-              <div style="font-size:11px; color:#94a3b8;">${pl.isBot ? "🤖 Yapay Zeka Bot" : "👤 Gerçek Oyuncu"}</div>
+              <div style="font-size:11px; color:#94a3b8;">${pl.isBot ? "🤖 Bot" : "👤 Oyuncu"}</div>
             </div>
           </div>
           <span class="fs-pill" style="background:${pl.ready ? '#10b981' : '#64748b'}; font-size:10.5px;">
@@ -2150,9 +2383,7 @@
       } else {
         slot.className = "lobby-slot-card";
         slot.style.opacity = "0.45";
-        slot.innerHTML = `
-          <span style="font-size:12.5px; color:#64748b; font-weight:800;">Boş Slot #${i + 1} (Oyuncu veya Bot Bekleniyor)</span>
-        `;
+        slot.innerHTML = `<span style="font-size:12.5px; color:#64748b; font-weight:800;">Boş Slot #${i + 1}</span>`;
       }
       grid.appendChild(slot);
     }
@@ -2168,26 +2399,33 @@
     const count = lobbyPlayers.length;
     const allReady = count >= 2 && count <= 4 && lobbyPlayers.every(p => p.ready);
     if (count < 2) {
-      hint.textContent = "⚠️ Oyunun başlaması için en az 2 oyuncu (veya 1 Oyuncu + 1 Bot) gereklidir.";
+      hint.textContent = "⚠️ En az 2 oyuncu (veya 1 Oyuncu + 1 Bot) gereklidir.";
     } else if (!allReady) {
-      hint.textContent = `⏳ Oyuncuların hazır olması bekleniyor (${lobbyPlayers.filter(p => p.ready).length}/${count} Hazır)...`;
+      hint.textContent = `⏳ Hazır olması bekleniyor (${lobbyPlayers.filter(p => p.ready).length}/${count})...`;
     } else {
-      hint.textContent = "🚀 Tüm oyuncular HAZIR! Oyun başlıyor...";
+      hint.textContent = "🚀 Herkes hazır! Kurucunun başlatması bekleniyor...";
+    }
+    
+    updateHostStartButton();
+  }
+
+  function updateHostStartButton() {
+    if (!isOnlineHost) return;
+    const btn = document.getElementById("btnHostStart");
+    if (btn) {
+      const allReady = lobbyPlayers.length >= 2 && lobbyPlayers.length <= 4 && lobbyPlayers.every(p => p.ready);
+      btn.disabled = !allReady;
     }
   }
 
-  function checkIfAllReadyToStart() {
+  function hostStartMatch() {
     if (!isOnlineHost || gameHasStarted) return;
-    if (lobbyPlayers.length >= 2 && lobbyPlayers.length <= 4 && lobbyPlayers.every(p => p.ready)) {
-      gameHasStarted = true;
-      setTimeout(() => {
-        broadcastFromHost({
-          type: "START_MATCH",
-          lobbyPlayers: lobbyPlayers
-        });
-        launchMatchFromLobby(lobbyPlayers);
-      }, 450);
-    }
+    const allReady = lobbyPlayers.length >= 2 && lobbyPlayers.every(p => p.ready);
+    if (!allReady) return alert("Herkes hazır olmadan oyun başlatılamaz!");
+    
+    gameHasStarted = true;
+    broadcastFromHost({ type: "START_MATCH", lobbyPlayers: lobbyPlayers });
+    launchMatchFromLobby(lobbyPlayers);
   }
 
   function launchMatchFromLobby(finalLobbyList) {
@@ -2206,7 +2444,8 @@
       missedTurns: 0,
       color: lp.color,
       code: lp.code,
-      bankrupt: false
+      bankrupt: false,
+      isConnected: true
     }));
 
     expandedPlayerIds = new Set(players.map(p => p.id));
@@ -2216,20 +2455,49 @@
     renderTradeDock();
     refreshLivePanelOnly();
     selectPinnedCardByUser(5);
-    addLog(`🎮 Emlak Taciri ${players.length} oyuncu ile başladı! Tüm oyuncular hazır verdi.`);
+    
+    // Sohbet geçmişini yükle
+    chatHistory = [];
+    document.getElementById("chatMessages").innerHTML = "";
+    
+    addLog(`🎮 Emlak Taciri ${players.length} oyuncu ile başladı!`);
 
     if (isOnlineHost) {
       startTurn();
       syncGameStateToClients();
     }
   }
+  
+  function leaveLobby() {
+    if (isOnlineHost) {
+      if (confirm("Oda kurucusu ayrılırsa oda kapanır. Emin misiniz?")) {
+        location.reload();
+      }
+    } else {
+      if (confirm("Lobiden ayrılmak istiyor musunuz?")) {
+        if (clientConnToHost) clientConnToHost.send({ type: "LEAVE_LOBBY", name: document.getElementById("inpPlayerName").value.trim() });
+        location.reload();
+      }
+    }
+  }
+  
+  function leaveGame() {
+    if (confirm("Oyundan ayrılmak istediğinize emin misiniz? (Mülkleriniz boşa çıkacaktır)")) {
+      if (isOnlineHost) {
+        alert("Oda kurucusu ayrıldı, oda kapatılıyor.");
+        location.reload();
+      } else {
+        if (clientConnToHost) clientConnToHost.send({ type: "LEAVE_GAME", actorId: myPlayerId });
+        location.reload();
+      }
+    }
+  }
 
   /* =========================================================
      3. ONLINE DURUM SENKRONİZASYONU (HOST <-> CLIENT)
      ========================================================= */
-  function syncGameStateToClients() {
-    if (!isOnlineHost || !gameHasStarted) return;
-    const state = {
+  function getFullState() {
+    return {
       players,
       tiles: TILES.map(t => ({
         id: t.id,
@@ -2259,12 +2527,17 @@
       lastSyncedEventCard,
       syncedAuctionUI,
       syncedPauseVoteUI,
+      chatHistory,
       die1Text: document.getElementById("die1")?.textContent || "1",
       die2Text: document.getElementById("die2")?.textContent || "6",
       dicePromptHTML: document.getElementById("dicePromptText")?.innerHTML || "",
       diceViewVisible: document.getElementById("diceView")?.style.display !== "none"
     };
-    broadcastFromHost({ type: "GAME_SYNC", state });
+  }
+  
+  function syncGameStateToClients() {
+    if (!isOnlineHost || !gameHasStarted) return;
+    broadcastFromHost({ type: "GAME_SYNC", state: getFullState() });
   }
 
   function applyFullStateFromHost(st) {
@@ -2303,6 +2576,15 @@
     syncedAuctionUI = st.syncedAuctionUI || null;
     syncedPauseVoteUI = st.syncedPauseVoteUI || null;
 
+    if (st.chatHistory) {
+      chatHistory = st.chatHistory;
+      const box = document.getElementById("chatMessages");
+      if (box) {
+        box.innerHTML = "";
+        chatHistory.forEach(msg => renderChatMessage(msg.name, msg.text, msg.color, false));
+      }
+    }
+
     document.getElementById("die1").textContent = st.die1Text;
     document.getElementById("die2").textContent = st.die2Text;
 
@@ -2322,7 +2604,8 @@
     renderBoard();
     renderRightPlayersList();
     refreshLivePanelOnly();
-    refreshPinnedStatsOnly(); // Açık olan #pinSubform işlem kutusuna dokunmaz!
+    refreshPinnedStatsOnly();
+    
     const subformEl = document.getElementById("pinSubform");
     if (subformEl && !subformEl.classList.contains("open")) {
       const actBox = document.getElementById("pinActionBtns");
@@ -2398,13 +2681,111 @@
     }
   }
 
+  // 1 Dakikalık Zaman Aşımı Kontrolü (Sadece Host Çalıştırır)
+  setInterval(() => {
+    if (!isOnlineHost || !gameHasStarted) return;
+    let changed = false;
+    players.forEach(p => {
+      if (!p.isConnected && p.disconnectTime && (Date.now() - p.disconnectTime > 60000) && !p.bankrupt) {
+        p.bankrupt = true;
+        p.money = 0;
+        TILES.forEach(t => {
+          if (t.houseOwners) t.houseOwners = t.houseOwners.filter(id => id !== p.id);
+          if (t.owner === p.id) {
+            if (t.houseOwners && t.houseOwners.length > 0) t.owner = t.houseOwners[0];
+            else { delete t.owner; t.mortgaged = false; }
+          }
+        });
+        addLog(`🚫 ${p.name} 1 dakika içinde dönmediği için oyundan atıldı! Mülkleri boşa çıktı.`);
+        if (currentTurn === p.id) nextTurn();
+        changed = true;
+      }
+    });
+    if (changed) {
+      renderBoard();
+      renderRightPlayersList();
+      refreshLivePanelOnly();
+      refreshPinnedStatsOnly();
+      syncGameStateToClients();
+    }
+  }, 5000);
+
   /* =========================================================
-     4. PENCERE KAPATMA (✖) VE AYARLARDAN GERİ GETİRME SİSTEMİ
+     4. SOHBET SİSTEMİ
+     ========================================================= */
+  function sendGameChat() {
+    const inp = document.getElementById("inpChat");
+    if (!inp) return;
+    const text = inp.value.trim();
+    if (!text) return;
+    inp.value = "";
+
+    const me = players[myPlayerId];
+    if (!me) return;
+    
+    const payload = { type: "CHAT_MSG", name: me.name, text, color: me.color };
+    
+    if (isOnlineHost) {
+      handleHostReceivedData(payload, null);
+    } else {
+      sendToHost(payload);
+      renderChatMessage(me.name, text, me.color);
+    }
+  }
+
+  function sendLobbyChat() {
+    const inp = document.getElementById("inpLobbyChat");
+    if (!inp) return;
+    const text = inp.value.trim();
+    if (!text) return;
+    inp.value = "";
+
+    const myName = (document.getElementById("inpPlayerName").value || "").trim() || "Bilinmeyen";
+    const payload = { type: "CHAT_MSG", name: myName, text, color: mySelectedColor };
+    
+    if (isOnlineHost) {
+      handleHostReceivedData(payload, null);
+    } else {
+      sendToHost(payload);
+      renderChatMessage(myName, text, mySelectedColor);
+    }
+  }
+
+  function renderChatMessage(name, text, color, addToHistory = true) {
+    const html = `<b style="color:${color}">${name}:</b> <span>${text}</span>`;
+    
+    const gameChat = document.getElementById("chatMessages");
+    if (gameChat) {
+      const div = document.createElement("div");
+      div.className = "chat-msg";
+      div.innerHTML = html;
+      gameChat.appendChild(div);
+      gameChat.scrollTop = gameChat.scrollHeight;
+    }
+    
+    const lobbyChat = document.getElementById("lobbyChatMessages");
+    if (lobbyChat) {
+      const div = document.createElement("div");
+      div.className = "chat-msg";
+      div.innerHTML = html;
+      lobbyChat.appendChild(div);
+      lobbyChat.scrollTop = lobbyChat.scrollHeight;
+    }
+    
+    if (addToHistory) {
+      chatHistory.push({ name, text, color });
+      if (chatHistory.length > 50) chatHistory.shift();
+    }
+  }
+
+  /* =========================================================
+     5. PENCERE KAPATMA (✖) VE AYARLARDAN GERİ GETİRME SİSTEMİ
      ========================================================= */
   const PANEL_CHECKBOX_MAP = {
     liveCardPanel: "chkWinLive",
     pinnedCardPanel: "chkWinPinned",
     leftLogPanel: "chkWinLog",
+    leftChatPanel: "chkWinChat",
     rightPlayersPanel: "chkWinPlayers",
     rightTradeDock: "chkWinTrade"
   };
@@ -2413,6 +2794,7 @@
     liveCardPanel: true,
     pinnedCardPanel: true,
     leftLogPanel: true,
+    leftChatPanel: true,
     rightPlayersPanel: true,
     rightTradeDock: true
   };
@@ -2435,11 +2817,11 @@
   }
 
   function updateSidebarLayoutVisibility() {
-    const anyLeftOpen = panelVisibilityState.liveCardPanel || panelVisibilityState.pinnedCardPanel || panelVisibilityState.leftLogPanel;
+    const anyLeftOpen = panelVisibilityState.liveCardPanel || panelVisibilityState.pinnedCardPanel || panelVisibilityState.leftLogPanel || panelVisibilityState.leftChatPanel;
     document.getElementById("leftSidebar").style.display = anyLeftOpen ? "flex" : "none";
     document.getElementById("leftColResizer").style.display = anyLeftOpen ? "flex" : "none";
 
-    const showLeftResizer = panelVisibilityState.leftLogPanel && (panelVisibilityState.liveCardPanel || panelVisibilityState.pinnedCardPanel);
+    const showLeftResizer = (panelVisibilityState.leftLogPanel || panelVisibilityState.leftChatPanel) && (panelVisibilityState.liveCardPanel || panelVisibilityState.pinnedCardPanel);
     document.getElementById("leftRowResizer").style.display = showLeftResizer ? "flex" : "none";
 
     const showRightResizer = panelVisibilityState.rightPlayersPanel && panelVisibilityState.rightTradeDock;
@@ -2447,7 +2829,7 @@
   }
 
   /* =========================================================
-     5. GÖRÜNÜM VE NEON AYARLARI SİSTEMİ
+     6. GÖRÜNÜM VE NEON AYARLARI SİSTEMİ
      ========================================================= */
   let neonDisabled = false;
   let neonIntensity = 0.35;
@@ -2530,7 +2912,7 @@
   }
 
   /* =========================================================
-     6. SES SİSTEMİ
+     7. SES SİSTEMİ
      ========================================================= */
   let soundOn = true;
   let audioCtx = null;
@@ -2595,7 +2977,7 @@
   }
 
   /* =========================================================
-     7. 36 KARELİK TAHTA VERİSİ & 10 DAKİKALIK ENFLASYON SİSTEMİ
+     8. 36 KARELİK TAHTA VERİSİ & 10 DAKİKALIK ENFLASYON SİSTEMİ
      ========================================================= */
   let worldBankPool = 2500;
   const BASE_LAP_SALARY = 5000;
@@ -2664,13 +3046,13 @@
   ];
 
   /* =========================================================
-     8. OYUNCULAR VE DURUM DEĞİŞKENLERİ
+     9. OYUNCULAR VE DURUM DEĞİŞKENLERİ
      ========================================================= */
   let players = [
-    { id: 0, name: "Sen", isBot: false, money: 15000, pos: 0, lap: 1, turnsPlayed: 0, jailWaitTurns: 0, missedTurns: 0, color: "#f59e0b", code: "S", bankrupt: false },
-    { id: 1, name: "El-Tacir", isBot: true, money: 15000, pos: 0, lap: 1, turnsPlayed: 0, jailWaitTurns: 0, missedTurns: 0, color: "#10b981", code: "T", bankrupt: false },
-    { id: 2, name: "Şahin Bey", isBot: true, money: 15000, pos: 0, lap: 1, turnsPlayed: 0, jailWaitTurns: 0, missedTurns: 0, color: "#38bdf8", code: "Ş", bankrupt: false },
-    { id: 3, name: "Kleopatra", isBot: true, money: 15000, pos: 0, lap: 1, turnsPlayed: 0, jailWaitTurns: 0, missedTurns: 0, color: "#ff2a85", code: "K", bankrupt: false }
+    { id: 0, name: "Sen", isBot: false, money: 15000, pos: 0, lap: 1, turnsPlayed: 0, jailWaitTurns: 0, missedTurns: 0, color: "#f59e0b", code: "S", bankrupt: false, isConnected: true },
+    { id: 1, name: "El-Tacir", isBot: true, money: 15000, pos: 0, lap: 1, turnsPlayed: 0, jailWaitTurns: 0, missedTurns: 0, color: "#10b981", code: "T", bankrupt: false, isConnected: true },
+    { id: 2, name: "Şahin Bey", isBot: true, money: 15000, pos: 0, lap: 1, turnsPlayed: 0, jailWaitTurns: 0, missedTurns: 0, color: "#38bdf8", code: "Ş", bankrupt: false, isConnected: true },
+    { id: 3, name: "Kleopatra", isBot: true, money: 15000, pos: 0, lap: 1, turnsPlayed: 0, jailWaitTurns: 0, missedTurns: 0, color: "#ff2a85", code: "K", bankrupt: false, isConnected: true }
   ];
 
   let currentTurn = 0;
@@ -2701,7 +3083,7 @@
   }
 
   /* =========================================================
-     9. 10 DAKİKADA BİR (%4 VERGİ & %6 GENEL) ENFLASYON SAYACI
+     10. 10 DAKİKADA BİR (%4 VERGİ & %6 GENEL) ENFLASYON SAYACI
      ========================================================= */
   function formatMMSS(sec) {
     const m = Math.floor(sec / 60);
@@ -2713,7 +3095,7 @@
     clearInterval(inflationInterval);
     inflationInterval = setInterval(() => {
       if (isGamePaused || isPauseVoting || isAuctionActive || !gameHasStarted) return;
-      if (!isOnlineHost) return; // Enflasyon sayacını Host yönetir ve senkronize eder
+      if (!isOnlineHost) return;
       inflationSecondsLeft--;
       if (inflationSecondsLeft <= 0) {
         inflationSecondsLeft = 600;
@@ -2781,7 +3163,7 @@
   }
 
   /* =========================================================
-     10. OYBİRLİĞİ ONAYLI OYUNU DURDURMA (PAUSE) & BAŞLATMA (PLAY)
+     11. OYBİRLİĞİ ONAYLI OYUNU DURDURMA (PAUSE) & BAŞLATMA (PLAY)
      ========================================================= */
   let voteTimeouts = [];
 
@@ -2946,7 +3328,7 @@
   }
 
   /* =========================================================
-     11. SÜRÜKLENEBİLİR / ÖZELLEŞTİRİLEBİLİR PENCERELER
+     12. SÜRÜKLENEBİLİR / ÖZELLEŞTİRİLEBİLİR PENCERELER
      ========================================================= */
   function setupResizablePanels() {
     const leftColResizer = document.getElementById("leftColResizer");
@@ -2997,7 +3379,7 @@
   }
 
   /* =========================================================
-     12. KİRA, PLAZA VE ORTAKLIK PAYINA GÖRE SATIŞ GELİRİ DAĞITIMI
+     13. KİRA, PLAZA VE ORTAKLIK PAYINA GÖRE SATIŞ GELİRİ DAĞITIMI
      ========================================================= */
   function calculateRent(tile) {
     if (!tile.rent || tile.mortgaged) return 0;
@@ -3066,7 +3448,7 @@
   }
 
   /* =========================================================
-     13. TAHTA ÇİZİMİ
+     14. TAHTA ÇİZİMİ
      ========================================================= */
   function initGame() {
     initLobbyUI();
@@ -3180,7 +3562,7 @@
   }
 
   /* =========================================================
-     14. SOL SÜTUN PANELLERİ (OTONOM SABİT İŞLEM PANELİ)
+     15. SOL SÜTUN PANELLERİ (OTONOM SABİT İŞLEM PANELİ)
      ========================================================= */
   function fillInfoCardDOM(prefix, tileId) {
     const tile = TILES[tileId] || TILES[0];
@@ -3257,7 +3639,7 @@
   }
 
   /* =========================================================
-     15. SAĞ OYUNCU LİSTESİ
+     16. SAĞ OYUNCU LİSTESİ
      ========================================================= */
   function setPlayerColor(pid, newColor) {
     if (!isOnlineHost && pid === myPlayerId) {
@@ -3314,6 +3696,7 @@
 
       const jailText = p.jailWaitTurns > 0 ? ` • 🚓 Cezalı` : "";
       const missText = p.missedTurns > 0 ? ` • ⚠️ ${p.missedTurns}/3 Pas` : "";
+      const connText = !p.isConnected && !p.bankrupt ? ` • 📴 Bağlantı Koptu` : "";
 
       card.innerHTML = `
         <div class="p-card-top">
@@ -3321,7 +3704,7 @@
             <div class="p-badge" style="background:${p.color}; box-shadow:${neonDisabled ? 'none' : '0 0 10px ' + p.color};">${p.code}</div>
             <div>
               <div class="p-title">${p.name} ${p.id === myPlayerId ? "(Sen)" : ""} ${isTurn ? "⚡" : ""}</div>
-              <div class="p-sub">${p.bankrupt ? "❌ ELENDİ / İFLAS" : `📍 ${TILES[p.pos].name} • ${ownedTiles.length} Mülk${jailText}${missText}`}</div>
+              <div class="p-sub">${p.bankrupt ? "❌ ELENDİ / İFLAS" : `📍 ${TILES[p.pos].name} • ${ownedTiles.length} Mülk${jailText}${missText}${connText}`}</div>
             </div>
           </div>
           <div class="p-balance ${p.money < 0 ? "neg" : ""}">${p.bankrupt ? "0 ₺" : p.money.toLocaleString("tr-TR") + " ₺"}</div>
@@ -3376,7 +3759,7 @@
   }
 
   /* =========================================================
-     16. SOLDAKİ "TIKLADIĞIN SABİT KART" PANELİNİN İŞLEM BUTONLARI
+     17. SOLDAKİ "TIKLADIĞIN SABİT KART" PANELİNİN İŞLEM BUTONLARI
      ========================================================= */
   function populateTileActionButtons(tile, actBox, subform) {
     const me = players[myPlayerId];
@@ -3469,7 +3852,7 @@
   }
 
   /* =========================================================
-     17. ALT FORMLAR, AÇIK ARTTIRMA & HİSSELİ SATIŞ DAĞITIMI
+     18. ALT FORMLAR, AÇIK ARTTIRMA & HİSSELİ SATIŞ DAĞITIMI
      ========================================================= */
   function openSubformFixedPriceSale(tile, sub) {
     if (tile.owner !== myPlayerId || tile.mortgaged) return;
@@ -3519,7 +3902,7 @@
       afterHostActionUpdate(tile.id);
     } else {
       // Gerçek oyuncular varsa onlara da diplomasi teklifi olarak düşür
-      const otherHumans = players.filter(p => !p.isBot && !p.bankrupt && p.id !== actorId);
+      const otherHumans = players.filter(p => !p.isBot && !p.bankrupt && p.id !== actorId && p.isConnected);
       if (otherHumans.length > 0) {
         otherHumans.forEach(hu => {
           activeOffersQueue.push({
@@ -3933,7 +4316,7 @@
   }
 
   /* =========================================================
-     18. SATIŞ, EV İNŞASI VE İPOTEK İŞLEMLERİ
+     19. SATIŞ, EV İNŞASI VE İPOTEK İŞLEMLERİ
      ========================================================= */
   function sellHousesCount(tile, countToSell) {
     if (!isOnlineHost) {
@@ -4115,7 +4498,7 @@
   }
 
   /* =========================================================
-     19. ÇOKLU TEKLİFLER & HİSSELİ SATIŞ PAYLAŞIMI
+     20. ÇOKLU TEKLİFLER & HİSSELİ SATIŞ PAYLAŞIMI
      ========================================================= */
   function toggleIncomingOffers() {
     incomingOffersEnabled = !incomingOffersEnabled;
@@ -4274,7 +4657,7 @@
     if (!isOnlineHost || activeOffersQueue.length >= 8) return;
     if (Math.random() > 0.25) return;
 
-    const humanPlayers = players.filter(p => !p.isBot && !p.bankrupt);
+    const humanPlayers = players.filter(p => !p.isBot && !p.bankrupt && p.isConnected);
     if (humanPlayers.length === 0) return;
     const targetHuman = humanPlayers[Math.floor(Math.random() * humanPlayers.length)];
 
@@ -4306,7 +4689,7 @@
   }
 
   /* =========================================================
-     20. ORTA EKRAN & NEZARETHANE
+     21. ORTA EKRAN & NEZARETHANE
      ========================================================= */
   function showDiceScreen() {
     document.getElementById("diceView").style.display = "flex";
@@ -4517,7 +4900,7 @@
   }
 
   /* =========================================================
-     21. TUR AKIŞI (SABİT KARTIN AÇIK İŞLEM FORMUNU ASLA BOZMAZ!)
+     22. TUR AKIŞI (SABİT KARTIN AÇIK İŞLEM FORMUNU ASLA BOZMAZ!)
      ========================================================= */
   function startTurn() {
     if (!isOnlineHost) return;
@@ -4533,7 +4916,8 @@
     }
 
     const p = players[currentTurn];
-    if (!p || p.bankrupt) {
+    if (!p || p.bankrupt || !p.isConnected) {
+      // Eğer sıradaki oyuncu bağlı değilse veya iflas ettiyse turu atla
       nextTurn();
       return;
     }
@@ -4880,7 +5264,7 @@
   }
 
   /* =========================================================
-     22. BOT KARARLARI VE İFLAS KONTROLÜ
+     23. BOT KARARLARI VE İFLAS KONTROLÜ
      ========================================================= */
   function executeBotDecisions(bot, landedTile) {
     if (isGamePaused || !isOnlineHost) return;
@@ -4998,7 +5382,7 @@
     do {
       currentTurn = (currentTurn + 1) % players.length;
       guard++;
-    } while (players[currentTurn].bankrupt && guard <= players.length);
+    } while ((players[currentTurn].bankrupt || !players[currentTurn].isConnected) && guard <= players.length);
 
     startTurn();
   }
