@@ -95,6 +95,9 @@ body.bw-mode { filter: grayscale(100%) contrast(1.08); }
 .tile.step-glow { border: 2.5px solid #fde047 !important; box-shadow: 0 0 26px rgba(253, 224, 71, 0.95), inset 0 0 14px rgba(253, 224, 71, 0.45) !important; transform: scale(1.04); z-index: 25; }
 .tile.selected-tile { outline: 2px dashed #fde047; outline-offset: 1px; z-index: 18; }
 .tile.spotlight-tile { transform: scale(1.12) !important; border: 3px solid #fde047 !important; box-shadow: 0 0 38px #fde047, 0 0 70px #f59e0b !important; z-index: 45 !important; }
+.tile.other-player-owned { border-color: rgba(148, 163, 184, 0.3) !important; box-shadow: none !important; opacity: 0.62; }
+.tile.other-player-owned .tile-color-strip { background: linear-gradient(135deg, #475569, #334155) !important; filter: grayscale(1); }
+.tile.other-player-owned .tile-country-name { color: #94a3b8 !important; }
 .tile-color-strip { height: 12px; width: 100%; display: flex; align-items: center; justify-content: space-between; padding: 0 3px; font-size: 8px; font-weight: 900; color: #fff; }
 .house-indicators { display: flex; gap: 1.5px; }
 .house-pip { width: 5px; height: 5px; border-radius: 2px; border: 1px solid #fff; }
@@ -122,11 +125,11 @@ body.bw-mode { filter: grayscale(100%) contrast(1.08); }
 .initial-money-tag { position: absolute; top: -3px; left: 50%; transform: translateX(-50%); background: rgba(15, 23, 42, 0.92); border: 1px solid rgba(255,255,255,0.25); border-radius: 99px; padding: 0 4px; font-size: 7.5px; font-weight: 800; color: #34d399; white-space: nowrap; z-index: 5; }
 
 .dice-screen-mode { width: 100%; flex: 1; background: radial-gradient(circle at center, #172338 0%, #080d19 100%); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 8px 12px; text-align: center; }
-.center-compact-dice-box { background: rgba(15, 23, 42, 0.95); border: 1.5px solid rgba(245, 158, 11, 0.55); border-radius: 14px; padding: 10px 14px; display: flex; flex-direction: column; align-items: center; gap: 7px; max-width: 330px; width: 88%; box-shadow: 0 10px 30px rgba(0,0,0,0.8); z-index: 10; margin-right: 28px; }
+.center-compact-dice-box { background: rgba(15, 23, 42, 0.95); border: 1.5px solid rgba(245, 158, 11, 0.55); border-radius: 14px; padding: 10px 14px; display: flex; flex-direction: column; align-items: center; gap: 7px; max-width: 330px; width: 88%; box-shadow: 0 10px 30px rgba(0,0,0,0.8); z-index: 10; margin-right: 48px; }
 .wb-pool-banner { background: rgba(16, 185, 129, 0.18); border: 1.5px solid #10b981; color: #ecfdf5; padding: 3px 10px; border-radius: 99px; font-size: 10.5px; font-weight: 900; }
 .econ-cycle-banner { background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.45); color: #fde68a; padding: 2px 8px; border-radius: 99px; font-size: 9.5px; font-weight: 800; }
 .dice-cubes-holder { display: flex; gap: 10px; align-items: center; justify-content: center; margin-top: 1px; }
-.big-die { width: 38px; height: 38px; background: linear-gradient(145deg, #ffffff, #cbd5e1); color: #0f172a; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 900; box-shadow: 0 6px 16px rgba(0,0,0,0.6), inset 0 -2px 4px rgba(0,0,0,0.25); border: 1.5px solid #e2e8f0; }
+.big-die { width: 34px; height: 34px; background: linear-gradient(145deg, #ffffff, #cbd5e1); color: #0f172a; border-radius: 9px; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 900; box-shadow: 0 6px 16px rgba(0,0,0,0.6), inset 0 -2px 4px rgba(0,0,0,0.25); border: 1.5px solid #e2e8f0; }
 .big-die.rolling { animation: shakeDie 0.25s infinite; color: #d97706; }
 .roll-main-btn { padding: 8px 24px; font-size: 13.5px; font-weight: 900; color: #fff; background: linear-gradient(135deg, #f59e0b, #d97706); border: none; border-radius: 10px; cursor: pointer; box-shadow: 0 6px 18px rgba(245, 158, 11, 0.45); transition: transform 0.18s ease; }
 .roll-main-btn:hover:not(:disabled) { transform: scale(1.04); filter: brightness(1.15); }
@@ -1029,9 +1032,20 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
   let unreadChatCount = 0;
   let currentMobileHubTab = "players";
 
+  let myLocalPlayerId = null;
+
   function getMySeat() {
-    if (!myLocalPlayerName) return players[0];
-    return players.find(p => p.name.toLowerCase() === myLocalPlayerName.toLowerCase()) || players[0];
+    if (myLocalPlayerId !== null && players[myLocalPlayerId]) {
+      return players[myLocalPlayerId];
+    }
+    if (myLocalPlayerName) {
+      const found = players.find(p => p.name.toLowerCase() === myLocalPlayerName.toLowerCase());
+      if (found) {
+        myLocalPlayerId = found.id;
+        return found;
+      }
+    }
+    return players[0];
   }
 
   function getStorageRoomKey() { return `EMLAK_TACIRI_ROOM_${myRoomCode}`; }
@@ -1047,28 +1061,37 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
     });
   }
 
+  function getFullRoomSnapshot() {
+    const isDice = document.getElementById("diceView").style.display !== "none";
+    return {
+      ts: Date.now(),
+      isMatchStarted,
+      worldBankPool,
+      inflationSecondsLeft,
+      globalTaxMultiplier,
+      globalGeneralMultiplier,
+      currentTurn,
+      isGamePaused,
+      hasRolled,
+      viewMode: isDice ? "dice" : "card",
+      activeCenterTileId,
+      timeLeft,
+      players,
+      tiles: TILES.map(t => ({
+        id: t.id,
+        owner: t.owner,
+        houseOwners: t.houseOwners || [],
+        mortgaged: Boolean(t.mortgaged),
+        mortgageTurnsLeft: t.mortgageTurnsLeft,
+        lastBuiltLap: t.lastBuiltLap
+      })),
+      chatMessages
+    };
+  }
+
   function saveRoomSnapshot() {
     try {
-      const snap = {
-        ts: Date.now(),
-        isMatchStarted,
-        worldBankPool,
-        inflationSecondsLeft,
-        globalTaxMultiplier,
-        globalGeneralMultiplier,
-        currentTurn,
-        isGamePaused,
-        players,
-        tiles: TILES.map(t => ({
-          id: t.id,
-          owner: t.owner,
-          houseOwners: t.houseOwners || [],
-          mortgaged: Boolean(t.mortgaged),
-          mortgageTurnsLeft: t.mortgageTurnsLeft,
-          lastBuiltLap: t.lastBuiltLap
-        })),
-        chatMessages
-      };
+      const snap = getFullRoomSnapshot();
       localStorage.setItem(getStorageRoomKey(), JSON.stringify(snap));
       broadcastNetworkPayload({ type: "SYNC_STATE", snap });
     } catch (e) {}
@@ -1076,12 +1099,17 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
 
   function applyRoomSnapshot(snap) {
     if (!snap) return;
-    isMatchStarted = snap.isMatchStarted;
+    const prevTurn = currentTurn;
+    const prevMatchStarted = isMatchStarted;
+
+    isMatchStarted = Boolean(snap.isMatchStarted);
     worldBankPool = snap.worldBankPool ?? worldBankPool;
     inflationSecondsLeft = snap.inflationSecondsLeft ?? inflationSecondsLeft;
     globalTaxMultiplier = snap.globalTaxMultiplier ?? globalTaxMultiplier;
     globalGeneralMultiplier = snap.globalGeneralMultiplier ?? globalGeneralMultiplier;
-    currentTurn = snap.currentTurn ?? currentTurn;
+    
+    if (typeof snap.currentTurn === "number") currentTurn = snap.currentTurn;
+
     if (typeof snap.isGamePaused === "boolean" && snap.isGamePaused !== isGamePaused) {
       isGamePaused = snap.isGamePaused;
       const btn = document.getElementById("btnPausePlay");
@@ -1090,7 +1118,15 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
         btn.classList.toggle("paused-state", isGamePaused);
       }
     }
-    if (Array.isArray(snap.players) && snap.players.length >= 1) players = snap.players;
+
+    if (Array.isArray(snap.players) && snap.players.length >= 1) {
+      players = snap.players;
+      if (myLocalPlayerName) {
+        const found = players.find(p => p.name.toLowerCase() === myLocalPlayerName.toLowerCase());
+        if (found) myLocalPlayerId = found.id;
+      }
+    }
+
     if (Array.isArray(snap.tiles)) {
       snap.tiles.forEach(st => {
         const t = TILES[st.id];
@@ -1103,6 +1139,7 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
         t.lastBuiltLap = st.lastBuiltLap;
       });
     }
+
     if (Array.isArray(snap.chatMessages)) {
       if (snap.chatMessages.length > chatMessages.length) {
         const diff = snap.chatMessages.length - chatMessages.length;
@@ -1116,7 +1153,9 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
       chatMessages = snap.chatMessages;
       renderChatLists();
     }
+
     renderLobbySeats();
+
     if (isMatchStarted) {
       document.getElementById("lobbyBackdrop").style.display = "none";
       renderBoard();
@@ -1124,12 +1163,85 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
       refreshCenterLiveFlowUI();
       refreshPinnedStatsOnly();
       renderInitialsRail();
+
+      const curP = players[currentTurn];
+      if (curP) {
+        const turnTxt = document.getElementById("turnStatusText");
+        if (turnTxt) turnTxt.textContent = `SIRA: ${curP.name.toUpperCase()}`;
+      }
+
+      if (snap.currentTurn !== prevTurn || (!prevMatchStarted && isMatchStarted)) {
+        hasRolled = Boolean(snap.hasRolled);
+        isMoving = false;
+        timeLeft = snap.timeLeft ?? 30;
+        maxTimerSeconds = 30;
+        updateTimerUI();
+        if (snap.viewMode === "card" && typeof snap.activeCenterTileId === "number") {
+          showLiveLandingScreen(snap.activeCenterTileId);
+        } else {
+          showDiceScreen();
+        }
+        startCountdownInterval();
+      } else {
+        if (typeof snap.hasRolled === "boolean") hasRolled = snap.hasRolled;
+        if (typeof snap.timeLeft === "number") {
+          timeLeft = snap.timeLeft;
+          updateTimerUI();
+        }
+        if (snap.viewMode === "dice") {
+          showDiceScreen();
+        } else if (snap.viewMode === "card" && typeof snap.activeCenterTileId === "number") {
+          showLiveLandingScreen(snap.activeCenterTileId);
+        }
+      }
     }
   }
 
-  function handleNetworkMessage(data) {
+  function handleNetworkMessage(data, conn = null) {
     if (!data) return;
-    if (data.type === "SYNC_STATE") {
+    if (data.type === "JOIN_ROOM_REQUEST") {
+      const reqName = (data.playerName || "Misafir").trim();
+      let targetPlayer = players.find(p => p.name.toLowerCase() === reqName.toLowerCase());
+      if (targetPlayer) {
+        targetPlayer.disconnected = false;
+        targetPlayer.isBot = false;
+      } else {
+        targetPlayer = players.find(p => p.isBot);
+        if (targetPlayer) {
+          targetPlayer.isBot = false;
+          targetPlayer.name = reqName;
+          targetPlayer.code = reqName.charAt(0).toUpperCase();
+          targetPlayer.isReady = false;
+          targetPlayer.disconnected = false;
+        } else if (players.length < 4) {
+          const newId = players.length;
+          targetPlayer = {
+            id: newId, name: reqName, isBot: false, isReady: false, isHost: false,
+            disconnected: false, money: 15000, pos: 0, lap: 1,
+            turnsPlayed: 0, jailWaitTurns: 0, missedTurns: 0,
+            color: NEON_PALETTE[newId % NEON_PALETTE.length],
+            code: reqName.charAt(0).toUpperCase(), bankrupt: false
+          };
+          players.push(targetPlayer);
+        }
+      }
+      renderLobbySeats();
+      saveRoomSnapshot();
+      if (conn && conn.open && targetPlayer) {
+        conn.send({
+          type: "JOIN_ROOM_ACCEPTED",
+          assignedPlayerId: targetPlayer.id,
+          snap: getFullRoomSnapshot()
+        });
+      }
+    } else if (data.type === "JOIN_ROOM_ACCEPTED") {
+      myLocalPlayerId = data.assignedPlayerId;
+      applyRoomSnapshot(data.snap);
+      const mySeat = getMySeat();
+      if (mySeat) {
+        document.getElementById("lobbyConnStatus").innerHTML = `✅ <b>${mySeat.name}</b> (#${mySeat.id + 1}) olarak odaya bağlandınız!`;
+      }
+    } else if (data.type === "SYNC_STATE") {
       applyRoomSnapshot(data.snap);
     } else if (data.type === "PAUSE_REQUEST") {
       onReceivePauseRequestFromPeer(data.requesterId, data.requesterName, data.action);
@@ -1182,10 +1294,16 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
       try {
         const hostPeerId = `emlak-taciri-${myRoomCode.toLowerCase()}-host`;
         peerNode = new Peer(hostPeerId);
+        peerNode.on("open", () => {
+          const me = getMySeat();
+          if (me) me.isHost = true;
+        });
         peerNode.on("connection", (conn) => {
           peerConnections.push(conn);
-          conn.on("data", (data) => handleNetworkMessage(data));
-          setTimeout(() => saveRoomSnapshot(), 300);
+          conn.on("data", (data) => handleNetworkMessage(data, conn));
+          setTimeout(() => {
+            conn.send({ type: "SYNC_STATE", snap: getFullRoomSnapshot() });
+          }, 350);
         });
         peerNode.on("call", (call) => {
           call.answer(localAudioStream || undefined);
@@ -1196,7 +1314,13 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
           clientPeer.on("open", () => {
             const conn = clientPeer.connect(hostPeerId);
             peerConnections.push(conn);
-            conn.on("data", (data) => handleNetworkMessage(data));
+            conn.on("open", () => {
+              conn.send({
+                type: "JOIN_ROOM_REQUEST",
+                playerName: myLocalPlayerName
+              });
+            });
+            conn.on("data", (data) => handleNetworkMessage(data, conn));
             if (localAudioStream) {
               const call = clientPeer.call(hostPeerId, localAudioStream);
               if (call) call.on("stream", (rs) => attachRemoteAudio(rs));
@@ -1227,7 +1351,12 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
 
     const savedRaw = localStorage.getItem(getStorageRoomKey());
     if (savedRaw) {
-      try { applyRoomSnapshot(JSON.parse(savedRaw)); } catch (e) {}
+      try {
+        const snap = JSON.parse(savedRaw);
+        if (snap && snap.isMatchStarted) {
+          applyRoomSnapshot(snap);
+        }
+      } catch (e) {}
     }
 
     const existingByName = players.find(p => p.name.toLowerCase() === myLocalPlayerName.toLowerCase());
@@ -1236,10 +1365,11 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
       delete existingByName.disconnectSec;
       existingByName.isBot = false;
       existingByName.code = myLocalPlayerName.charAt(0).toUpperCase();
+      myLocalPlayerId = existingByName.id;
       document.getElementById("lobbyConnStatus").innerHTML = `✅ <b>${myLocalPlayerName}</b> olarak odaya bağlandınız!`;
       pushSystemChat(`🔄 ${myLocalPlayerName} odaya bağlandı.`);
     } else {
-      let seat = players.find(p => p.id === 0 && p.name === "Sen");
+      let seat = players.find(p => p.id === 0 && (p.name === "Sen" || p.name === ""));
       if (!seat) seat = players.find(p => p.isBot);
       if (!seat && players.length < 4) {
         const newId = players.length;
@@ -1259,6 +1389,7 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
       seat.disconnected = false;
       delete seat.disconnectSec;
       seat.code = myLocalPlayerName.charAt(0).toUpperCase();
+      myLocalPlayerId = seat.id;
       pushSystemChat(`👋 ${myLocalPlayerName} lobiye katıldı.`);
     }
 
@@ -1297,118 +1428,14 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
       turnsPlayed: 0, jailWaitTurns: 0, missedTurns: 0,
       color: NEON_PALETTE[id % NEON_PALETTE.length], code: bName.charAt(0), bankrupt: false
     });
-    players.forEach((p, idx) => p.id = idx);
+    players.forEach((p, idx) => {
+      p.id = idx;
+      if (idx === 0) p.isHost = true;
+    });
     renderLobbySeats();
     saveRoomSnapshot();
   }
 
-  function updateRoomCodeDisplay() {
-    const inp = document.getElementById("inpRoomCode");
-    const code = inp ? (inp.value.trim().toUpperCase() || "ODA101") : "ODA101";
-    myRoomCode = code;
-    const tag = document.getElementById("displayRoomCodeTag");
-    if (tag) tag.textContent = code;
-  }
-
-  function copyRoomCodeToClipboard() {
-    const code = myRoomCode || "ODA101";
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(code).catch(() => {});
-    }
-    const txt = document.getElementById("lobbyCopyStatusText");
-    if (txt) {
-      txt.textContent = `✅ "${code}" kopyalandı!`;
-      setTimeout(() => { if (txt) txt.textContent = ""; }, 3000);
-    }
-  }
-
-  function copyShareLinkToClipboard() {
-    const code = myRoomCode || "ODA101";
-    const shareUrl = `${window.location.origin}${window.location.pathname}?room=${encodeURIComponent(code)}`;
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(shareUrl).catch(() => {});
-    }
-    const txt = document.getElementById("lobbyCopyStatusText");
-    if (txt) {
-      txt.textContent = "✅ Davet linki kopyalandı!";
-      setTimeout(() => { if (txt) txt.textContent = ""; }, 3000);
-    }
-  }
-
-  function hostRemoveBot() {
-    if (players.length <= 1) return alert("Odada en az 1 kişi kalmalıdır!");
-    const botIdx = players.map(p => p.isBot).lastIndexOf(true);
-    if (botIdx === -1) return alert("Çıkarılacak bot kalmadı.");
-    players.splice(botIdx, 1);
-    players.forEach((p, idx) => p.id = idx);
-    renderLobbySeats();
-    saveRoomSnapshot();
-  }
-
-  function hostRemoveAllBots() {
-    const hasBots = players.some(p => p.isBot);
-    if (!hasBots) return alert("Odada çıkarılacak bot bulunmuyor.");
-    const realPlayers = players.filter(p => !p.isBot);
-    if (realPlayers.length === 0) {
-      players = [players[0]];
-      players[0].isBot = false;
-    } else {
-      players = realPlayers;
-    }
-    players.forEach((p, idx) => p.id = idx);
-    renderLobbySeats();
-    saveRoomSnapshot();
-    addLog("🤖 Tüm botlar lobiden çıkarıldı.");
-  }
-
-  function renderLobbySeats() {
-    const box = document.getElementById("lobbySeatsContainer");
-    if (!box) return;
-    box.innerHTML = players.map((p, idx) => {
-      const roleBadge = idx === 0 ? "👑 Kurucu" : (p.isBot ? "🤖 Bot" : "👤 Oyuncu");
-      const readyBadge = p.disconnected
-        ? `<span style="color:#ef4444;">🔌 Ayrıldı</span>`
-        : (p.isReady ? `<span style="color:#10b981;">✅ HAZIR</span>` : `<span style="color:#fde047;">⏳ Bekleniyor</span>`);
-      return `
-        <div class="lobby-seat ${p.isReady ? 'ready' : ''}" style="border-left:4px solid ${p.color};">
-          <div>
-            <span>#${idx + 1} <b>${p.name}</b></span>
-            <span style="font-size:10.5px; color:#94a3b8; margin-left:6px;">(${roleBadge})</span>
-          </div>
-          <div style="display:flex; align-items:center; gap:8px;">${readyBadge}</div>
-        </div>
-      `;
-    }).join("");
-
-    const validCount = players.length >= 2 && players.length <= 4;
-    const allReady = validCount && players.every(p => p.isReady && !p.disconnected);
-    const startBtn = document.getElementById("btnHostStartGame");
-    if (startBtn) {
-      startBtn.disabled = !allReady;
-      if (players.length < 2) {
-        startBtn.textContent = `⏳ En Az 2 Oyuncu Gerekli (Şu an: ${players.length}/4)`;
-      } else if (!allReady) {
-        startBtn.textContent = `⏳ Oyuncuların Hazır Vermesi Bekleniyor (${players.filter(p => p.isReady).length}/${players.length})`;
-      } else {
-        startBtn.textContent = `🚀 Oyunu Başlat (${players.length} Kişi)`;
-      }
-    }
-  }
-
-  function hostStartMatch() {
-    if (players.length < 2) return alert("Oyunu başlatmak için en az 2 oyuncu olmalıdır!");
-    const allReady = players.length >= 2 && players.length <= 4 && players.every(p => p.isReady);
-    if (!allReady) return;
-    isMatchStarted = true;
-    document.getElementById("lobbyBackdrop").style.display = "none";
-    expandedPlayerIds = new Set(players.map(p => p.id));
-    pushSystemChat(`🚀 Oda Kurucusu oyunu başlattı! İyi eğlenceler.`);
-    saveRoomSnapshot();
-    renderBoard();
-    renderRightPlayersList();
-    renderInitialsRail();
-    startTurn();
-  }
 
   function completelyExitAndReset() {
     const me = getMySeat();
@@ -1459,10 +1486,7 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
     });
 
     players = [
-      { id: 0, name: "Sen", isBot: false, isReady: false, isHost: true, disconnected: false, money: 15000, pos: 0, lap: 1, turnsPlayed: 0, jailWaitTurns: 0, missedTurns: 0, color: "#f59e0b", code: "S", bankrupt: false },
-      { id: 1, name: "El-Tacir", isBot: true, isReady: true, isHost: false, disconnected: false, money: 15000, pos: 0, lap: 1, turnsPlayed: 0, jailWaitTurns: 0, missedTurns: 0, color: "#10b981", code: "T", bankrupt: false },
-      { id: 2, name: "Şahin Bey", isBot: true, isReady: true, isHost: false, disconnected: false, money: 15000, pos: 0, lap: 1, turnsPlayed: 0, jailWaitTurns: 0, missedTurns: 0, color: "#38bdf8", code: "Ş", bankrupt: false },
-      { id: 3, name: "Kleopatra", isBot: true, isReady: true, isHost: false, disconnected: false, money: 15000, pos: 0, lap: 1, turnsPlayed: 0, jailWaitTurns: 0, missedTurns: 0, color: "#ff2a85", code: "K", bankrupt: false }
+      { id: 0, name: "Sen", isBot: false, isReady: false, isHost: true, disconnected: false, money: 15000, pos: 0, lap: 1, turnsPlayed: 0, jailWaitTurns: 0, missedTurns: 0, color: "#f59e0b", code: "S", bankrupt: false }
     ];
 
     document.getElementById("inpPlayerName").value = "";
@@ -1997,20 +2021,29 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
   function renderBoard() {
     const grid = document.getElementById("boardGrid");
     document.querySelectorAll(".tile").forEach(e => e.remove());
+    const me = getMySeat();
 
     TILES.forEach(tile => {
       const pos = getTileGridPos(tile.id);
       const el = document.createElement("div");
-      el.className = "tile" + (tile.id === pinnedTileId ? " selected-tile" : "") + (tile.id === spotlightTileId ? " spotlight-tile" : "");
+      const isPinned = (tile.id === pinnedTileId);
+      const isSpotlight = (tile.id === spotlightTileId);
+      const isOwnedByOther = (tile.owner !== undefined && tile.owner !== me.id);
+      const isOwnedByMe = (tile.owner === me.id);
+
+      el.className = "tile" + (isPinned ? " selected-tile" : "") + (isSpotlight ? " spotlight-tile" : "") + (isOwnedByOther ? " other-player-owned" : "");
       el.id = `tile-${tile.id}`;
       el.style.gridRow = pos.row;
       el.style.gridColumn = pos.col;
 
-      if (tile.owner !== undefined && players[tile.owner]) {
+      if (isOwnedByMe && players[tile.owner]) {
         const ownCol = players[tile.owner].color;
         el.style.borderColor = ownCol;
-        el.style.borderWidth = "2px";
+        el.style.borderWidth = "2.5px";
         el.style.boxShadow = getInwardNeonShadow(tile.id, ownCol);
+      } else if (isOwnedByOther) {
+        el.style.borderColor = "rgba(148, 163, 184, 0.35)";
+        el.style.borderWidth = "1.5px";
       }
 
       el.onclick = () => {
@@ -2024,7 +2057,7 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
         pipsHTML = `<span style="background:#ef4444; padding:0 2px; border-radius:2px; font-size:7px;">İPOTEK</span>`;
       } else if (tile.houseOwners && tile.houseOwners.length > 0) {
         if (tile.houseOwners.length >= 5) pipsHTML = `<span style="color:#fde047;">🏙️PLZ</span>`;
-        else pipsHTML = `<div class="house-indicators">` + tile.houseOwners.map(pid => `<span class="house-pip" style="background:${players[pid] ? players[pid].color : '#fff'}"></span>`).join("") + `</div>`;
+        else pipsHTML = `<div class="house-indicators">` + tile.houseOwners.map(pid => `<span class="house-pip" style="background:${players[pid] ? (pid === me.id ? players[pid].color : '#64748b') : '#fff'}"></span>`).join("") + `</div>`;
       }
 
       let footerPrice = "Özel";
@@ -2033,10 +2066,11 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
       else if (tile.type === "jail") footerPrice = `${getPlayerBailCost()}₺`;
       else if (tile.price) footerPrice = tile.owner !== undefined ? `K:${calculateRent(tile)}₺` : `${getPlayerPrice(tile)}₺`;
 
-      const ownerColor = (tile.owner !== undefined && players[tile.owner]) ? players[tile.owner].color : "transparent";
+      const stripColor = isOwnedByOther ? "#475569" : tile.color;
+      const ownerDotColor = isOwnedByMe ? players[me.id].color : (isOwnedByOther ? "#64748b" : "transparent");
 
       el.innerHTML = `
-        <div class="tile-color-strip" style="background:${tile.color}">
+        <div class="tile-color-strip" style="background:${stripColor}">
           <span>#${tile.id + 1}</span>
           ${pipsHTML}
         </div>
@@ -2047,7 +2081,7 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
         <div class="tile-tokens-row" id="tokens-${tile.id}"></div>
         <div class="tile-footer">
           <span>${footerPrice}</span>
-          <span style="width:8px;height:8px;border-radius:50%;background:${ownerColor};opacity:${tile.owner !== undefined ? 1 : 0};border:1px solid #fff;"></span>
+          <span style="width:8px;height:8px;border-radius:50%;background:${ownerDotColor};opacity:${tile.owner !== undefined ? 1 : 0};border:1px solid #fff;"></span>
         </div>
       `;
       grid.appendChild(el);
@@ -3023,7 +3057,10 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
     renderInitialsRail();
     showDiceScreen();
 
-    if (p.isBot && !isGamePaused) {
+    const me = getMySeat();
+    const isHost = (me.id === 0 || me.isHost);
+
+    if (p.isBot && !isGamePaused && isHost) {
       const bailCost = getPlayerBailCost();
       if (p.jailWaitTurns > 0) {
         botTimer = setTimeout(() => {
@@ -3054,12 +3091,15 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
       if (timeLeft <= 0) {
         clearInterval(timerInterval);
         const me = getMySeat();
-        if (isDebtTimerMode && currentTurn === me.id && me.money < 0) {
-          autoLiquidateRandomAssetForDebt();
-        } else if (currentTurn === me.id && hasRolled && me.money >= 0) {
-          nextTurn();
-        } else {
-          applyTimeoutPenalty();
+        const isHost = (me.id === 0 || me.isHost);
+        if (currentTurn === me.id || isHost) {
+          if (isDebtTimerMode && currentTurn === me.id && me.money < 0) {
+            autoLiquidateRandomAssetForDebt();
+          } else if (currentTurn === me.id && hasRolled && me.money >= 0) {
+            nextTurn();
+          } else {
+            applyTimeoutPenalty();
+          }
         }
       }
     }, 1000);
@@ -3161,7 +3201,7 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
       const ind = document.getElementById("diceTurnIndicatorText");
       if (ind) ind.innerHTML = `<b style="color:#fde047;">${p.name}: ${d1} + ${d2} = ${d1 + d2} attı!</b>`;
 
-      setTimeout(() => stepMovePlayer(p, d1 + d2), 340);
+      setTimeout(() => stepMovePlayer(p, d1 + d2, true), 340);
     }, 750);
   }
 
@@ -3177,14 +3217,19 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
     d2El.textContent = d2;
     const ind = document.getElementById("diceTurnIndicatorText");
     if (ind) ind.innerHTML = `<b style="color:#fde047;">${p.name}: ${d1} + ${d2} = ${d1 + d2} attı!</b>`;
-    setTimeout(() => stepMovePlayer(p, d1 + d2), 340);
+    setTimeout(() => stepMovePlayer(p, d1 + d2, false), 340);
   }
 
-  function stepMovePlayer(player, stepsLeft) {
+  function stepMovePlayer(player, stepsLeft, isAuthoritative = true) {
     if (stepsLeft <= 0) {
       isMoving = false;
       document.querySelectorAll(".tile").forEach(e => e.classList.remove("step-glow"));
-      handleLanding(player, TILES[player.pos]);
+      if (isAuthoritative) {
+        handleLanding(player, TILES[player.pos]);
+      } else {
+        activeCenterTileId = player.pos;
+        showLiveLandingScreen(player.pos);
+      }
       return;
     }
     setTimeout(() => {
@@ -3201,7 +3246,7 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
       document.querySelectorAll(".tile").forEach(e => e.classList.remove("step-glow"));
       const curTile = document.getElementById(`tile-${player.pos}`);
       if (curTile) curTile.classList.add("step-glow");
-      stepMovePlayer(player, stepsLeft - 1);
+      stepMovePlayer(player, stepsLeft - 1, isAuthoritative);
     }, 130);
   }
 
@@ -3346,6 +3391,8 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
       currentTurn = (currentTurn + 1) % players.length;
       guard++;
     } while (players[currentTurn].bankrupt && guard <= players.length);
+    hasRolled = false;
+    isMoving = false;
     saveRoomSnapshot();
     startTurn();
   }
