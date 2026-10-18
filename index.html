@@ -1121,27 +1121,45 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
     const effectiveViewMode = !hasRolled ? "dice" : (isDiceDom ? "dice" : "card");
     return {
       ts: Date.now(),
-      isMatchStarted,
-      worldBankPool,
-      inflationSecondsLeft,
-      globalTaxMultiplier,
-      globalGeneralMultiplier,
-      currentTurn,
-      isGamePaused,
-      hasRolled,
+      isMatchStarted: Boolean(isMatchStarted),
+      worldBankPool: typeof worldBankPool === "number" ? worldBankPool : 2500,
+      inflationSecondsLeft: typeof inflationSecondsLeft === "number" ? inflationSecondsLeft : 600,
+      globalTaxMultiplier: typeof globalTaxMultiplier === "number" ? globalTaxMultiplier : 1.0,
+      globalGeneralMultiplier: typeof globalGeneralMultiplier === "number" ? globalGeneralMultiplier : 1.0,
+      currentTurn: typeof currentTurn === "number" ? currentTurn : 0,
+      isGamePaused: Boolean(isGamePaused),
+      hasRolled: Boolean(hasRolled),
       viewMode: effectiveViewMode,
-      activeCenterTileId,
-      timeLeft,
-      players,
+      activeCenterTileId: typeof activeCenterTileId === "number" ? activeCenterTileId : 0,
+      timeLeft: typeof timeLeft === "number" ? timeLeft : 30,
+      players: players.map(p => ({
+        id: p.id,
+        name: p.name || "Oyuncu",
+        clientUid: p.clientUid || "",
+        isBot: Boolean(p.isBot),
+        isReady: Boolean(p.isReady),
+        isHost: Boolean(p.isHost),
+        disconnected: Boolean(p.disconnected),
+        money: typeof p.money === "number" ? p.money : 15000,
+        pos: typeof p.pos === "number" ? p.pos : 0,
+        lap: typeof p.lap === "number" ? p.lap : 1,
+        turnsPlayed: typeof p.turnsPlayed === "number" ? p.turnsPlayed : 0,
+        jailWaitTurns: typeof p.jailWaitTurns === "number" ? p.jailWaitTurns : 0,
+        missedTurns: typeof p.missedTurns === "number" ? p.missedTurns : 0,
+        color: p.color || "#f59e0b",
+        code: p.code || (p.name || "O").charAt(0).toUpperCase(),
+        bankrupt: Boolean(p.bankrupt),
+        isMicMuted: Boolean(p.isMicMuted)
+      })),
       tiles: TILES.map(t => ({
         id: t.id,
-        owner: t.owner,
-        houseOwners: t.houseOwners || [],
+        owner: (typeof t.owner === "number" && t.owner >= 0) ? t.owner : null,
+        houseOwners: Array.isArray(t.houseOwners) ? [...t.houseOwners] : [],
         mortgaged: Boolean(t.mortgaged),
-        mortgageTurnsLeft: t.mortgageTurnsLeft,
-        lastBuiltLap: t.lastBuiltLap
+        mortgageTurnsLeft: typeof t.mortgageTurnsLeft === "number" ? t.mortgageTurnsLeft : 0,
+        lastBuiltLap: typeof t.lastBuiltLap === "number" ? t.lastBuiltLap : 0
       })),
-      chatMessages
+      chatMessages: chatMessages.slice(-50)
     };
   }
 
@@ -1180,10 +1198,22 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
       const byUid = players.find(p => p.clientUid && p.clientUid === myClientUid);
       if (byUid) {
         myLocalPlayerId = byUid.id;
-        hasJoinedRoomAsClient = true;
-        if (joinRetryInterval) {
-          clearInterval(joinRetryInterval);
-          joinRetryInterval = null;
+        if (!isRoomHost && myLocalPlayerName && !hasJoinedRoomAsClient) {
+          hasJoinedRoomAsClient = true;
+          if (joinRetryInterval) {
+            clearInterval(joinRetryInterval);
+            joinRetryInterval = null;
+          }
+          const stEl = document.getElementById("lobbyConnStatus");
+          if (stEl) stEl.innerHTML = `✅ <b>${byUid.name}</b> (Oyuncu #${byUid.id + 1}) olarak odaya bağlandınız!`;
+          const btnR = document.getElementById("btnToggleReady");
+          if (btnR) {
+            btnR.disabled = false;
+            btnR.textContent = byUid.isReady ? "❌ Hazır İptal Et" : "✋ Hazır Ver";
+            btnR.className = `act-btn ${byUid.isReady ? "bg-gold" : "bg-purple"}`;
+          }
+          const btnL = document.getElementById("btnLeaveLobby");
+          if (btnL) btnL.disabled = false;
         }
       } else if (myLocalPlayerName) {
         const found = players.find(p => !p.isBot && p.name.toLowerCase() === myLocalPlayerName.toLowerCase());
@@ -1195,12 +1225,12 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
       snap.tiles.forEach(st => {
         const t = TILES[st.id];
         if (!t) return;
-        if (st.owner === undefined || st.owner === null) delete t.owner;
-        else t.owner = st.owner;
-        t.houseOwners = st.houseOwners || [];
+        if (typeof st.owner === "number" && st.owner >= 0) t.owner = st.owner;
+        else delete t.owner;
+        t.houseOwners = Array.isArray(st.houseOwners) ? [...st.houseOwners] : [];
         t.mortgaged = Boolean(st.mortgaged);
-        t.mortgageTurnsLeft = st.mortgageTurnsLeft;
-        t.lastBuiltLap = st.lastBuiltLap;
+        t.mortgageTurnsLeft = typeof st.mortgageTurnsLeft === "number" ? st.mortgageTurnsLeft : 0;
+        t.lastBuiltLap = typeof st.lastBuiltLap === "number" ? st.lastBuiltLap : 0;
       });
     }
 
@@ -1374,16 +1404,18 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
         localStorage.setItem(getStorageRoomKey(), JSON.stringify(snap));
       } catch (e) {}
 
-      if (conn && targetPlayer) {
-        try {
-          conn.send({
-            type: "JOIN_ROOM_ACCEPTED",
-            assignedPlayerId: targetPlayer.id,
-            assignedName: targetPlayer.name,
-            clientUid: reqUid,
-            snap
-          });
-        } catch (e) {}
+      if (targetPlayer) {
+        const acceptMsg = {
+          type: "JOIN_ROOM_ACCEPTED",
+          assignedPlayerId: targetPlayer.id,
+          assignedName: targetPlayer.name,
+          clientUid: reqUid,
+          snap
+        };
+        if (conn && conn.open) {
+          try { conn.send(acceptMsg); } catch (e) {}
+        }
+        broadcastNetworkPayload(acceptMsg);
       }
       broadcastNetworkPayload({ type: "SYNC_STATE", snap, senderUid: myClientUid });
     } else if (data.type === "JOIN_ROOM_ACCEPTED") {
@@ -1527,13 +1559,16 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
       });
 
       hostCandidate.on("connection", (conn) => {
-        peerConnections = peerConnections.filter(c => c && c.open && c.peer !== conn.peer);
+        peerConnections = peerConnections.filter(c => c && c.peer !== conn.peer);
         peerConnections.push(conn);
         conn.on("data", (data) => handleNetworkMessage(data, conn));
         conn.on("open", () => {
-          try { conn.send({ type: "HOST_HELLO" }); } catch (e) {}
+          try { conn.send({ type: "HOST_HELLO", roomCode: myRoomCode, senderUid: myClientUid }); } catch (e) {}
         });
         conn.on("close", () => {
+          peerConnections = peerConnections.filter(c => c !== conn);
+        });
+        conn.on("error", () => {
           peerConnections = peerConnections.filter(c => c !== conn);
         });
       });
@@ -1913,11 +1948,11 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
     unreadChatCount = 0;
 
     TILES.forEach(t => {
-      delete t.owner;
+      t.owner = null;
       t.houseOwners = [];
       t.mortgaged = false;
-      delete t.mortgageTurnsLeft;
-      delete t.lastBuiltLap;
+      t.mortgageTurnsLeft = 0;
+      t.lastBuiltLap = 0;
     });
 
     players = [
@@ -2461,10 +2496,11 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
     TILES.forEach(tile => {
       const pos = getTileGridPos(tile.id);
       const el = document.createElement("div");
+      const hasOwner = typeof tile.owner === "number" && tile.owner >= 0 && Boolean(players[tile.owner]);
       const isPinned = (tile.id === pinnedTileId);
       const isSpotlight = (tile.id === spotlightTileId);
-      const isOwnedByOther = (tile.owner !== undefined && tile.owner !== me.id);
-      const isOwnedByMe = (tile.owner === me.id);
+      const isOwnedByOther = (hasOwner && (!me || tile.owner !== me.id));
+      const isOwnedByMe = (hasOwner && me && tile.owner === me.id);
 
       el.className = "tile" + (isPinned ? " selected-tile" : "") + (isSpotlight ? " spotlight-tile" : "") + (isOwnedByOther ? " other-player-owned" : "");
       el.id = `tile-${tile.id}`;
@@ -2492,14 +2528,14 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
         pipsHTML = `<span style="background:#ef4444; padding:0 2px; border-radius:2px; font-size:7px;">İPOTEK</span>`;
       } else if (tile.houseOwners && tile.houseOwners.length > 0) {
         if (tile.houseOwners.length >= 5) pipsHTML = `<span style="color:#fde047;">🏙️PLZ</span>`;
-        else pipsHTML = `<div class="house-indicators">` + tile.houseOwners.map(pid => `<span class="house-pip" style="background:${players[pid] ? (pid === me.id ? players[pid].color : '#64748b') : '#fff'}"></span>`).join("") + `</div>`;
+        else pipsHTML = `<div class="house-indicators">` + tile.houseOwners.map(pid => `<span class="house-pip" style="background:${players[pid] ? (me && pid === me.id ? players[pid].color : '#64748b') : '#fff'}"></span>`).join("") + `</div>`;
       }
 
       let footerPrice = "Özel";
       if (tile.type === "tax") footerPrice = `-${getPlayerTaxAmount(tile)}₺`;
       else if (tile.type === "worldbank") footerPrice = `🎁${worldBankPool}₺`;
       else if (tile.type === "jail") footerPrice = `${getPlayerBailCost()}₺`;
-      else if (tile.price) footerPrice = tile.owner !== undefined ? `K:${calculateRent(tile)}₺` : `${getPlayerPrice(tile)}₺`;
+      else if (tile.price) footerPrice = hasOwner ? `K:${calculateRent(tile)}₺` : `${getPlayerPrice(tile)}₺`;
 
       const stripColor = isOwnedByOther ? "#475569" : tile.color;
       const ownerDotColor = isOwnedByMe ? players[me.id].color : (isOwnedByOther ? "#64748b" : "transparent");
@@ -2516,7 +2552,7 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
         <div class="tile-tokens-row" id="tokens-${tile.id}"></div>
         <div class="tile-footer">
           <span>${footerPrice}</span>
-          <span style="width:8px;height:8px;border-radius:50%;background:${ownerDotColor};opacity:${tile.owner !== undefined ? 1 : 0};border:1px solid #fff;"></span>
+          <span style="width:8px;height:8px;border-radius:50%;background:${ownerDotColor};opacity:${hasOwner ? 1 : 0};border:1px solid #fff;"></span>
         </div>
       `;
       grid.appendChild(el);
@@ -2556,7 +2592,8 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
 
     if (tDetails) {
       if (tile.type === "property") {
-        const ownText = tile.owner !== undefined ? (players[tile.owner] ? players[tile.owner].name : "Sahipsiz") : "Satılık";
+        const hasOwner = typeof tile.owner === "number" && tile.owner >= 0 && Boolean(players[tile.owner]);
+        const ownText = hasOwner ? players[tile.owner].name : "Satılık";
         tDetails.textContent = `Kira: ${calculateRent(tile).toLocaleString("tr-TR")} ₺ | Değer: ${getPlayerPrice(tile).toLocaleString("tr-TR")} ₺ | Sahip: ${ownText}`;
       } else if (tile.type === "tax") {
         tDetails.textContent = `Vergi: -${getPlayerTaxAmount(tile).toLocaleString("tr-TR")} ₺`;
@@ -2582,10 +2619,11 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
     const tEl = document.getElementById(`${prefix}Title`);
     if (tEl) tEl.textContent = `${tile.flag} ${tile.name}`;
 
+    const hasOwner = typeof tile.owner === "number" && tile.owner >= 0 && Boolean(players[tile.owner]);
     const ownerEl = document.getElementById(`${prefix}Owner`);
     if (ownerEl) {
       if (tile.type === "property") {
-        ownerEl.textContent = (tile.owner === undefined || !players[tile.owner]) ? "🏳️ Satılık" : `👑 ${players[tile.owner].name}`;
+        ownerEl.textContent = !hasOwner ? "🏳️ Satılık" : `👑 ${players[tile.owner].name}`;
       } else if (tile.type === "worldbank") {
         ownerEl.textContent = `🏦 Fon: ${worldBankPool} ₺`;
       } else {
@@ -2611,7 +2649,7 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
       const hCount = hList.length;
       if (tile.mortgaged) {
         bldEl.textContent = `🔴 İpotekli (${tile.mortgageTurnsLeft || 3}T)`;
-      } else if (tile.type === "property" && tile.owner !== undefined) {
+      } else if (tile.type === "property" && hasOwner) {
         const shares = getOwnershipShares(tile).map(b => `${players[b.playerId] ? players[b.playerId].name : ''}:%${b.percent}`).join(", ");
         const bText = hCount === 0 ? "Bina Yok" : (hCount >= 5 ? "🏙️ PLAZA" : `🏠 ${hCount} Ev`);
         bldEl.textContent = `${bText} (${shares})`;
@@ -2745,13 +2783,15 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
       return b;
     };
 
-    if (tile.owner === undefined && currentTurn === me.id && hasRolled && me.pos === tile.id) {
+    const hasOwner = typeof tile.owner === "number" && tile.owner >= 0 && Boolean(players[tile.owner]);
+
+    if (!hasOwner && currentTurn === me.id && hasRolled && !isMoving && me.pos === tile.id) {
       const bBuy = makeBtn(`✅ Satın Al (${effPrice} ₺)`, "bg-green full", () => buyUnownedTile(tile));
       bBuy.disabled = (me.money < effPrice);
       actBox.appendChild(bBuy);
     }
 
-    if (tile.owner !== undefined && tile.owner !== me.id && !tile.mortgaged) {
+    if (hasOwner && tile.owner !== me.id && !tile.mortgaged) {
       const ownerP = players[tile.owner];
       actBox.appendChild(makeBtn(`💵 Tapu Teklifi`, "bg-gold", () => openSubformOfferDeed(tile, ownerP, subform)));
       actBox.appendChild(makeBtn(`🤝 Ortaklık Teklifi`, "bg-purple", () => openSubformOfferPartnership(tile, ownerP, subform)));
@@ -3088,7 +3128,9 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
   function buyUnownedTile(tile) {
     const me = getMySeat();
     const effPrice = getPlayerPrice(tile);
-    if (tile.owner !== undefined || me.money < effPrice) return;
+    const hasOwner = typeof tile.owner === "number" && tile.owner >= 0 && Boolean(players[tile.owner]);
+    if (!me || currentTurn !== me.id || !hasRolled || isMoving || me.pos !== tile.id) return;
+    if (hasOwner || me.money < effPrice) return;
     me.missedTurns = 0;
     changeMoney(me.id, -effPrice);
     tile.owner = me.id;
@@ -3096,6 +3138,7 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
     tile.mortgaged = false;
     playSfx("buy");
     addLog(`✅ ${tile.name} ülkesini ${effPrice} ₺'ye satın aldın!`, -effPrice);
+    closeMobileCenterHub();
     afterUserOwnPinAction(tile.id);
   }
 
@@ -3415,8 +3458,9 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
     const hCount = (tile.houseOwners || []).length;
     document.getElementById("fsBuildings").textContent = tile.mortgaged ? "🔴 İPOTEKLİ" : (hCount === 0 ? "Bina Yok" : (hCount >= 5 ? "🏙️ 1 PLAZA" : `🏠 ${hCount} Ev`));
 
+    const hasOwner = typeof tile.owner === "number" && tile.owner >= 0 && Boolean(players[tile.owner]);
     const sharesEl = document.getElementById("fsRentShares");
-    if (tile.type === "property" && tile.owner !== undefined && !tile.mortgaged) {
+    if (tile.type === "property" && hasOwner && !tile.mortgaged) {
       sharesEl.textContent = getRentBreakdown(tile).map(b => `${players[b.playerId] ? players[b.playerId].name : ''}: %${b.percent}`).join(" | ");
     } else {
       sharesEl.textContent = tile.type === "property" ? "Satılık" : "Özel Kare";
@@ -3427,7 +3471,7 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
 
     const isMyTurn = (curP.id === me.id && !me.bankrupt);
 
-    if (isMyTurn && hasRolled && me.pos === tile.id && tile.type === "property" && tile.owner === undefined) {
+    if (isMyTurn && hasRolled && !isMoving && me.pos === tile.id && tile.type === "property" && !hasOwner) {
       const btnBuy = document.createElement("button");
       btnBuy.className = "act-btn bg-green";
       btnBuy.textContent = `✅ Satın Al (${effPrice.toLocaleString("tr-TR")} ₺)`;
@@ -3727,7 +3771,7 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
       tile = TILES[11];
       activeCenterTileId = 11;
       addLog(`🚨 ${player.name} İnterpol tarafından Nezarethaneye gönderildi!`);
-    } else if (tile.type === "property" && tile.owner !== undefined && !tile.mortgaged) {
+    } else if (tile.type === "property" && typeof tile.owner === "number" && tile.owner >= 0 && players[tile.owner] && !tile.mortgaged) {
       const breakdown = getRentBreakdown(tile);
       const totalRent = calculateRent(tile);
       const isSoleOwner = breakdown.length === 1 && breakdown[0].playerId === player.id;
@@ -3763,7 +3807,8 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
   function executeBotDecisions(bot, landedTile) {
     if (isGamePaused) return;
     const buyPrice = getPlayerPrice(landedTile);
-    if (landedTile.type === "property" && landedTile.owner === undefined && bot.money >= buyPrice + 500) {
+    const hasOwner = typeof landedTile.owner === "number" && landedTile.owner >= 0 && Boolean(players[landedTile.owner]);
+    if (landedTile.type === "property" && !hasOwner && bot.money >= buyPrice + 500) {
       bot.money -= buyPrice;
       landedTile.owner = bot.id;
       landedTile.houseOwners = [];
