@@ -27,7 +27,7 @@
   --neon-intensity: 0.45;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
-body { background: var(--bg-main); color: var(--text-main); height: 100vh; height: 100dvh; width: 100vw; overflow: hidden; display: flex; padding: 6px; gap: 0; transition: filter 0.25s ease, background 0.25s ease; position: relative; }
+body { background: var(--bg-main); color: var(--text-main); height: 100vh; height: 100dvh; width: 100vw; overflow: hidden; display: flex; padding: 5px; gap: 0; transition: filter 0.25s ease, background 0.25s ease; position: relative; }
 body.bw-mode { filter: grayscale(100%) contrast(1.08); }
 
 .lobby-backdrop { position: fixed; inset: 0; background: radial-gradient(circle at center, #1e293b 0%, #050811 100%); z-index: 10000; display: flex; align-items: center; justify-content: center; padding: 12px; overflow-y: auto; }
@@ -39,6 +39,8 @@ body.bw-mode { filter: grayscale(100%) contrast(1.08); }
 .lobby-input { flex: 1; min-width: 130px; background: #090d18; border: 1.5px solid rgba(56, 189, 248, 0.45); color: #fff; padding: 9px 12px; border-radius: 10px; font-size: 13px; font-weight: 800; user-select: text; }
 .lobby-seat { display: flex; align-items: center; justify-content: space-between; background: rgba(15, 23, 42, 0.9); border: 1.5px solid rgba(255,255,255,0.12); border-radius: 10px; padding: 8px 11px; font-size: 12.5px; font-weight: 800; }
 .lobby-seat.ready { border-color: #10b981; box-shadow: inset 0 0 12px rgba(16, 185, 129, 0.2); }
+.lobby-room-code-banner { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; background: rgba(56, 189, 248, 0.08); border: 1.5px dashed rgba(56, 189, 248, 0.4); border-radius: 12px; padding: 8px 12px; }
+.lobby-room-code-tag { font-family: monospace, monospace; font-size: 15px; font-weight: 900; color: #f59e0b; background: rgba(0, 0, 0, 0.55); border: 1px solid rgba(245, 158, 11, 0.5); padding: 3px 10px; border-radius: 8px; letter-spacing: 1px; user-select: all; }
 
 .col-resizer { width: 8px; cursor: col-resize; display: flex; align-items: center; justify-content: center; flex-shrink: 0; z-index: 50; transition: background 0.15s; border-radius: 4px; }
 .col-resizer::after { content: "⋮"; color: rgba(255,255,255,0.28); font-size: 14px; font-weight: 900; }
@@ -47,7 +49,7 @@ body.bw-mode { filter: grayscale(100%) contrast(1.08); }
 .row-resizer::after { content: "⋯"; color: rgba(255,255,255,0.28); font-size: 14px; font-weight: 900; line-height: 0; }
 .row-resizer:hover, .row-resizer.dragging { background: rgba(56, 189, 248, 0.35); }
 
-.left-sidebar { width: var(--left-col-w); min-width: 250px; max-width: 500px; height: calc(100dvh - 12px); display: flex; flex-direction: column; overflow: hidden; flex-shrink: 0; gap: 6px; }
+.left-sidebar { width: var(--left-col-w); min-width: 250px; max-width: 500px; height: calc(100dvh - 10px); display: flex; flex-direction: column; overflow: hidden; flex-shrink: 0; gap: 6px; }
 .info-card-panel { background: var(--panel-bg); border: 1.5px solid rgba(56, 189, 248, 0.35); border-radius: 14px; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 10px 28px rgba(0,0,0,0.6); }
 .info-card-panel.pinned-panel { flex: 1.5; min-height: 230px; border-color: rgba(245, 158, 11, 0.65); }
 .panel-tag-bar { padding: 6px 10px; background: rgba(0, 0, 0, 0.5); border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 10px; font-weight: 900; letter-spacing: 0.5px; text-transform: uppercase; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
@@ -87,67 +89,67 @@ body.bw-mode { filter: grayscale(100%) contrast(1.08); }
 .pnl-badge.gain { background: rgba(16, 185, 129, 0.25); color: #34d399; }
 .pnl-badge.spend { background: rgba(239, 68, 68, 0.25); color: #f87171; }
 
-.board-wrapper { flex: 1; height: calc(100dvh - 12px); display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); grid-template-rows: repeat(8, minmax(0, 1fr)); gap: 4px; background: var(--board-bg); padding: 5px; border-radius: 18px; border: 1.5px solid rgba(255,255,255,0.12); box-shadow: 0 20px 60px rgba(0,0,0,0.85); overflow: hidden; position: relative; }
-.tile { background: var(--tile-bg); border: 1.5px solid rgba(255,255,255,0.14); border-radius: 8px; display: flex; flex-direction: column; justify-content: space-between; position: relative; cursor: pointer; overflow: hidden; transition: transform 0.16s ease, border-color 0.16s ease, box-shadow 0.16s ease; }
+.board-wrapper { flex: 1; height: calc(100dvh - 10px); display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); grid-template-rows: repeat(8, minmax(0, 1fr)); gap: 4px; background: var(--board-bg); padding: 4px; border-radius: 18px; border: 1.5px solid rgba(255,255,255,0.12); box-shadow: 0 20px 60px rgba(0,0,0,0.85); overflow: hidden; position: relative; }
+.tile { background: var(--tile-bg); border: 1.5px solid rgba(255,255,255,0.14); border-radius: 7px; display: flex; flex-direction: column; justify-content: space-between; position: relative; cursor: pointer; overflow: hidden; transition: transform 0.16s ease, border-color 0.16s ease, box-shadow 0.16s ease; }
 .tile:hover { transform: translateY(-2px); z-index: 12; }
 .tile.step-glow { border: 2.5px solid #fde047 !important; box-shadow: 0 0 26px rgba(253, 224, 71, 0.95), inset 0 0 14px rgba(253, 224, 71, 0.45) !important; transform: scale(1.04); z-index: 25; }
 .tile.selected-tile { outline: 2px dashed #fde047; outline-offset: 1px; z-index: 18; }
 .tile.spotlight-tile { transform: scale(1.12) !important; border: 3px solid #fde047 !important; box-shadow: 0 0 38px #fde047, 0 0 70px #f59e0b !important; z-index: 45 !important; }
-.tile-color-strip { height: 13px; width: 100%; display: flex; align-items: center; justify-content: space-between; padding: 0 3px; font-size: 8px; font-weight: 900; color: #fff; }
+.tile-color-strip { height: 12px; width: 100%; display: flex; align-items: center; justify-content: space-between; padding: 0 3px; font-size: 8px; font-weight: 900; color: #fff; }
 .house-indicators { display: flex; gap: 1.5px; }
-.house-pip { width: 5.5px; height: 5.5px; border-radius: 2px; border: 1px solid #fff; }
+.house-pip { width: 5px; height: 5px; border-radius: 2px; border: 1px solid #fff; }
 .tile-center { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 1px 2px; text-align: center; min-height: 0; }
-.tile-flag { font-size: clamp(10px, 1.2vw, 15px); line-height: 1; }
-.tile-country-name { font-size: clamp(7.5px, 0.82vw, 10.5px); font-weight: 900; color: #ffffff; line-height: 1.05; text-shadow: 0 2px 4px rgba(0,0,0,0.85); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100%; }
-.tile-tokens-row { display: flex; justify-content: center; align-items: center; gap: 2px; min-height: 14px; }
-.board-pawn { width: clamp(13px, 1.4vw, 18px); height: clamp(13px, 1.4vw, 18px); border-radius: 50%; border: 1.5px solid #ffffff; font-size: clamp(7.5px, 0.8vw, 9.5px); font-weight: 900; color: #fff; display: flex; align-items: center; justify-content: center; animation: pawnNeonPulse 0.9s infinite alternate ease-in-out; z-index: 15; box-shadow: 0 0 8px currentColor; }
+.tile-flag { font-size: clamp(9px, 1.1vw, 14px); line-height: 1; }
+.tile-country-name { font-size: clamp(7px, 0.78vw, 10px); font-weight: 900; color: #ffffff; line-height: 1.05; text-shadow: 0 2px 4px rgba(0,0,0,0.85); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100%; }
+.tile-tokens-row { display: flex; justify-content: center; align-items: center; gap: 2px; min-height: 12px; }
+.board-pawn { width: clamp(12px, 1.3vw, 16px); height: clamp(12px, 1.3vw, 16px); border-radius: 50%; border: 1.5px solid #ffffff; font-size: clamp(7px, 0.75vw, 9px); font-weight: 900; color: #fff; display: flex; align-items: center; justify-content: center; animation: pawnNeonPulse 0.9s infinite alternate ease-in-out; z-index: 15; box-shadow: 0 0 8px currentColor; }
 @keyframes pawnNeonPulse { 0% { transform: scale(0.95); filter: brightness(1); } 100% { transform: scale(1.14); filter: brightness(1.25); } }
-.tile-footer { background: rgba(0,0,0,0.75); padding: 1px 4px; display: flex; align-items: center; justify-content: space-between; font-size: clamp(7px, 0.8vw, 11px); font-weight: 900; color: #fde047; }
+.tile-footer { background: rgba(0,0,0,0.75); padding: 1px 4px; display: flex; align-items: center; justify-content: space-between; font-size: clamp(6.5px, 0.75vw, 10px); font-weight: 900; color: #fde047; }
 
-.single-center-screen { grid-column: 2 / 12; grid-row: 2 / 8; border-radius: 16px; overflow: hidden; position: relative; border: 1.5px solid rgba(255,255,255,0.18); box-shadow: inset 0 0 60px rgba(0,0,0,0.85); background: #080d19; display: flex; flex-direction: column; justify-content: space-between; z-index: 5; }
-.center-top-liveflow-bar { background: rgba(15, 23, 42, 0.94); border-bottom: 1.5px solid rgba(56, 189, 248, 0.35); padding: 5px 12px; display: flex; align-items: center; justify-content: space-between; z-index: 20; flex-shrink: 0; }
-.center-top-liveflow-bar .live-left { display: flex; align-items: center; gap: 8px; }
-.center-top-liveflow-bar .live-right { display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 800; color: #fde68a; }
+.single-center-screen { grid-column: 2 / 12; grid-row: 2 / 8; border-radius: 14px; overflow: hidden; position: relative; border: 1.5px solid rgba(255,255,255,0.18); box-shadow: inset 0 0 60px rgba(0,0,0,0.85); background: #080d19; display: flex; flex-direction: column; justify-content: space-between; z-index: 5; }
+.center-top-liveflow-bar { background: rgba(15, 23, 42, 0.94); border-bottom: 1.5px solid rgba(56, 189, 248, 0.35); padding: 4px 10px; display: flex; align-items: center; justify-content: space-between; z-index: 20; flex-shrink: 0; }
+.center-top-liveflow-bar .live-left { display: flex; align-items: center; gap: 6px; }
+.center-top-liveflow-bar .live-right { display: flex; align-items: center; gap: 6px; font-size: 10.5px; font-weight: 800; color: #fde68a; }
 
-.okey-edges-layer { position: absolute; inset: 4px; pointer-events: none; z-index: 38; display: none; }
-body.fullscreen-okey-mode .okey-edges-layer, body.mobile-mode .okey-edges-layer { display: block; }
-.okey-seat-plate { position: absolute; pointer-events: auto; background: rgba(9, 13, 24, 0.94); border-radius: 12px; padding: 4px 10px; min-width: 130px; display: flex; align-items: center; gap: 6px; cursor: pointer; box-shadow: 0 8px 20px rgba(0,0,0,0.75); border: 1px solid rgba(255,255,255,0.15); }
-.okey-seat-plate.pos-bottom { bottom: 4px; left: 50%; transform: translateX(-50%); }
-.okey-seat-plate.pos-top { top: 4px; left: 50%; transform: translateX(-50%); }
-.okey-seat-plate.pos-left { left: 4px; top: 50%; transform: translateY(-50%); }
-.okey-seat-plate.pos-right { right: 4px; top: 50%; transform: translateY(-50%); }
-.okey-neon-svg { position: absolute; inset: -2px; width: calc(100% + 4px); height: calc(100% + 4px); pointer-events: none; }
-.okey-neon-rect { fill: none; stroke-width: 3.5; rx: 12px; ry: 12px; stroke-dasharray: 400; stroke-dashoffset: 0; filter: drop-shadow(0 0 8px currentColor); transition: stroke-dashoffset 0.35s linear; }
+.center-initials-rail { position: absolute; top: 38px; right: 6px; bottom: 6px; width: 50px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 9px; z-index: 35; pointer-events: none; }
+.player-initial-node { position: relative; width: 40px; height: 40px; pointer-events: auto; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: transform 0.18s ease; }
+.player-initial-node:hover { transform: scale(1.12); }
+.player-initial-node.active-turn { transform: scale(1.15); }
+.initial-badge-circle { width: 30px; height: 30px; border-radius: 50%; color: #fff; font-size: 13.5px; font-weight: 900; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0,0,0,0.7); border: 1.5px solid rgba(255,255,255,0.4); position: relative; z-index: 2; }
+.initial-neon-ring-svg { position: absolute; inset: 0; width: 40px; height: 40px; pointer-events: none; z-index: 3; }
+.initial-neon-ring-circle { fill: none; stroke-width: 3.2; stroke-linecap: round; transition: stroke-dashoffset 0.3s linear; }
+.initial-timer-tag { position: absolute; bottom: -3px; left: 50%; transform: translateX(-50%); background: rgba(15, 23, 42, 0.95); border: 1px solid var(--gold); border-radius: 99px; padding: 0 4px; font-size: 8px; font-weight: 900; color: #fde047; white-space: nowrap; z-index: 5; }
+.initial-money-tag { position: absolute; top: -3px; left: 50%; transform: translateX(-50%); background: rgba(15, 23, 42, 0.92); border: 1px solid rgba(255,255,255,0.25); border-radius: 99px; padding: 0 4px; font-size: 7.5px; font-weight: 800; color: #34d399; white-space: nowrap; z-index: 5; }
 
-.dice-screen-mode { width: 100%; flex: 1; background: radial-gradient(circle at center, #172338 0%, #080d19 100%); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; padding: 12px 14px; text-align: center; }
-.center-compact-dice-box { background: rgba(15, 23, 42, 0.94); border: 1.5px solid rgba(245, 158, 11, 0.55); border-radius: 16px; padding: 14px 18px; display: flex; flex-direction: column; align-items: center; gap: 10px; max-width: 410px; width: 94%; box-shadow: 0 12px 35px rgba(0,0,0,0.8); z-index: 10; }
-.wb-pool-banner { background: rgba(16, 185, 129, 0.18); border: 1.5px solid #10b981; color: #ecfdf5; padding: 4px 12px; border-radius: 99px; font-size: 11px; font-weight: 900; }
-.econ-cycle-banner { background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.45); color: #fde68a; padding: 3px 10px; border-radius: 99px; font-size: 10px; font-weight: 800; }
-.dice-cubes-holder { display: flex; gap: 14px; align-items: center; justify-content: center; margin-top: 2px; }
-.big-die { width: 56px; height: 56px; background: linear-gradient(145deg, #ffffff, #cbd5e1); color: #0f172a; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 30px; font-weight: 900; box-shadow: 0 10px 25px rgba(0,0,0,0.7), inset 0 -3px 6px rgba(0,0,0,0.25); border: 2px solid #e2e8f0; }
+.dice-screen-mode { width: 100%; flex: 1; background: radial-gradient(circle at center, #172338 0%, #080d19 100%); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 8px 12px; text-align: center; }
+.center-compact-dice-box { background: rgba(15, 23, 42, 0.95); border: 1.5px solid rgba(245, 158, 11, 0.55); border-radius: 14px; padding: 10px 14px; display: flex; flex-direction: column; align-items: center; gap: 7px; max-width: 330px; width: 88%; box-shadow: 0 10px 30px rgba(0,0,0,0.8); z-index: 10; margin-right: 28px; }
+.wb-pool-banner { background: rgba(16, 185, 129, 0.18); border: 1.5px solid #10b981; color: #ecfdf5; padding: 3px 10px; border-radius: 99px; font-size: 10.5px; font-weight: 900; }
+.econ-cycle-banner { background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.45); color: #fde68a; padding: 2px 8px; border-radius: 99px; font-size: 9.5px; font-weight: 800; }
+.dice-cubes-holder { display: flex; gap: 10px; align-items: center; justify-content: center; margin-top: 1px; }
+.big-die { width: 38px; height: 38px; background: linear-gradient(145deg, #ffffff, #cbd5e1); color: #0f172a; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 900; box-shadow: 0 6px 16px rgba(0,0,0,0.6), inset 0 -2px 4px rgba(0,0,0,0.25); border: 1.5px solid #e2e8f0; }
 .big-die.rolling { animation: shakeDie 0.25s infinite; color: #d97706; }
-.roll-main-btn { padding: 11px 32px; font-size: 15px; font-weight: 900; color: #fff; background: linear-gradient(135deg, #f59e0b, #d97706); border: none; border-radius: 12px; cursor: pointer; box-shadow: 0 8px 22px rgba(245, 158, 11, 0.45); transition: transform 0.18s ease; }
+.roll-main-btn { padding: 8px 24px; font-size: 13.5px; font-weight: 900; color: #fff; background: linear-gradient(135deg, #f59e0b, #d97706); border: none; border-radius: 10px; cursor: pointer; box-shadow: 0 6px 18px rgba(245, 158, 11, 0.45); transition: transform 0.18s ease; }
 .roll-main-btn:hover:not(:disabled) { transform: scale(1.04); filter: brightness(1.15); }
 .roll-main-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-.endturn-main-btn { padding: 9px 24px; font-size: 13.5px; font-weight: 900; color: #fff; background: linear-gradient(135deg, #10b981, #059669); border: none; border-radius: 10px; cursor: pointer; box-shadow: 0 6px 18px rgba(16, 185, 129, 0.4); }
+.endturn-main-btn { padding: 8px 20px; font-size: 12.5px; font-weight: 900; color: #fff; background: linear-gradient(135deg, #10b981, #059669); border: none; border-radius: 9px; cursor: pointer; box-shadow: 0 5px 16px rgba(16, 185, 129, 0.4); }
 
-.card-fullscreen-mode { width: 100%; flex: 1; position: relative; background-size: cover; background-position: center; display: none; flex-direction: column; justify-content: space-between; padding: 12px 16px; z-index: 2; overflow-y: auto; }
+.card-fullscreen-mode { width: 100%; flex: 1; position: relative; background-size: cover; background-position: center; display: none; flex-direction: column; justify-content: space-between; padding: 10px 14px; z-index: 2; overflow-y: auto; padding-right: 56px; }
 .card-fullscreen-mode::before { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(5, 8, 17, 0.88) 0%, rgba(5, 8, 17, 0.5) 45%, rgba(5, 8, 17, 0.96) 100%); z-index: -1; }
 .fs-top-bar { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; flex-wrap: wrap; }
 .fs-badges { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
 .fs-pill { padding: 4px 10px; border-radius: 99px; font-size: 10px; font-weight: 900; text-transform: uppercase; color: #fff; }
 .fs-occupants-bar { display: flex; align-items: center; gap: 6px; background: rgba(15, 23, 42, 0.88); border: 1.5px solid rgba(255,255,255,0.25); padding: 4px 10px; border-radius: 99px; }
 .fs-big-pawn { display: flex; align-items: center; gap: 4px; padding: 3px 8px; border-radius: 99px; font-size: 10.5px; font-weight: 900; color: #fff; border: 1.5px solid #fff; }
-.fs-Hero { margin: auto 0; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
-.fs-title-area h1 { font-size: clamp(20px, 2.5vw, 32px); font-weight: 900; color: #ffffff; text-shadow: 0 4px 20px rgba(0,0,0,0.95); line-height: 1.05; }
-.fs-title-area p { font-size: 12px; color: #e2e8f0; font-weight: 600; }
-.fs-bottom-area { display: flex; flex-direction: column; gap: 8px; }
-.fs-stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(90px, 1fr)); gap: 6px; }
-.fs-stat-card { background: rgba(15, 23, 42, 0.88); border: 1px solid rgba(255,255,255,0.16); border-radius: 8px; padding: 6px 8px; }
-.fs-stat-card span { display: block; font-size: 8.5px; color: var(--text-muted); font-weight: 800; }
-.fs-stat-card strong { font-size: 13.5px; color: #ffffff; font-weight: 900; }
+.fs-Hero { margin: auto 0; display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.fs-title-area h1 { font-size: clamp(18px, 2.3vw, 30px); font-weight: 900; color: #ffffff; text-shadow: 0 4px 20px rgba(0,0,0,0.95); line-height: 1.05; }
+.fs-title-area p { font-size: 11.5px; color: #e2e8f0; font-weight: 600; }
+.fs-bottom-area { display: flex; flex-direction: column; gap: 6px; }
+.fs-stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(85px, 1fr)); gap: 5px; }
+.fs-stat-card { background: rgba(15, 23, 42, 0.88); border: 1px solid rgba(255,255,255,0.16); border-radius: 8px; padding: 5px 7px; }
+.fs-stat-card span { display: block; font-size: 8px; color: var(--text-muted); font-weight: 800; }
+.fs-stat-card strong { font-size: 13px; color: #ffffff; font-weight: 900; }
 .fs-actions-bar { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
-.act-btn { padding: 8px 14px; border: none; border-radius: 9px; font-size: 11.5px; font-weight: 900; color: #fff; cursor: pointer; display: flex; align-items: center; gap: 5px; transition: all 0.16s ease; }
+.act-btn { padding: 7px 13px; border: none; border-radius: 8px; font-size: 11px; font-weight: 900; color: #fff; cursor: pointer; display: flex; align-items: center; gap: 5px; transition: all 0.16s ease; }
 .act-btn:disabled { opacity: 0.35; cursor: not-allowed; }
 .bg-green { background: linear-gradient(135deg, #10b981, #059669); }
 .bg-gold { background: linear-gradient(135deg, #f59e0b, #d97706); }
@@ -156,27 +158,27 @@ body.fullscreen-okey-mode .okey-edges-layer, body.mobile-mode .okey-edges-layer 
 .bg-crimson { background: linear-gradient(135deg, #ef4444, #b91c1c); }
 .bg-slate { background: rgba(51, 65, 85, 0.9); border: 1px solid rgba(255,255,255,0.2); }
 
-.mobile-fab-trigger { display: none; position: fixed; top: 10px; right: 10px; z-index: 9200; background: linear-gradient(135deg, #3b82f6, #1d4ed8); border: 1.5px solid #fff; color: #fff; padding: 6px 12px; border-radius: 99px; font-size: 11.5px; font-weight: 900; cursor: pointer; box-shadow: 0 6px 20px rgba(0,0,0,0.8); align-items: center; gap: 5px; }
+.mobile-fab-trigger { display: none; position: fixed; top: 10px; right: 10px; z-index: 9200; background: linear-gradient(135deg, #3b82f6, #1d4ed8); border: 1.5px solid #fff; color: #fff; padding: 5px 11px; border-radius: 99px; font-size: 11px; font-weight: 900; cursor: pointer; box-shadow: 0 6px 20px rgba(0,0,0,0.8); align-items: center; gap: 4px; }
 .mobile-slide-drawer { display: none; position: fixed; top: 0; right: -290px; width: 280px; max-width: 82vw; height: 100dvh; background: rgba(11, 17, 32, 0.98); border-left: 2px solid rgba(56, 189, 248, 0.6); z-index: 9300; flex-direction: column; padding: 14px; gap: 10px; box-shadow: -10px 0 35px rgba(0,0,0,0.9); transition: right 0.25s ease; }
 .mobile-slide-drawer.open { right: 0; display: flex; }
 .mobile-drawer-backdrop { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.65); z-index: 9250; }
 .mobile-drawer-backdrop.open { display: block; }
-.center-floating-hub { position: absolute; inset: 36px 8px 36px 8px; background: rgba(11, 17, 32, 0.97); border: 2px solid rgba(56, 189, 248, 0.55); border-radius: 14px; z-index: 42; display: none; flex-direction: column; overflow: hidden; box-shadow: 0 18px 50px rgba(0,0,0,0.92); }
+.center-floating-hub { position: absolute; inset: 34px 6px 34px 6px; background: rgba(11, 17, 32, 0.97); border: 2px solid rgba(56, 189, 248, 0.55); border-radius: 14px; z-index: 42; display: none; flex-direction: column; overflow: hidden; box-shadow: 0 18px 50px rgba(0,0,0,0.92); }
 .center-floating-hub.open { display: flex; }
 
 body.mobile-mode .left-sidebar, body.mobile-mode .right-sidebar, body.mobile-mode .col-resizer { display: none !important; }
 body.mobile-mode .mobile-fab-trigger { display: flex; }
 
-.mobile-incoming-offer-toast { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); width: 92%; max-width: 400px; background: rgba(15, 23, 42, 0.98); border: 2px solid var(--gold); border-radius: 14px; padding: 12px; z-index: 9600; display: none; flex-direction: column; gap: 8px; box-shadow: 0 12px 35px rgba(0,0,0,0.95); animation: toastPop 0.25s ease-out; }
+.mobile-incoming-offer-toast { position: fixed; bottom: 76px; left: 50%; transform: translateX(-50%); width: 92%; max-width: 380px; background: rgba(15, 23, 42, 0.98); border: 2px solid var(--gold); border-radius: 14px; padding: 11px; z-index: 9600; display: none; flex-direction: column; gap: 7px; box-shadow: 0 12px 35px rgba(0,0,0,0.95); animation: toastPop 0.25s ease-out; }
 .mobile-incoming-offer-toast.show { display: flex; }
 @keyframes toastPop { 0% { transform: translate(-50%, 20px); opacity: 0; } 100% { transform: translate(-50%, 0); opacity: 1; } }
 .toast-countdown-track { width: 100%; height: 4px; background: rgba(255,255,255,0.15); border-radius: 99px; overflow: hidden; }
 .toast-countdown-fill { height: 100%; width: 100%; background: #f59e0b; transition: width 0.1s linear; }
 
-.floating-chat-launcher { position: fixed; bottom: 14px; right: 14px; z-index: 9500; display: flex; align-items: center; gap: 8px; }
-.chat-bubble-btn { width: 50px; height: 50px; border-radius: 50%; background: linear-gradient(135deg, #3b82f6, #1d4ed8); border: 2px solid #fff; color: #fff; font-size: 22px; cursor: pointer; box-shadow: 0 10px 28px rgba(37, 99, 235, 0.65); position: relative; display: flex; align-items: center; justify-content: center; }
-.chat-unread-badge { position: absolute; top: -5px; right: -5px; background: #ef4444; color: #fff; border: 2px solid #fff; border-radius: 99px; min-width: 22px; height: 22px; padding: 0 5px; font-size: 11px; font-weight: 900; display: none; align-items: center; justify-content: center; }
-.chat-drawer-window { position: fixed; bottom: 74px; right: 14px; width: 330px; max-width: calc(100vw - 28px); height: 360px; max-height: 65dvh; background: rgba(15, 23, 42, 0.98); border: 2px solid rgba(56, 189, 248, 0.6); border-radius: 16px; z-index: 9499; display: none; flex-direction: column; overflow: hidden; box-shadow: 0 20px 55px rgba(0,0,0,0.88); }
+.floating-chat-launcher { position: fixed; bottom: 12px; right: 12px; z-index: 9500; display: flex; align-items: center; gap: 8px; }
+.chat-bubble-btn { width: 46px; height: 46px; border-radius: 50%; background: linear-gradient(135deg, #3b82f6, #1d4ed8); border: 2px solid #fff; color: #fff; font-size: 20px; cursor: pointer; box-shadow: 0 10px 28px rgba(37, 99, 235, 0.65); position: relative; display: flex; align-items: center; justify-content: center; }
+.chat-unread-badge { position: absolute; top: -5px; right: -5px; background: #ef4444; color: #fff; border: 2px solid #fff; border-radius: 99px; min-width: 20px; height: 20px; padding: 0 5px; font-size: 10.5px; font-weight: 900; display: none; align-items: center; justify-content: center; }
+.chat-drawer-window { position: fixed; bottom: 68px; right: 12px; width: 330px; max-width: calc(100vw - 24px); height: 350px; max-height: 65dvh; background: rgba(15, 23, 42, 0.98); border: 2px solid rgba(56, 189, 248, 0.6); border-radius: 16px; z-index: 9499; display: none; flex-direction: column; overflow: hidden; box-shadow: 0 20px 55px rgba(0,0,0,0.88); }
 .chat-drawer-window.open { display: flex; }
 body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top: 50%; transform: translate(-50%, -50%); width: 88vw; height: 58dvh; }
 .chat-messages-list { flex: 1; overflow-y: auto; padding: 8px 10px; display: flex; flex-direction: column; gap: 6px; font-size: 11.5px; }
@@ -188,7 +190,7 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
 .auction-box { background: linear-gradient(145deg, #1e293b, #0f172a); border: 2.5px solid var(--gold); border-radius: 18px; padding: 18px 22px; max-width: 470px; width: 100%; display: flex; flex-direction: column; gap: 10px; }
 .vote-row { display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12); padding: 7px 11px; border-radius: 10px; font-size: 12.5px; font-weight: 800; }
 
-.right-sidebar { width: var(--right-col-w); min-width: 250px; max-width: 500px; height: calc(100dvh - 12px); display: flex; flex-direction: column; overflow: hidden; flex-shrink: 0; gap: 6px; }
+.right-sidebar { width: var(--right-col-w); min-width: 250px; max-width: 500px; height: calc(100dvh - 10px); display: flex; flex-direction: column; overflow: hidden; flex-shrink: 0; gap: 6px; }
 .top-timer-widget { background: linear-gradient(145deg, #1e293b, #090d16); border: 1.5px solid rgba(255,255,255,0.16); border-radius: 14px; padding: 9px 11px; flex-shrink: 0; }
 .timer-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; gap: 4px; flex-wrap: wrap; }
 .timer-label { font-size: 10.5px; font-weight: 900; text-transform: uppercase; color: #cbd5e1; }
@@ -231,6 +233,14 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
 .setting-row { display: flex; justify-content: space-between; align-items: center; gap: 12px; background: rgba(255,255,255,0.04); padding: 8px 12px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.08); }
 .setting-row label { font-size: 12px; font-weight: 800; color: #e2e8f0; }
 
+@media (max-height: 520px) {
+  .center-compact-dice-box { padding: 5px 8px; gap: 4px; max-width: 280px; }
+  .big-die { width: 30px; height: 30px; font-size: 16px; border-radius: 8px; }
+  .roll-main-btn { padding: 5px 16px; font-size: 12px; }
+  .endturn-main-btn { padding: 5px 14px; font-size: 11.5px; }
+  .center-top-liveflow-bar { padding: 2px 8px; font-size: 10px; }
+}
+
 @keyframes shakeDie { 0% { transform: rotate(0deg) scale(1); } 50% { transform: rotate(14deg) scale(1.06); } 100% { transform: rotate(-14deg) scale(1); } }
 @keyframes neonPulse { from { opacity: 1; } to { opacity: 0.4; } }
 </style>
@@ -250,23 +260,34 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
         </div>
       </div>
 
+      <div class="lobby-room-code-banner">
+        <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+          <span style="font-size:11px; font-weight:900; color:#94a3b8;">🎮 ODA KATILIM KODU:</span>
+          <span class="lobby-room-code-tag" id="displayRoomCodeTag">ODA101</span>
+          <button class="mini-act-btn bg-gold" onclick="copyRoomCodeToClipboard()">📋 Kodu Kopyala</button>
+          <button class="mini-act-btn bg-blue" onclick="copyShareLinkToClipboard()">🔗 Davet Linki</button>
+        </div>
+        <span id="lobbyCopyStatusText" style="font-size:11px; font-weight:800; color:#10b981;"></span>
+      </div>
+
       <div class="lobby-grid">
         <div class="lobby-box">
           <div style="font-size:11px; font-weight:900; color:#38bdf8;">1. OYUNCU BİLGİLERİ VE ODA SEÇİMİ</div>
           <div class="lobby-input-row">
             <input type="text" id="inpPlayerName" class="lobby-input" placeholder="İsminizi girin (Örn: Ahmet)" maxlength="16">
-            <input type="text" id="inpRoomCode" class="lobby-input" value="ODA101" placeholder="Oda Kodu" maxlength="12" style="max-width:125px;">
+            <input type="text" id="inpRoomCode" class="lobby-input" value="ODA101" placeholder="Oda Kodu" maxlength="12" style="max-width:125px;" oninput="updateRoomCodeDisplay()">
             <button class="act-btn bg-blue" id="btnJoinLobby" onclick="joinOrReconnectLobby()">🔑 Odaya Bağlan</button>
           </div>
           <div style="font-size:10.5px; color:#fde68a;" id="lobbyConnStatus">
-            💡 Bağlantınız koparsa <b>1 dakika (60 sn)</b> içinde aynı isimle tekrar bağlanarak mülklerinizi ve paranızı geri alabilirsiniz.
+            💡 Yeni bir oda kodu ve isim girerek temiz bir oyuna başlayabilirsiniz.
           </div>
 
-          <div style="display:flex; justify-content:space-between; align-items:center; margin-top:4px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-top:4px; flex-wrap:wrap; gap:5px;">
             <span style="font-size:11px; font-weight:900; color:#f59e0b;">2. ODADAKİ OYUNCULAR (MAKS 4 KİŞİ)</span>
-            <div style="display:flex; gap:5px;" id="hostBotControls">
+            <div style="display:flex; gap:5px; flex-wrap:wrap;" id="hostBotControls">
               <button class="icon-ctrl-btn" onclick="hostAddBot()">+ 🤖 Bot Ekle</button>
-              <button class="icon-ctrl-btn" onclick="hostRemoveBot()">- Bot Çıkar</button>
+              <button class="icon-ctrl-btn" onclick="hostRemoveBot()">- 1 Bot Çıkar</button>
+              <button class="icon-ctrl-btn" onclick="hostRemoveAllBots()" style="border-color:rgba(239,68,68,0.5); color:#fca5a5;">🗑️ Tüm Botları Çıkar</button>
             </div>
           </div>
 
@@ -279,8 +300,8 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
             <button class="act-btn bg-green" id="btnHostStartGame" style="flex:1.2; justify-content:center;" onclick="hostStartMatch()" disabled>
               🚀 Oyunu Başlat (Kurucu)
             </button>
-            <button class="act-btn bg-crimson" id="btnLeaveLobby" onclick="leaveRoomOrGame()" disabled>
-              🚪 Oyundan Ayrıl
+            <button class="act-btn bg-crimson" id="btnLeaveLobby" onclick="completelyExitAndReset()" disabled>
+              🚪 Tamamen Ayrıl
             </button>
           </div>
         </div>
@@ -406,16 +427,16 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
 
       <div class="center-top-liveflow-bar" id="centerLiveFlowBar">
         <div class="live-left">
-          <span style="font-size:10.5px; font-weight:900; color:#38bdf8;">📍 CANLI AKIŞ:</span>
-          <span id="centerLiveTitle" style="font-size:12px; font-weight:900; color:#fff;">🏁 BAŞLANGIÇ</span>
-          <span id="centerLiveFlowPlayerTag" style="font-size:10px; background:rgba(56,189,248,0.2); padding:1px 6px; border-radius:4px; color:#7dd3fc;">Sıra: -</span>
+          <span style="font-size:10px; font-weight:900; color:#38bdf8;">📍 CANLI:</span>
+          <span id="centerLiveTitle" style="font-size:11.5px; font-weight:900; color:#fff;">🏁 BAŞLANGIÇ</span>
+          <span id="centerLiveFlowPlayerTag" style="font-size:9.5px; background:rgba(56,189,248,0.2); padding:1px 5px; border-radius:4px; color:#7dd3fc;">Sıra: -</span>
         </div>
         <div class="live-right">
           <span id="centerLiveDetails">Kira: - | Değer: -</span>
         </div>
       </div>
 
-      <div class="okey-edges-layer" id="okeyEdgesLayer"></div>
+      <div class="center-initials-rail" id="centerInitialsRail"></div>
 
       <div class="center-floating-hub" id="mobileCenterHub" onclick="event.stopPropagation()">
         <div class="sidebar-header">
@@ -466,9 +487,9 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
             <div class="big-die" id="die2">6</div>
           </div>
           
-          <div style="display:flex; flex-direction:column; gap:8px; align-items:center; width:100%;" id="diceScreenButtons">
+          <div style="display:flex; flex-direction:column; gap:6px; align-items:center; width:100%;" id="diceScreenButtons">
             <button class="roll-main-btn" id="btnRollMain" onclick="triggerRoll()">🎲 ZAR AT</button>
-            <div id="diceTurnIndicatorText" style="font-size:11.5px; font-weight:800; color:#cbd5e1; min-height:16px;"></div>
+            <div id="diceTurnIndicatorText" style="font-size:11px; font-weight:800; color:#cbd5e1; min-height:15px;"></div>
             <button class="endturn-main-btn" id="btnEndTurnDirect" style="display:none;" onclick="finishHumanTurn()">⏭️ Turu Bitir (Sırayı Devret)</button>
           </div>
         </div>
@@ -567,12 +588,13 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
       <button class="panel-close-x" onclick="closeMobileSlideDrawer()">✖</button>
     </div>
     <div style="display:flex; flex-direction:column; gap:8px;">
+      <button class="act-btn bg-green" id="btnDrawerMic" onclick="toggleVoiceMic()">🎙️ Mikrofon: Açık</button>
       <button class="act-btn bg-blue" onclick="closeMobileSlideDrawer(); requestPauseOrResumeVote();">⏸️/▶️ Oyunu Durdur / Başlat</button>
       <button class="act-btn bg-purple" onclick="closeMobileSlideDrawer(); openMobileCenterHub('players');">👥 Oyuncular & Merkez İşlem</button>
       <button class="act-btn bg-green" onclick="closeMobileSlideDrawer(); openMobileCenterHub('card');">🏠 Seçili Mülkü Yönet</button>
       <button class="act-btn bg-slate" onclick="closeMobileSlideDrawer(); toggleFullscreenOkeyMode();">⛶ Tam Ekran Okey Modu</button>
       <button class="act-btn bg-slate" onclick="closeMobileSlideDrawer(); openSettingsModal();">⚙️ Görünüm & Ayarlar</button>
-      <button class="act-btn bg-crimson" onclick="closeMobileSlideDrawer(); leaveRoomOrGame();">🚪 Odadan Ayrıl</button>
+      <button class="act-btn bg-crimson" onclick="closeMobileSlideDrawer(); completelyExitAndReset();">🚪 Tamamen Ayrıl (Sıfırla)</button>
     </div>
     <div style="margin-top:auto; font-size:10.5px; color:#94a3b8; text-align:center;">
       Emlak Taciri v2.5 Online
@@ -651,7 +673,7 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
     manualViewOverride = !isMobileView;
     detectAndApplyDeviceMode();
     renderBoard();
-    renderOkeyEdgesHUD();
+    renderInitialsRail();
   }
 
   function toggleMobileSlideDrawer() {
@@ -674,12 +696,12 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
       document.exitFullscreen().catch(() => {});
       document.body.classList.remove("fullscreen-okey-mode");
     }
-    renderOkeyEdgesHUD();
+    renderInitialsRail();
   }
 
   document.addEventListener("fullscreenchange", () => {
     document.body.classList.toggle("fullscreen-okey-mode", Boolean(document.fullscreenElement));
-    renderOkeyEdgesHUD();
+    renderInitialsRail();
   });
 
   window.addEventListener("resize", detectAndApplyDeviceMode);
@@ -743,6 +765,7 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
     document.documentElement.style.setProperty("--tile-bg", document.getElementById("colTileBg").value);
     renderBoard();
     renderRightPlayersList();
+    renderInitialsRail();
   }
 
   function resetVisualSettings() {
@@ -791,32 +814,82 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
   let isMicMuted = false;
 
   async function initAlwaysOnVoice() {
-    try {
-      if (!localAudioStream && navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+    if (isMicMuted) {
+      updateMicButtonsUI();
+      return;
+    }
+    if (!localAudioStream && navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+      try {
         localAudioStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
         localAudioStream.getAudioTracks().forEach(tr => { tr.enabled = !isMicMuted; });
-      }
-    } catch (e) { isMicMuted = true; }
+      } catch (e) {}
+    }
     updateMicButtonsUI();
   }
 
-  function toggleVoiceMic() {
-    if (!localAudioStream) {
-      isMicMuted = false;
-      initAlwaysOnVoice();
-      return;
-    }
+  async function toggleVoiceMic() {
     isMicMuted = !isMicMuted;
-    localAudioStream.getAudioTracks().forEach(tr => { tr.enabled = !isMicMuted; });
+    const me = getMySeat();
+    if (me) me.isMicMuted = isMicMuted;
+
+    if (!isMicMuted) {
+      if (!localAudioStream && navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        try {
+          localAudioStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+          localAudioStream.getAudioTracks().forEach(tr => { tr.enabled = true; });
+          if (peerNode) {
+            peerConnections.forEach(conn => {
+              if (conn && conn.peer) {
+                try {
+                  const call = peerNode.call(conn.peer, localAudioStream);
+                  if (call) call.on("stream", rs => attachRemoteAudio(rs));
+                } catch (e) {}
+              }
+            });
+          }
+          addLog("🎙️ Mikrofon açıldı.");
+        } catch (err) {
+          addLog("⚠️ Mikrofon izni verilemedi veya donanım bulunamadı.");
+        }
+      } else if (localAudioStream) {
+        localAudioStream.getAudioTracks().forEach(tr => { tr.enabled = true; });
+        addLog("🎙️ Mikrofon açıldı.");
+      } else {
+        addLog("🎙️ Mikrofon açıldı.");
+      }
+    } else {
+      if (localAudioStream) {
+        localAudioStream.getAudioTracks().forEach(tr => { tr.enabled = false; });
+      }
+      addLog("🔇 Mikrofon kapatıldı.");
+    }
+
     updateMicButtonsUI();
+    broadcastNetworkPayload({
+      type: "MIC_STATUS_CHANGE",
+      playerId: me ? me.id : 0,
+      isMuted: isMicMuted
+    });
+    renderInitialsRail();
+    renderRightPlayersList();
   }
 
   function updateMicButtonsUI() {
-    [document.getElementById("btnLobbyMic"), document.getElementById("btnFloatingMic")].forEach(btn => {
-      if (!btn) return;
-      btn.className = `icon-ctrl-btn ${isMicMuted ? "mic-muted" : "mic-active"}`;
-      btn.textContent = isMicMuted ? "🔇 Mikrofon Kapalı" : "🎙️ Mikrofon Açık";
-    });
+    const lobbyBtn = document.getElementById("btnLobbyMic");
+    const floatBtn = document.getElementById("btnFloatingMic");
+    const drawerBtn = document.getElementById("btnDrawerMic");
+    if (lobbyBtn) {
+      lobbyBtn.className = `icon-ctrl-btn ${isMicMuted ? "mic-muted" : "mic-active"}`;
+      lobbyBtn.textContent = isMicMuted ? "🔇 Mikrofon Kapalı" : "🎙️ Mikrofon Açık";
+    }
+    if (floatBtn) {
+      floatBtn.className = `icon-ctrl-btn ${isMicMuted ? "mic-muted" : "mic-active"}`;
+      floatBtn.textContent = isMicMuted ? "🔇 Ses Kapalı" : "🎙️ Ses Açık";
+    }
+    if (drawerBtn) {
+      drawerBtn.className = `act-btn ${isMicMuted ? "bg-crimson" : "bg-green"}`;
+      drawerBtn.textContent = isMicMuted ? "🔇 Mikrofon: Kapalı" : "🎙️ Mikrofon: Açık";
+    }
   }
 
   function ensureAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
@@ -1017,7 +1090,7 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
         btn.classList.toggle("paused-state", isGamePaused);
       }
     }
-    if (Array.isArray(snap.players) && snap.players.length >= 2) players = snap.players;
+    if (Array.isArray(snap.players) && snap.players.length >= 1) players = snap.players;
     if (Array.isArray(snap.tiles)) {
       snap.tiles.forEach(st => {
         const t = TILES[st.id];
@@ -1050,7 +1123,7 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
       renderRightPlayersList();
       refreshCenterLiveFlowUI();
       refreshPinnedStatsOnly();
-      renderOkeyEdgesHUD();
+      renderInitialsRail();
     }
   }
 
@@ -1066,7 +1139,37 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
       onReceiveRemoteDiceRoll(data.playerId, data.d1, data.d2);
     } else if (data.type === "OFFER_PROPOSAL") {
       onReceiveTradeOffer(data.offer);
+    } else if (data.type === "PLAYER_PERMANENT_LEAVE") {
+      onReceivePeerPermanentLeave(data.playerId);
+    } else if (data.type === "MIC_STATUS_CHANGE") {
+      const pl = players.find(p => p.id === data.playerId);
+      if (pl) {
+        pl.isMicMuted = Boolean(data.isMuted);
+        renderInitialsRail();
+        renderRightPlayersList();
+      }
     }
+  }
+
+  function onReceivePeerPermanentLeave(leavingPlayerId) {
+    const pl = players.find(p => p.id === leavingPlayerId);
+    if (!pl) return;
+    pl.bankrupt = true;
+    pl.money = 0;
+    pl.disconnected = false;
+    delete pl.disconnectSec;
+    TILES.forEach(t => {
+      if (t.houseOwners) t.houseOwners = t.houseOwners.filter(id => id !== leavingPlayerId);
+      if (t.owner === leavingPlayerId) {
+        if (t.houseOwners && t.houseOwners.length > 0) t.owner = t.houseOwners[0];
+        else { delete t.owner; t.mortgaged = false; delete t.mortgageTurnsLeft; }
+      }
+    });
+    addLog(`🚪 ${pl.name} odadan tamamen ayrıldı. Mülkleri boşa çıktı.`);
+    renderBoard();
+    renderRightPlayersList();
+    renderInitialsRail();
+    renderLobbySeats();
   }
 
   function setupRoomNetworking() {
@@ -1130,11 +1233,11 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
     const existingByName = players.find(p => p.name.toLowerCase() === myLocalPlayerName.toLowerCase());
     if (existingByName) {
       existingByName.disconnected = false;
-      existingByName.disconnectSec = 60;
+      delete existingByName.disconnectSec;
       existingByName.isBot = false;
       existingByName.code = myLocalPlayerName.charAt(0).toUpperCase();
-      document.getElementById("lobbyConnStatus").innerHTML = `✅ <b>${myLocalPlayerName}</b> olarak oturumunuz, paranız (${existingByName.money.toLocaleString("tr-TR")} ₺) ve tüm mülkleriniz geri yüklendi!`;
-      pushSystemChat(`🔄 ${myLocalPlayerName} odaya yeniden bağlandı ve mülklerini korudu!`);
+      document.getElementById("lobbyConnStatus").innerHTML = `✅ <b>${myLocalPlayerName}</b> olarak odaya bağlandınız!`;
+      pushSystemChat(`🔄 ${myLocalPlayerName} odaya bağlandı.`);
     } else {
       let seat = players.find(p => p.id === 0 && p.name === "Sen");
       if (!seat) seat = players.find(p => p.isBot);
@@ -1142,7 +1245,7 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
         const newId = players.length;
         seat = {
           id: newId, name: myLocalPlayerName, isBot: false, isReady: false, isHost: newId === 0,
-          disconnected: false, disconnectSec: 60, money: 15000, pos: 0, lap: 1,
+          disconnected: false, money: 15000, pos: 0, lap: 1,
           turnsPlayed: 0, jailWaitTurns: 0, missedTurns: 0,
           color: NEON_PALETTE[newId % NEON_PALETTE.length],
           code: myLocalPlayerName.charAt(0).toUpperCase(), bankrupt: false
@@ -1154,7 +1257,7 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
       seat.isBot = false;
       seat.isReady = false;
       seat.disconnected = false;
-      seat.disconnectSec = 60;
+      delete seat.disconnectSec;
       seat.code = myLocalPlayerName.charAt(0).toUpperCase();
       pushSystemChat(`👋 ${myLocalPlayerName} lobiye katıldı.`);
     }
@@ -1190,7 +1293,7 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
     const bName = botNames[id] || `Bot-${id + 1}`;
     players.push({
       id, name: bName, isBot: true, isReady: true, isHost: false,
-      disconnected: false, disconnectSec: 60, money: 15000, pos: 0, lap: 1,
+      disconnected: false, money: 15000, pos: 0, lap: 1,
       turnsPlayed: 0, jailWaitTurns: 0, missedTurns: 0,
       color: NEON_PALETTE[id % NEON_PALETTE.length], code: bName.charAt(0), bankrupt: false
     });
@@ -1199,8 +1302,41 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
     saveRoomSnapshot();
   }
 
+  function updateRoomCodeDisplay() {
+    const inp = document.getElementById("inpRoomCode");
+    const code = inp ? (inp.value.trim().toUpperCase() || "ODA101") : "ODA101";
+    myRoomCode = code;
+    const tag = document.getElementById("displayRoomCodeTag");
+    if (tag) tag.textContent = code;
+  }
+
+  function copyRoomCodeToClipboard() {
+    const code = myRoomCode || "ODA101";
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(code).catch(() => {});
+    }
+    const txt = document.getElementById("lobbyCopyStatusText");
+    if (txt) {
+      txt.textContent = `✅ "${code}" kopyalandı!`;
+      setTimeout(() => { if (txt) txt.textContent = ""; }, 3000);
+    }
+  }
+
+  function copyShareLinkToClipboard() {
+    const code = myRoomCode || "ODA101";
+    const shareUrl = `${window.location.origin}${window.location.pathname}?room=${encodeURIComponent(code)}`;
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(shareUrl).catch(() => {});
+    }
+    const txt = document.getElementById("lobbyCopyStatusText");
+    if (txt) {
+      txt.textContent = "✅ Davet linki kopyalandı!";
+      setTimeout(() => { if (txt) txt.textContent = ""; }, 3000);
+    }
+  }
+
   function hostRemoveBot() {
-    if (players.length <= 2) return alert("Oyun minimum 2 kişiyle oynanır!");
+    if (players.length <= 1) return alert("Odada en az 1 kişi kalmalıdır!");
     const botIdx = players.map(p => p.isBot).lastIndexOf(true);
     if (botIdx === -1) return alert("Çıkarılacak bot kalmadı.");
     players.splice(botIdx, 1);
@@ -1209,13 +1345,29 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
     saveRoomSnapshot();
   }
 
+  function hostRemoveAllBots() {
+    const hasBots = players.some(p => p.isBot);
+    if (!hasBots) return alert("Odada çıkarılacak bot bulunmuyor.");
+    const realPlayers = players.filter(p => !p.isBot);
+    if (realPlayers.length === 0) {
+      players = [players[0]];
+      players[0].isBot = false;
+    } else {
+      players = realPlayers;
+    }
+    players.forEach((p, idx) => p.id = idx);
+    renderLobbySeats();
+    saveRoomSnapshot();
+    addLog("🤖 Tüm botlar lobiden çıkarıldı.");
+  }
+
   function renderLobbySeats() {
     const box = document.getElementById("lobbySeatsContainer");
     if (!box) return;
     box.innerHTML = players.map((p, idx) => {
       const roleBadge = idx === 0 ? "👑 Kurucu" : (p.isBot ? "🤖 Bot" : "👤 Oyuncu");
       const readyBadge = p.disconnected
-        ? `<span style="color:#ef4444;">🔌 Kopuk (${p.disconnectSec || 60}sn)</span>`
+        ? `<span style="color:#ef4444;">🔌 Ayrıldı</span>`
         : (p.isReady ? `<span style="color:#10b981;">✅ HAZIR</span>` : `<span style="color:#fde047;">⏳ Bekleniyor</span>`);
       return `
         <div class="lobby-seat ${p.isReady ? 'ready' : ''}" style="border-left:4px solid ${p.color};">
@@ -1233,13 +1385,18 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
     const startBtn = document.getElementById("btnHostStartGame");
     if (startBtn) {
       startBtn.disabled = !allReady;
-      startBtn.textContent = allReady
-        ? `🚀 Herkes Hazır! Oyunu Başlat (${players.length} Kişi)`
-        : `⏳ Tüm Oyuncuların Hazır Vermesi Bekleniyor (${players.filter(p => p.isReady).length}/${players.length})`;
+      if (players.length < 2) {
+        startBtn.textContent = `⏳ En Az 2 Oyuncu Gerekli (Şu an: ${players.length}/4)`;
+      } else if (!allReady) {
+        startBtn.textContent = `⏳ Oyuncuların Hazır Vermesi Bekleniyor (${players.filter(p => p.isReady).length}/${players.length})`;
+      } else {
+        startBtn.textContent = `🚀 Oyunu Başlat (${players.length} Kişi)`;
+      }
     }
   }
 
   function hostStartMatch() {
+    if (players.length < 2) return alert("Oyunu başlatmak için en az 2 oyuncu olmalıdır!");
     const allReady = players.length >= 2 && players.length <= 4 && players.every(p => p.isReady);
     if (!allReady) return;
     isMatchStarted = true;
@@ -1249,71 +1406,95 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
     saveRoomSnapshot();
     renderBoard();
     renderRightPlayersList();
-    renderOkeyEdgesHUD();
+    renderInitialsRail();
     startTurn();
   }
 
-  function leaveRoomOrGame() {
+  function completelyExitAndReset() {
     const me = getMySeat();
-    if (!isMatchStarted) {
-      me.isReady = false;
-      document.getElementById("btnToggleReady").textContent = "✋ Hazır Ver";
-      document.getElementById("btnToggleReady").disabled = true;
-      document.getElementById("btnLeaveLobby").disabled = true;
-      pushSystemChat(`🚪 ${me.name} lobiden ayrıldı.`);
-      renderLobbySeats();
-      saveRoomSnapshot();
-      return;
+    broadcastNetworkPayload({
+      type: "PLAYER_PERMANENT_LEAVE",
+      playerId: me ? me.id : 0
+    });
+
+    localStorage.removeItem(getStorageRoomKey());
+    if (roomChannel) {
+      try { roomChannel.close(); } catch (e) {}
+      roomChannel = null;
     }
-    me.disconnected = true;
-    me.disconnectSec = 60;
-    addLog(`🔌 ${me.name} oyundan ayrıldı! 60 saniye içinde aynı isimle geri dönmezse mülkleri boşa çıkar.`);
-    pushSystemChat(`⚠️ ${me.name} bağlantısı koptu. 60 sn geri dönüş süresi başladı.`);
-    saveRoomSnapshot();
+    if (peerNode) {
+      try { peerNode.destroy(); } catch (e) {}
+      peerNode = null;
+    }
+    peerConnections = [];
+    clearInterval(timerInterval);
+    clearTimeout(botTimer);
+    clearInterval(inflationInterval);
+    clearInterval(disconnectGuardInterval);
+
+    myLocalPlayerName = "";
+    myRoomCode = "ODA101";
+    isMatchStarted = false;
+    currentTurn = 0;
+    activeCenterTileId = 0;
+    pinnedTileId = 5;
+    hasRolled = false;
+    isMoving = false;
+    isGamePaused = false;
+    isPauseVoting = false;
+    worldBankPool = 2500;
+    inflationSecondsLeft = 600;
+    globalTaxMultiplier = 1.0;
+    globalGeneralMultiplier = 1.0;
+    activeOffersQueue = [];
+    chatMessages = [];
+    unreadChatCount = 0;
+
+    TILES.forEach(t => {
+      delete t.owner;
+      t.houseOwners = [];
+      t.mortgaged = false;
+      delete t.mortgageTurnsLeft;
+      delete t.lastBuiltLap;
+    });
+
+    players = [
+      { id: 0, name: "Sen", isBot: false, isReady: false, isHost: true, disconnected: false, money: 15000, pos: 0, lap: 1, turnsPlayed: 0, jailWaitTurns: 0, missedTurns: 0, color: "#f59e0b", code: "S", bankrupt: false },
+      { id: 1, name: "El-Tacir", isBot: true, isReady: true, isHost: false, disconnected: false, money: 15000, pos: 0, lap: 1, turnsPlayed: 0, jailWaitTurns: 0, missedTurns: 0, color: "#10b981", code: "T", bankrupt: false },
+      { id: 2, name: "Şahin Bey", isBot: true, isReady: true, isHost: false, disconnected: false, money: 15000, pos: 0, lap: 1, turnsPlayed: 0, jailWaitTurns: 0, missedTurns: 0, color: "#38bdf8", code: "Ş", bankrupt: false },
+      { id: 3, name: "Kleopatra", isBot: true, isReady: true, isHost: false, disconnected: false, money: 15000, pos: 0, lap: 1, turnsPlayed: 0, jailWaitTurns: 0, missedTurns: 0, color: "#ff2a85", code: "K", bankrupt: false }
+    ];
+
+    document.getElementById("inpPlayerName").value = "";
+    document.getElementById("inpRoomCode").value = "ODA101";
+    updateRoomCodeDisplay();
+    document.getElementById("lobbyConnStatus").innerHTML = "💡 Yeni bir oda kodu ve isim girerek temiz bir oyuna başlayabilirsiniz.";
+    document.getElementById("btnToggleReady").disabled = true;
+    document.getElementById("btnToggleReady").textContent = "✋ Hazır Ver";
+    document.getElementById("btnToggleReady").className = "act-btn bg-purple";
+    document.getElementById("btnLeaveLobby").disabled = true;
     document.getElementById("lobbyBackdrop").style.display = "flex";
+    closeMobileSlideDrawer();
+    closeMobileCenterHub();
     renderLobbySeats();
+    renderBoard();
+    renderRightPlayersList();
+    renderInitialsRail();
+    start10MinInflationTimer();
   }
 
-  function start60SecDisconnectWatcher() {
-    clearInterval(disconnectGuardInterval);
-    disconnectGuardInterval = setInterval(() => {
-      let changed = false;
-      players.forEach(p => {
-        if (p.disconnected && !p.bankrupt) {
-          p.disconnectSec = (p.disconnectSec ?? 60) - 1;
-          changed = true;
-          if (p.disconnectSec <= 0) {
-            p.disconnected = false;
-            p.bankrupt = true;
-            p.money = 0;
-            TILES.forEach(t => {
-              if (t.houseOwners) t.houseOwners = t.houseOwners.filter(id => id !== p.id);
-              if (t.owner === p.id) {
-                if (t.houseOwners && t.houseOwners.length > 0) t.owner = t.houseOwners[0];
-                else { delete t.owner; t.mortgaged = false; delete t.mortgageTurnsLeft; }
-              }
-            });
-            addLog(`⏰ 60 SANİYE DOLDU! ${p.name} oyuna dönmediği için tüm mülkleri boşa çıktı!`);
-            pushSystemChat(`🏳️ ${p.name} 1 dakika içinde dönmediği için mülkleri boşa çıktı.`);
-          }
-        }
-      });
-      if (changed) {
-        renderRightPlayersList();
-        renderBoard();
-        renderOkeyEdgesHUD();
-        renderLobbySeats();
-      }
-    }, 1000);
+  function leaveRoomOrGame() {
+    completelyExitAndReset();
   }
 
   window.addEventListener("beforeunload", () => {
     if (isMatchStarted && myLocalPlayerName) {
       const me = getMySeat();
       if (me) {
-        me.disconnected = true;
-        me.disconnectSec = 60;
-        saveRoomSnapshot();
+        broadcastNetworkPayload({
+          type: "PLAYER_PERMANENT_LEAVE",
+          playerId: me.id
+        });
       }
     }
   });
@@ -1393,29 +1574,35 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
     });
   }
 
-  function renderOkeyEdgesHUD() {
-    const layer = document.getElementById("okeyEdgesLayer");
-    if (!layer) return;
-    const edgePositions = ["pos-bottom", "pos-top", "pos-left", "pos-right"];
+  function renderInitialsRail() {
+    const rail = document.getElementById("centerInitialsRail");
+    if (!rail) return;
     const pct = Math.max(0, Math.min(1, timeLeft / (maxTimerSeconds || 30)));
-    const dashOffset = Math.round(400 * (1 - pct));
+    const circLen = 119.4;
+    const dashOffset = Math.round(circLen * (1 - pct));
 
-    layer.innerHTML = players.map((p, idx) => {
-      const posCls = edgePositions[idx % 4];
+    rail.innerHTML = players.map(p => {
       const isTurn = (p.id === currentTurn && !p.bankrupt);
-      const discText = p.disconnected ? ` 🔌${p.disconnectSec}sn` : "";
+      const initialChar = (p.name || "O").charAt(0).toUpperCase();
+      const moneyShort = p.money >= 1000 ? `${Math.round(p.money / 1000)}k` : `${p.money}`;
+
       return `
-        <div class="okey-seat-plate ${posCls}" onclick="openPlayerActionsInCenter(${p.id})" style="opacity:${p.bankrupt ? 0.35 : 1};">
-          ${isTurn ? `
-            <svg class="okey-neon-svg" viewBox="0 0 160 44" preserveAspectRatio="none" style="color:${p.color};">
-              <rect class="okey-neon-rect" x="2" y="2" width="156" height="40" stroke="${p.color}" style="stroke-dashoffset:${dashOffset};"></rect>
-            </svg>
-          ` : ""}
-          <div class="p-badge" style="background:${p.color};">${p.code}</div>
-          <div style="line-height:1.15;">
-            <div style="font-size:11px; font-weight:900; color:#fff;">${p.name}${discText} ${isTurn ? `(${timeLeft}sn)` : ""}</div>
-            <div style="font-size:10.5px; font-weight:900; color:#34d399;">${p.money.toLocaleString("tr-TR")} ₺</div>
+        <div class="player-initial-node ${isTurn ? 'active-turn' : ''}" onclick="openPlayerActionsInCenter(${p.id})" style="opacity:${p.bankrupt ? 0.35 : 1};" title="${p.name} (${p.money.toLocaleString('tr-TR')} ₺)">
+          <div class="initial-money-tag">${moneyShort}</div>
+          <div class="initial-badge-circle" style="background:${p.color};">
+            ${initialChar}
           </div>
+          ${p.isMicMuted ? `<span style="position:absolute; bottom:-1px; right:-2px; font-size:9px; z-index:6; background:#0f172a; border-radius:50%; padding:1px; line-height:1;" title="Mikrofon Kapalı">🔇</span>` : ""}
+          ${isTurn ? `
+            <svg class="initial-neon-ring-svg" viewBox="0 0 44 44">
+              <circle class="initial-neon-ring-circle" cx="22" cy="22" r="19" stroke="${p.color}" stroke-dasharray="${circLen}" stroke-dashoffset="${dashOffset}" style="filter:drop-shadow(0 0 6px ${p.color});"></circle>
+            </svg>
+            <div class="initial-timer-tag">${timeLeft}s</div>
+          ` : `
+            <svg class="initial-neon-ring-svg" viewBox="0 0 44 44">
+              <circle cx="22" cy="22" r="19" fill="none" stroke="${p.color}" stroke-width="1.5" stroke-opacity="0.3"></circle>
+            </svg>
+          `}
         </div>
       `;
     }).join("");
@@ -1447,7 +1634,7 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
             <div class="p-identity">
               <div class="p-badge" style="background:${p.color};">${p.code}</div>
               <div>
-                <div class="p-title">${p.name} ${p.disconnected ? `(🔌 Kopuk: ${p.disconnectSec}sn)` : ""}</div>
+                <div class="p-title">${p.name} ${p.disconnected ? `(Ayrıldı)` : ""}</div>
                 <div class="p-sub">📍 ${TILES[p.pos].name} • ${owned.length} Mülk</div>
               </div>
             </div>
@@ -1550,7 +1737,7 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
       const genPct = Math.round((globalGeneralMultiplier - 1) * 100);
       el.textContent = `📈 Enflasyon: ${timeStr} • Maaş: +${getPlayerLapSalary().toLocaleString("tr-TR")} ₺ • Zam: +%${genPct}`;
     }
-    renderOkeyEdgesHUD();
+    renderInitialsRail();
   }
 
   function requestPauseOrResumeVote() {
@@ -1654,7 +1841,7 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
     }
 
     overlay.style.display = "flex";
-    tagEl.textContent = pauseVoteData.action === "pause" ? "⏸️ OYUNU DURDURMA OYLAMASI" : "▶️ OYUNU BAŞLATMA OYLAMASI";
+    tagEl.textContent = pauseVoteData.action === "pause" ? "⏸️ OYUN DURDURMA OYLAMASI" : "▶️ OYUNU BAŞLATMA OYLAMASI";
     titleEl.textContent = `${pauseVoteData.requesterName} ${pauseVoteData.action === "pause" ? "Durdurmak" : "Başlatmak"} İstiyor`;
 
     const alivePlayers = players.filter(p => !p.bankrupt);
@@ -1989,7 +2176,7 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
     renderRightPlayersList();
     refreshCenterLiveFlowUI();
     refreshPinnedStatsOnly();
-    renderOkeyEdgesHUD();
+    renderInitialsRail();
     saveRoomSnapshot();
   }
 
@@ -2017,7 +2204,7 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
         </div>`;
       }
 
-      const discBadge = p.disconnected ? ` • 🔌 Kopuk (${p.disconnectSec}sn)` : "";
+      const discBadge = p.disconnected ? ` • 🔌 Ayrıldı` : "";
       card.innerHTML = `
         <div class="p-card-top">
           <div class="p-identity">
@@ -2419,7 +2606,7 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
     renderRightPlayersList();
     refreshCenterLiveFlowUI();
     selectPinnedCardByUser(tileId);
-    renderOkeyEdgesHUD();
+    renderInitialsRail();
     if (document.getElementById("mobileCenterHub").classList.contains("open")) {
       openMobileCenterHub(currentMobileHubTab);
     }
@@ -2833,7 +3020,7 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
     renderRightPlayersList();
     refreshCenterLiveFlowUI();
     refreshPinnedStatsOnly();
-    renderOkeyEdgesHUD();
+    renderInitialsRail();
     showDiceScreen();
 
     if (p.isBot && !isGamePaused) {
@@ -2863,7 +3050,7 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
       if (!isMatchStarted || isAuctionActive || isGamePaused || isPauseVoting) return;
       timeLeft--;
       updateTimerUI();
-      renderOkeyEdgesHUD();
+      renderInitialsRail();
       if (timeLeft <= 0) {
         clearInterval(timerInterval);
         const me = getMySeat();
@@ -3081,7 +3268,7 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
     refreshCenterLiveFlowUI();
     refreshPinnedStatsOnly();
     renderTradeDock();
-    renderOkeyEdgesHUD();
+    renderInitialsRail();
     showLiveLandingScreen(tile.id, eventCard);
     saveRoomSnapshot();
 
@@ -3185,14 +3372,23 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
     detectAndApplyDeviceMode();
     setupResizablePanels();
     start10MinInflationTimer();
-    start60SecDisconnectWatcher();
+    const urlParams = new URLSearchParams(window.location.search);
+    const roomFromUrl = urlParams.get("room");
+    if (roomFromUrl) {
+      const cleanR = roomFromUrl.trim().toUpperCase();
+      myRoomCode = cleanR;
+      const inp = document.getElementById("inpRoomCode");
+      if (inp) inp.value = cleanR;
+    }
+    updateRoomCodeDisplay();
     renderLobbySeats();
     renderBoard();
     renderRightPlayersList();
     renderTradeDock();
     refreshCenterLiveFlowUI();
     selectPinnedCardByUser(5);
-    renderOkeyEdgesHUD();
+    renderInitialsRail();
+    updateMicButtonsUI();
   }
 
   window.onload = initGame;
