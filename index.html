@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Emlak Taciri - Online</title>
+<title>Emlak Taciri - PC & Mobil Online</title>
 <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
 <style>
 :root {
@@ -11,7 +11,7 @@
   --board-bg: #090d18;
   --tile-bg: #162032;
   --panel-bg: #0f172a;
-  --border-subtle: rgba(255, 255, 255, 0.15);
+  --border-subtle: rgba(255, 255, 255, 0.14);
   --gold: #f59e0b;
   --emerald: #10b981;
   --crimson: #ef4444;
@@ -19,47 +19,150 @@
   --purple: #a855f7;
   --text-main: #f8fafc;
   --text-muted: #94a3b8;
+  --left-col-w: 330px;
+  --right-col-w: 345px;
+  --left-log-h: 195px;
+  --right-trade-h: 185px;
   --neon-intensity: 0.35;
 }
 * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
-body { background: var(--bg-main); color: var(--text-main); height: 100vh; height: 100dvh; width: 100vw; overflow: hidden; display: flex; padding: 4px; transition: filter 0.25s ease, background 0.25s ease; }
+body { background: var(--bg-main); color: var(--text-main); height: 100vh; height: 100dvh; width: 100vw; overflow: hidden; display: flex; padding: 8px; gap: 0; transition: filter 0.25s ease, background 0.25s ease; }
 body.bw-mode { filter: grayscale(100%) contrast(1.08); }
 
-/* ONLINE LOBI EKRANI */
+/* =========================================================
+   ONLINE LOBI EKRANI
+   ========================================================= */
 .lobby-backdrop { position: fixed; inset: 0; background: radial-gradient(circle at center, #1e293b 0%, #050811 100%); z-index: 10000; display: flex; align-items: center; justify-content: center; padding: 10px; overflow-y: auto; }
 .lobby-card { background: rgba(15, 23, 42, 0.97); border: 2px solid rgba(245, 158, 11, 0.55); border-radius: 18px; width: 860px; max-width: 96vw; max-height: 95dvh; overflow-y: auto; padding: 16px; box-shadow: 0 25px 70px rgba(0,0,0,0.9); display: flex; flex-direction: column; gap: 12px; }
 .lobby-grid { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 12px; }
 @media (max-width: 740px) { .lobby-grid { grid-template-columns: 1fr; } }
 .lobby-box { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.12); border-radius: 12px; padding: 10px; display: flex; flex-direction: column; gap: 8px; }
 .lobby-input-row { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
-.lobby-input { flex: 1; min-width: 110px; background: #090d18; border: 1.5px solid rgba(56, 189, 248, 0.45); color: #fff; padding: 7px 10px; border-radius: 8px; font-size: 12px; font-weight: 800; user-select: text; }
+.lobby-input { flex: 1; min-width: 110px; background: #090d18; border: 1.5px solid rgba(56, 189, 248, 0.45); color: #fff; padding: 8px 10px; border-radius: 8px; font-size: 12.5px; font-weight: 800; user-select: text; }
 .room-code-banner { background: rgba(245, 158, 11, 0.12); border: 1.5px dashed var(--gold); border-radius: 10px; padding: 8px 10px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 6px; }
 .room-code-text { font-size: 18px; font-weight: 900; color: #fde047; letter-spacing: 2px; user-select: text; }
-.lobby-seat { display: flex; align-items: center; justify-content: space-between; background: rgba(15, 23, 42, 0.9); border: 1.5px solid rgba(255,255,255,0.12); border-radius: 9px; padding: 6px 10px; font-size: 11.5px; font-weight: 800; }
+.lobby-seat { display: flex; align-items: center; justify-content: space-between; background: rgba(15, 23, 42, 0.9); border: 1.5px solid rgba(255,255,255,0.12); border-radius: 9px; padding: 7px 10px; font-size: 12px; font-weight: 800; }
 .lobby-seat.ready { border-color: #10b981; box-shadow: inset 0 0 10px rgba(16, 185, 129, 0.2); }
 
-/* 12x8 TAM EKRAN TAHTA VE MERKEZE BAKAN KARTLAR */
+/* =========================================================
+   PC GORUNUMU: SURUKLENEBILIR 3 SUTUNLU KLASIK YAPI
+   ========================================================= */
+.col-resizer { width: 8px; cursor: col-resize; display: flex; align-items: center; justify-content: center; flex-shrink: 0; z-index: 50; transition: background 0.15s; border-radius: 4px; }
+.col-resizer::after { content: "⋮"; color: rgba(255,255,255,0.28); font-size: 14px; font-weight: 900; }
+.col-resizer:hover, .col-resizer.dragging { background: rgba(56, 189, 248, 0.35); }
+.row-resizer { height: 8px; cursor: row-resize; display: flex; align-items: center; justify-content: center; flex-shrink: 0; z-index: 50; transition: background 0.15s; border-radius: 4px; }
+.row-resizer::after { content: "⋯"; color: rgba(255,255,255,0.28); font-size: 14px; font-weight: 900; line-height: 0; }
+.row-resizer:hover, .row-resizer.dragging { background: rgba(56, 189, 248, 0.35); }
+
+.left-sidebar { width: var(--left-col-w); min-width: 255px; max-width: 520px; height: calc(100dvh - 16px); display: flex; flex-direction: column; overflow: hidden; flex-shrink: 0; gap: 6px; }
+.right-sidebar { width: var(--right-col-w); min-width: 260px; max-width: 520px; height: calc(100dvh - 16px); display: flex; flex-direction: column; overflow: hidden; flex-shrink: 0; gap: 6px; }
+
+.info-card-panel { background: rgba(15, 23, 42, 0.95); border: 1.5px solid rgba(56, 189, 248, 0.32); border-radius: 14px; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 10px 28px rgba(0,0,0,0.6); }
+.info-card-panel.live-panel { flex: 0.72; min-height: 145px; }
+.info-card-panel.pinned-panel { flex: 1.45; min-height: 225px; border-color: rgba(245, 158, 11, 0.6); }
+
+.panel-tag-bar { padding: 5px 10px; background: rgba(0, 0, 0, 0.45); border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 10px; font-weight: 900; letter-spacing: 0.5px; text-transform: uppercase; display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
+.panel-close-x { background: rgba(239, 68, 68, 0.2); border: 1px solid rgba(239, 68, 68, 0.45); color: #fca5a5; width: 20px; height: 20px; border-radius: 5px; font-size: 10px; font-weight: 900; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; transition: all 0.15s; }
+.panel-close-x:hover { background: #ef4444; color: #fff; }
+
+.insp-banner { height: 60px; background-size: cover; background-position: center; position: relative; display: flex; flex-direction: column; justify-content: space-between; padding: 5px 10px; flex-shrink: 0; }
+.insp-banner::before { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(5,8,17,0.75) 0%, rgba(5,8,17,0.3) 45%, rgba(15,23,42,0.98) 100%); }
+.insp-banner-top, .insp-banner-bottom { position: relative; z-index: 2; display: flex; justify-content: space-between; align-items: center; }
+.insp-body { flex: 1; padding: 8px 10px; overflow-y: auto; display: flex; flex-direction: column; gap: 7px; }
+.insp-stats-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 5px; }
+.insp-stat-box { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12); padding: 5px 8px; border-radius: 8px; }
+.insp-stat-box span { display: block; font-size: 8.5px; color: var(--text-muted); font-weight: 800; text-transform: uppercase; margin-bottom: 1px; }
+.insp-stat-box strong { font-size: 14.5px; color: #ffffff; font-weight: 900; }
+
+.pin-actions-area { display: flex; flex-direction: column; gap: 6px; padding-top: 5px; border-top: 1px solid rgba(255,255,255,0.12); }
+.inline-btns-grid { display: flex; flex-wrap: wrap; gap: 5px; }
+.mini-act-btn { flex: 1 1 calc(50% - 5px); padding: 6px 8px; border: none; border-radius: 7px; font-size: 10.8px; font-weight: 900; color: #fff; cursor: pointer; text-align: center; transition: transform 0.12s, filter 0.12s; }
+.mini-act-btn:hover:not(:disabled) { transform: translateY(-1px); filter: brightness(1.12); }
+.mini-act-btn.full { flex: 1 1 100%; }
+.mini-act-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+.inline-mini-form { background: rgba(5, 8, 17, 0.95); border: 1.5px solid var(--gold); border-radius: 8px; padding: 8px; display: none; flex-direction: column; gap: 5px; }
+.inline-mini-form.open { display: flex; }
+.inline-mini-form label { font-size: 10px; color: #fde68a; font-weight: 800; }
+.inline-mini-form input, .inline-mini-form select { width: 100%; background: #1e293b; border: 1px solid rgba(255,255,255,0.25); color: #fff; padding: 5px 7px; border-radius: 5px; font-size: 11px; font-weight: 700; user-select: text; }
+
+.log-panel { height: var(--left-log-h); min-height: 100px; max-height: 400px; flex-shrink: 0; background: rgba(15, 23, 42, 0.92); border: 1px solid var(--border-subtle); border-radius: 14px; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 12px 35px rgba(0,0,0,0.6); }
+.sidebar-header { padding: 7px 11px; background: rgba(0, 0, 0, 0.35); border-bottom: 1px solid var(--border-subtle); display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
+.sidebar-header h3 { font-size: 11px; font-weight: 900; letter-spacing: 0.5px; color: var(--gold); text-transform: uppercase; }
+.icon-ctrl-btn { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.16); color: #fff; padding: 3px 8px; border-radius: 7px; font-size: 10.5px; font-weight: 800; cursor: pointer; transition: background 0.15s; white-space: nowrap; }
+.icon-ctrl-btn:hover { background: rgba(255,255,255,0.18); }
+.icon-ctrl-btn.mic-active { background: rgba(16, 185, 129, 0.28); border-color: #10b981; color: #6ee7b7; }
+.icon-ctrl-btn.mic-muted { background: rgba(239, 68, 68, 0.25); border-color: #ef4444; color: #fca5a5; }
+
+.log-container { flex: 1; overflow-y: auto; padding: 6px 8px; display: flex; flex-direction: column; gap: 5px; }
+.log-item { background: rgba(255, 255, 255, 0.04); border-left: 3px solid var(--blue); padding: 5px 8px; border-radius: 6px; font-size: 10.5px; line-height: 1.3; color: #e2e8f0; display: flex; flex-direction: column; gap: 2px; }
+.log-item.profit { background: rgba(16, 185, 129, 0.14); border-left: 3.5px solid #10b981; color: #ecfdf5; }
+.log-item.loss { background: rgba(239, 68, 68, 0.15); border-left: 3.5px solid #ef4444; color: #fef2f2; }
+.pnl-badge { align-self: flex-start; padding: 1px 6px; border-radius: 4px; font-size: 9.5px; font-weight: 900; }
+.pnl-badge.gain { background: rgba(16, 185, 129, 0.25); color: #34d399; }
+.pnl-badge.spend { background: rgba(239, 68, 68, 0.25); color: #f87171; }
+
+/* PC SAG SUTUN */
+.top-timer-widget { background: linear-gradient(145deg, #1e293b, #090d16); border: 1.5px solid rgba(255,255,255,0.16); border-radius: 14px; padding: 9px 12px; flex-shrink: 0; }
+.timer-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px; gap: 4px; flex-wrap: wrap; }
+.timer-label { font-size: 11px; font-weight: 900; text-transform: uppercase; color: #cbd5e1; }
+.timer-clock { font-size: 18px; font-weight: 900; color: var(--gold); }
+.timer-clock.danger { color: var(--crimson); animation: neonPulse 0.45s infinite alternate; }
+.pause-play-btn { background: linear-gradient(135deg, #3b82f6, #1d4ed8); border: 1px solid rgba(255,255,255,0.25); color: #fff; padding: 4px 9px; border-radius: 8px; font-size: 10.5px; font-weight: 900; cursor: pointer; }
+.pause-play-btn.paused-state { background: linear-gradient(135deg, #10b981, #059669); }
+.timer-bar-track { width: 100%; height: 7px; background: rgba(255,255,255,0.1); border-radius: 99px; overflow: hidden; }
+.timer-bar-fill { height: 100%; width: 100%; background: linear-gradient(90deg, #10b981, #f59e0b); transition: width 0.3s linear; }
+.inflation-countdown-row { margin-top: 7px; padding-top: 6px; border-top: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; align-items: center; font-size: 11px; font-weight: 800; color: #fde68a; }
+
+.players-panel-wrap { flex: 1; min-height: 140px; background: rgba(15, 23, 42, 0.9); border: 1px solid var(--border-subtle); border-radius: 14px; display: flex; flex-direction: column; overflow: hidden; }
+.players-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; padding: 9px; }
+.player-card { background: rgba(17, 24, 39, 0.95); border: 2px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 9px 11px; cursor: pointer; transition: all 0.2s ease; }
+.player-card.neon-active { border-color: #00f5d4; box-shadow: 0 0 14px rgba(0, 245, 212, 0.55); }
+.player-card.bankrupt { opacity: 0.35; filter: grayscale(1); }
+.p-card-top { display: flex; align-items: center; justify-content: space-between; gap: 4px; }
+.p-identity { display: flex; align-items: center; gap: 8px; }
+.p-badge { width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 14px; color: #fff; border: 1.5px solid #fff; flex-shrink: 0; }
+.p-title { font-size: 13px; font-weight: 900; color: #fff; }
+.p-sub { font-size: 10px; color: var(--text-muted); font-weight: 700; }
+.p-balance { font-size: 14.5px; font-weight: 900; color: var(--emerald); white-space: nowrap; }
+.p-balance.neg { color: #f87171; }
+.color-swatch-row { display: flex; align-items: center; gap: 5px; margin-top: 6px; padding-top: 5px; border-top: 1px dashed rgba(255,255,255,0.12); }
+.color-dot-btn { width: 16px; height: 16px; border-radius: 50%; border: 1.5px solid rgba(255,255,255,0.6); cursor: pointer; }
+.p-assets-drawer { margin-top: 7px; padding-top: 7px; border-top: 1px solid rgba(255,255,255,0.1); display: none; flex-direction: column; gap: 5px; }
+.player-card.expanded .p-assets-drawer { display: flex; }
+.asset-chip { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); border-radius: 7px; padding: 6px 8px; font-size: 11px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+.asset-chip:hover, .asset-chip.active-asset { background: rgba(245, 158, 11, 0.25); border-color: var(--gold); }
+
+.trade-center-dock { height: var(--right-trade-h); min-height: 125px; max-height: 380px; flex-shrink: 0; background: rgba(15, 23, 42, 0.95); border: 1.5px solid rgba(245, 158, 11, 0.45); border-radius: 14px; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.65); }
+.trade-nav-bar { display: flex; align-items: center; justify-content: space-between; background: rgba(0,0,0,0.28); padding: 4px 10px; border-bottom: 1px solid rgba(255,255,255,0.08); font-size: 10.5px; color: #fde68a; font-weight: 800; }
+.nav-arrow-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 2px 8px; border-radius: 5px; cursor: pointer; font-size: 11px; font-weight: 900; }
+.nav-arrow-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+.trade-dock-body { flex: 1; padding: 8px 12px; display: flex; flex-direction: column; justify-content: space-between; font-size: 11.5px; color: #e2e8f0; overflow-y: auto; }
+.offer-country-link { display: inline-block; color: #38bdf8; font-weight: 900; text-decoration: underline; cursor: pointer; padding: 1px 4px; border-radius: 4px; background: rgba(56, 189, 248, 0.14); }
+
+/* =========================================================
+   ORTA TAHTA VE PC MERKEZ EKRANI
+   ========================================================= */
 .board-wrapper {
   flex: 1;
-  width: 100%;
-  height: calc(100dvh - 8px);
+  height: calc(100dvh - 16px);
   display: grid;
-  grid-template-columns: 1.22fr repeat(10, minmax(0, 1fr)) 1.22fr;
-  grid-template-rows: 1.22fr repeat(6, minmax(0, 1fr)) 1.22fr;
-  gap: 3px;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  grid-template-rows: repeat(8, minmax(0, 1fr));
+  gap: 5px;
   background: var(--board-bg);
-  padding: 4px;
-  border-radius: 14px;
+  padding: 7px;
+  border-radius: 18px;
   border: 1px solid rgba(255,255,255,0.12);
-  box-shadow: 0 15px 50px rgba(0,0,0,0.85);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.8);
   overflow: hidden;
   position: relative;
 }
 
 .tile {
   background: var(--tile-bg);
-  border: 1.5px solid rgba(255,255,255,0.15);
-  border-radius: 7px;
+  border: 1.5px solid rgba(255,255,255,0.13);
+  border-radius: 9px;
   position: relative;
   cursor: pointer;
   overflow: hidden;
@@ -67,428 +170,101 @@ body.bw-mode { filter: grayscale(100%) contrast(1.08); }
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  transition: transform 0.16s ease, border-color 0.16s ease, box-shadow 0.16s ease;
 }
+.tile:hover { transform: translateY(-2px); z-index: 12; }
+.tile-inner { width: 100%; height: 100%; display: flex; flex-direction: column; justify-content: space-between; position: relative; }
 
-.tile-inner {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  position: relative;
-}
+.tile.step-glow { border: 2.5px solid #fde047 !important; box-shadow: 0 0 26px rgba(253, 224, 71, 0.95), inset 0 0 14px rgba(253, 224, 71, 0.45) !important; z-index: 25; }
+.tile.selected-tile { outline: 2.5px dashed #fde047; outline-offset: -2px; z-index: 18; }
+.tile.spotlight-tile { border: 3px solid #fde047 !important; box-shadow: 0 0 38px #fde047 !important; z-index: 45 !important; }
 
-/* KARTLARIN ALT TARAFI EKRANIN ORTASINA BAKACAK SEKILDE DONDURME */
-.tile.orient-top .tile-inner { transform: rotate(0deg); }
-.tile.orient-bottom .tile-inner { transform: rotate(180deg); }
-body.bottom-row-upright .tile.orient-bottom .tile-inner { transform: rotate(0deg); }
-.tile.orient-right .tile-inner {
-  width: 100cqh;
-  height: 100cqw;
-  transform: rotate(90deg);
-}
-.tile.orient-left .tile-inner {
-  width: 100cqh;
-  height: 100cqw;
-  transform: rotate(-90deg);
-}
+.tile-color-strip { height: 14px; width: 100%; display: flex; align-items: center; justify-content: space-between; padding: 0 4px; font-size: 8.5px; font-weight: 900; color: #fff; flex-shrink: 0; }
+.house-indicators { display: flex; gap: 2px; }
+.house-pip { width: 6.5px; height: 6.5px; border-radius: 2px; border: 1px solid #fff; }
+.tile-center { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 1px 3px; text-align: center; min-height: 0; }
+.tile-flag { font-size: 15px; line-height: 1; margin-bottom: 1px; }
+.tile-country-name { font-size: 10.5px; font-weight: 900; color: #ffffff; line-height: 1.1; text-shadow: 0 2px 4px rgba(0,0,0,0.85); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100%; }
+.tile-tokens-row { display: flex; justify-content: center; align-items: center; gap: 3px; min-height: 18px; padding-bottom: 1px; }
+.board-pawn { width: 19px; height: 19px; border-radius: 50%; border: 2px solid #ffffff; font-size: 9.5px; font-weight: 900; color: #fff; display: flex; align-items: center; justify-content: center; animation: pawnNeonPulse 0.9s infinite alternate ease-in-out; z-index: 15; }
+@keyframes pawnNeonPulse { 0% { transform: scale(0.95); } 100% { transform: scale(1.15); } }
+.tile-footer { background: rgba(0,0,0,0.72); padding: 2px 5px; display: flex; align-items: center; justify-content: space-between; font-size: 11px; font-weight: 900; color: #fde047; flex-shrink: 0; }
 
-.tile.step-glow {
-  border: 2.5px solid #fde047 !important;
-  box-shadow: 0 0 22px rgba(253, 224, 71, 0.95), inset 0 0 12px rgba(253, 224, 71, 0.45) !important;
-  z-index: 25;
-}
-.tile.selected-tile { outline: 2px dashed #fde047; outline-offset: -2px; z-index: 18; }
-.tile.spotlight-tile { border: 2.5px solid #fde047 !important; box-shadow: 0 0 32px #fde047 !important; z-index: 45 !important; }
-
-.tile-color-strip {
-  height: 11px;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 3px;
-  font-size: 7px;
-  font-weight: 900;
-  color: #fff;
-  flex-shrink: 0;
-}
-.house-indicators { display: flex; gap: 1px; }
-.house-pip { width: 5px; height: 5px; border-radius: 1.5px; border: 1px solid #fff; }
-
-.tile-center {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 1px 2px;
-  text-align: center;
-  min-height: 0;
-}
-.tile-flag { font-size: clamp(9px, 1.35vmin, 14px); line-height: 1; }
-.tile-country-name {
-  font-size: clamp(7px, 1.1vmin, 10px);
-  font-weight: 900;
-  color: #ffffff;
-  line-height: 1.05;
-  text-shadow: 0 1px 3px rgba(0,0,0,0.9);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  max-width: 100%;
-}
-.tile-tokens-row {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 2px;
-  min-height: 11px;
-}
-.board-pawn {
-  width: clamp(11px, 1.4vmin, 16px);
-  height: clamp(11px, 1.4vmin, 16px);
-  border-radius: 50%;
-  border: 1.5px solid #ffffff;
-  font-size: clamp(6.5px, 0.9vmin, 9px);
-  font-weight: 900;
-  color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  animation: pawnNeonPulse 0.9s infinite alternate ease-in-out;
-  z-index: 15;
-}
-@keyframes pawnNeonPulse { 0% { transform: scale(0.95); } 100% { transform: scale(1.12); } }
-
-.tile-footer {
-  background: rgba(0,0,0,0.78);
-  padding: 1px 3px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-size: clamp(6.5px, 0.95vmin, 9.5px);
-  font-weight: 900;
-  color: #fde047;
-  flex-shrink: 0;
-}
-
-/* MERKEZ ALAN (KARTLARIN ARASINDAKI SABIT ORTA EKRAN) */
 .single-center-screen {
   grid-column: 2 / 12;
   grid-row: 2 / 8;
-  border-radius: 12px;
+  border-radius: 16px;
   overflow: hidden;
   position: relative;
-  border: 1.5px solid rgba(255,255,255,0.16);
-  box-shadow: inset 0 0 50px rgba(0,0,0,0.85);
-  background: radial-gradient(circle at center, #131c31 0%, #090d18 100%);
+  border: 1.5px solid rgba(255,255,255,0.18);
+  box-shadow: inset 0 0 60px rgba(0,0,0,0.85);
+  background: #090d18;
   display: flex;
   flex-direction: column;
+  justify-content: space-between;
   z-index: 5;
 }
 
-/* MERKEZ UST KOMPAKT KONTROL CUBUGU (PAUSE + PENCERE AC/KAPAT) */
-.center-top-bar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 4px;
-  padding: 4px 8px;
-  background: rgba(5, 8, 17, 0.9);
-  border-bottom: 1px solid rgba(255,255,255,0.12);
-  flex-wrap: wrap;
-  z-index: 40;
-  flex-shrink: 0;
-}
-.hud-status-group {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  flex-wrap: wrap;
-}
-.hud-badge {
-  font-size: 9.5px;
-  font-weight: 900;
-  padding: 2px 6px;
-  border-radius: 6px;
-  background: rgba(255,255,255,0.07);
-  color: #f8fafc;
-  white-space: nowrap;
-}
-.hud-btn-group {
-  display: flex;
-  align-items: center;
-  gap: 3px;
-  flex-wrap: wrap;
-}
-.tiny-ctrl-btn {
-  background: rgba(255,255,255,0.09);
-  border: 1px solid rgba(255,255,255,0.18);
-  color: #fff;
-  padding: 3px 6px;
-  border-radius: 5px;
-  font-size: 9px;
-  font-weight: 800;
-  cursor: pointer;
-  white-space: nowrap;
-  transition: all 0.12s;
-}
-.tiny-ctrl-btn:hover { background: rgba(255,255,255,0.2); }
-.tiny-ctrl-btn.active-win { border-color: #38bdf8; background: rgba(56, 189, 248, 0.22); color: #bae6fd; }
-.tiny-ctrl-btn.pause-btn { background: linear-gradient(135deg, #3b82f6, #1d4ed8); border-color: #60a5fa; }
-.tiny-ctrl-btn.pause-btn.paused-state { background: linear-gradient(135deg, #10b981, #059669); }
-.tiny-ctrl-btn.mic-active { background: rgba(16, 185, 129, 0.28); border-color: #10b981; color: #6ee7b7; }
-.tiny-ctrl-btn.mic-muted { background: rgba(239, 68, 68, 0.25); border-color: #ef4444; color: #fca5a5; }
-
-/* OKEY 4 KENAR OYUNCU PLAKALARI (TAM EKRAN MODUNDA) */
-.okey-edges-layer { position: absolute; inset: 32px 4px 4px 4px; pointer-events: none; z-index: 35; display: none; }
-body.fullscreen-okey-mode .okey-edges-layer { display: block; }
-.okey-seat-plate { position: absolute; pointer-events: auto; background: rgba(9, 13, 24, 0.92); border-radius: 10px; padding: 3px 9px; min-width: 120px; display: flex; align-items: center; gap: 6px; cursor: pointer; box-shadow: 0 6px 16px rgba(0,0,0,0.75); border: 1px solid rgba(255,255,255,0.15); }
-.okey-seat-plate.pos-bottom { bottom: 2px; left: 50%; transform: translateX(-50%); }
-.okey-seat-plate.pos-top { top: 2px; left: 50%; transform: translateX(-50%); }
-.okey-seat-plate.pos-left { left: 2px; top: 50%; transform: translateY(-50%); }
-.okey-seat-plate.pos-right { right: 2px; top: 50%; transform: translateY(-50%); }
-.okey-neon-svg { position: absolute; inset: -2px; width: calc(100% + 4px); height: calc(100% + 4px); pointer-events: none; }
-.okey-neon-rect { fill: none; stroke-width: 3; rx: 10px; ry: 10px; stroke-dasharray: 400; stroke-dashoffset: 0; filter: drop-shadow(0 0 6px currentColor); transition: stroke-dashoffset 0.35s linear; }
-
-/* MERKEZ PENCERELER IZGARASI (SOHBET HARIC TUM PENCERELER ORTADA SABIT & KAPATILABILIR) */
-.center-windows-stage {
-  flex: 1;
-  min-height: 0;
-  padding: 6px;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(195px, 1fr));
-  grid-auto-rows: minmax(110px, 1fr);
-  gap: 6px;
-  overflow-y: auto;
-  align-content: center;
-  z-index: 10;
-}
-
-.center-win-card {
-  background: rgba(15, 23, 42, 0.94);
-  border: 1px solid rgba(255,255,255,0.16);
-  border-radius: 10px;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.65);
-  min-height: 115px;
-  max-height: 100%;
-}
-
-.win-header {
-  padding: 4px 8px;
-  background: rgba(0, 0, 0, 0.45);
-  border-bottom: 1px solid rgba(255,255,255,0.1);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 9.5px;
-  font-weight: 900;
-  letter-spacing: 0.3px;
-  text-transform: uppercase;
-  flex-shrink: 0;
-}
-
-.panel-close-x {
-  background: rgba(239, 68, 68, 0.22);
-  border: 1px solid rgba(239, 68, 68, 0.45);
-  color: #fca5a5;
-  width: 17px;
-  height: 17px;
-  border-radius: 4px;
-  font-size: 9px;
-  font-weight: 900;
-  cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-}
-.panel-close-x:hover { background: #ef4444; color: #fff; }
-
-.win-body {
-  flex: 1;
-  padding: 6px 8px;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  font-size: 10px;
-}
-
-/* 1. MERKEZ ZAR VE CANLI KARE PENCERESI */
-.dice-compact-area {
+/* PC TAM BOY ZAR EKRANI */
+.dice-screen-mode {
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at center, #1e293b 0%, #090d18 100%);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: 18px;
+  padding: 24px;
   text-align: center;
-  margin: auto 0;
 }
-.dice-cubes-holder { display: flex; gap: 10px; align-items: center; justify-content: center; }
-.big-die {
-  width: 40px;
-  height: 40px;
-  background: linear-gradient(145deg, #ffffff, #cbd5e1);
-  color: #0f172a;
-  border-radius: 9px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 21px;
-  font-weight: 900;
-  box-shadow: 0 6px 14px rgba(0,0,0,0.6);
-  border: 1.5px solid #e2e8f0;
-}
+.wb-pool-banner { background: rgba(16, 185, 129, 0.15); border: 1.5px solid #10b981; color: #ecfdf5; padding: 8px 20px; border-radius: 99px; font-size: 14px; font-weight: 900; box-shadow: 0 0 20px rgba(16, 185, 129, 0.3); }
+.econ-cycle-banner { background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.45); color: #fde68a; padding: 6px 16px; border-radius: 99px; font-size: 12px; font-weight: 800; }
+.dice-cubes-holder { display: flex; gap: 28px; align-items: center; justify-content: center; }
+.big-die { width: 92px; height: 92px; background: linear-gradient(145deg, #ffffff, #cbd5e1); color: #0f172a; border-radius: 22px; display: flex; align-items: center; justify-content: center; font-size: 46px; font-weight: 900; box-shadow: 0 15px 35px rgba(0,0,0,0.7), inset 0 -4px 8px rgba(0,0,0,0.25); border: 3px solid #e2e8f0; }
 .big-die.rolling { animation: shakeDie 0.25s infinite; color: #d97706; }
-.roll-main-btn {
-  padding: 6px 18px;
-  font-size: 11.5px;
-  font-weight: 900;
-  color: #fff;
-  background: linear-gradient(135deg, #f59e0b, #d97706);
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  box-shadow: 0 4px 14px rgba(245, 158, 11, 0.4);
-}
+.roll-main-btn { padding: 14px 44px; font-size: 18px; font-weight: 900; color: #fff; background: linear-gradient(135deg, #f59e0b, #d97706); border: none; border-radius: 16px; cursor: pointer; box-shadow: 0 10px 30px rgba(245, 158, 11, 0.45); transition: transform 0.2s ease; }
+.roll-main-btn:hover:not(:disabled) { transform: translateY(-2px); }
 .roll-main-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 
-/* CANLI KARE MINI GORUNUMU */
-.live-landed-box {
+/* PC TAM BOY GELINEN KART EKRANI */
+.card-fullscreen-mode {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  background-size: cover;
+  background-position: center;
   display: none;
   flex-direction: column;
   justify-content: space-between;
-  gap: 5px;
-  height: 100%;
-  background-size: cover;
-  background-position: center;
-  border-radius: 7px;
-  padding: 6px 8px;
-  position: relative;
+  padding: 18px 22px;
+  z-index: 2;
   overflow-y: auto;
-  z-index: 1;
 }
-.live-landed-box::before {
+.card-fullscreen-mode::before {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, rgba(5,8,17,0.85) 0%, rgba(5,8,17,0.6) 50%, rgba(5,8,17,0.95) 100%);
+  background: linear-gradient(180deg, rgba(5, 8, 17, 0.85) 0%, rgba(5, 8, 17, 0.38) 42%, rgba(5, 8, 17, 0.88) 76%, rgba(5, 8, 17, 0.97) 100%);
   z-index: -1;
 }
+.fs-top-bar { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; flex-wrap: wrap; }
+.fs-badges { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.fs-pill { padding: 6px 13px; border-radius: 99px; font-size: 11px; font-weight: 900; letter-spacing: 0.5px; text-transform: uppercase; color: #fff; box-shadow: 0 4px 12px rgba(0,0,0,0.5); }
+.fs-occupants-bar { display: flex; align-items: center; gap: 8px; background: rgba(15, 23, 42, 0.88); border: 1.5px solid rgba(255,255,255,0.25); padding: 5px 12px; border-radius: 99px; }
+.fs-big-pawn { display: flex; align-items: center; gap: 5px; padding: 4px 10px; border-radius: 99px; font-size: 11.5px; font-weight: 900; color: #fff; border: 2px solid #fff; }
+.fs-Hero { margin: auto 0; display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+.fs-title-area h1 { font-size: 38px; font-weight: 900; color: #ffffff; text-shadow: 0 4px 20px rgba(0,0,0,0.95); line-height: 1.05; margin-bottom: 6px; }
+.fs-title-area p { font-size: 14px; color: #e2e8f0; max-width: 540px; text-shadow: 0 2px 8px rgba(0,0,0,0.9); font-weight: 600; }
+.tax-visual-card { background: rgba(15, 23, 42, 0.92); border: 2px solid #38bdf8; border-radius: 16px; padding: 14px 20px; display: flex; align-items: center; gap: 14px; box-shadow: 0 10px 30px rgba(0,0,0,0.75); }
+.fs-bottom-area { display: flex; flex-direction: column; gap: 10px; }
+.fs-stats-row { display: grid; grid-template-columns: repeat(4, 1fr) 1.5fr; gap: 8px; }
+.fs-stat-card { background: rgba(15, 23, 42, 0.85); border: 1px solid rgba(255,255,255,0.16); border-radius: 10px; padding: 8px 11px; backdrop-filter: blur(6px); }
+.fs-stat-card span { display: block; font-size: 9.5px; color: var(--text-muted); font-weight: 800; text-transform: uppercase; }
+.fs-stat-card strong { font-size: 18px; color: #ffffff; font-weight: 900; }
+.fs-actions-bar { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
 
-/* 2. SABIT SECILI KART & ISLEMLER PENCERESI */
-.insp-banner {
-  height: 36px;
-  background-size: cover;
-  background-position: center;
-  position: relative;
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  padding: 3px 7px;
-  border-radius: 6px;
-  flex-shrink: 0;
-  overflow: hidden;
-}
-.insp-banner::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, rgba(5,8,17,0.35), rgba(15,23,42,0.95));
-}
-.insp-banner > * { position: relative; z-index: 2; }
-
-.insp-stats-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 4px;
-}
-.insp-stat-box {
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.1);
-  padding: 3px 6px;
-  border-radius: 6px;
-}
-.insp-stat-box span { display: block; font-size: 7.5px; color: var(--text-muted); font-weight: 800; }
-.insp-stat-box strong { font-size: 11px; color: #fff; font-weight: 900; }
-
-.inline-btns-grid { display: flex; flex-wrap: wrap; gap: 4px; }
-.mini-act-btn {
-  flex: 1 1 calc(50% - 4px);
-  padding: 4px 6px;
-  border: none;
-  border-radius: 5px;
-  font-size: 9.5px;
-  font-weight: 900;
-  color: #fff;
-  cursor: pointer;
-  text-align: center;
-}
-.mini-act-btn.full { flex: 1 1 100%; }
-.mini-act-btn:disabled { opacity: 0.35; cursor: not-allowed; }
-
-.inline-mini-form {
-  background: rgba(5, 8, 17, 0.95);
-  border: 1px solid var(--gold);
-  border-radius: 6px;
-  padding: 6px;
-  display: none;
-  flex-direction: column;
-  gap: 4px;
-}
-.inline-mini-form.open { display: flex; }
-.inline-mini-form label { font-size: 9px; color: #fde68a; font-weight: 800; }
-.inline-mini-form input, .inline-mini-form select {
-  width: 100%;
-  background: #1e293b;
-  border: 1px solid rgba(255,255,255,0.25);
-  color: #fff;
-  padding: 4px 6px;
-  border-radius: 4px;
-  font-size: 10px;
-  font-weight: 700;
-  user-select: text;
-}
-
-/* 3. OYUNCULAR VE MULKLER PENCERESI */
-.player-card {
-  background: rgba(17, 24, 39, 0.95);
-  border: 1.5px solid rgba(255,255,255,0.1);
-  border-radius: 8px;
-  padding: 5px 7px;
-  cursor: pointer;
-}
-.player-card.neon-active { border-color: #00f5d4; }
-.player-card.bankrupt { opacity: 0.35; filter: grayscale(1); }
-.p-card-top { display: flex; align-items: center; justify-content: space-between; gap: 4px; }
-.p-identity { display: flex; align-items: center; gap: 6px; }
-.p-badge { width: 22px; height: 22px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 10.5px; color: #fff; border: 1px solid #fff; flex-shrink: 0; }
-.p-title { font-size: 10.5px; font-weight: 900; color: #fff; }
-.p-sub { font-size: 8.5px; color: var(--text-muted); font-weight: 700; }
-.p-balance { font-size: 11px; font-weight: 900; color: var(--emerald); white-space: nowrap; }
-.p-balance.neg { color: #f87171; }
-.color-swatch-row { display: flex; align-items: center; gap: 4px; margin-top: 4px; padding-top: 3px; border-top: 1px dashed rgba(255,255,255,0.1); }
-.color-dot-btn { width: 12px; height: 12px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.6); cursor: pointer; }
-.p-assets-drawer { margin-top: 5px; padding-top: 4px; border-top: 1px solid rgba(255,255,255,0.1); display: none; flex-direction: column; gap: 4px; }
-.player-card.expanded .p-assets-drawer { display: flex; }
-.asset-chip { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); border-radius: 5px; padding: 3px 6px; font-size: 9.5px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
-.asset-chip.active-asset { background: rgba(245, 158, 11, 0.25); border-color: var(--gold); }
-
-/* 4. BILDIRIMLER & TEKLIFLER */
-.log-item { background: rgba(255, 255, 255, 0.04); border-left: 2.5px solid var(--blue); padding: 3px 6px; border-radius: 4px; font-size: 9px; line-height: 1.25; color: #e2e8f0; }
-.log-item.profit { background: rgba(16, 185, 129, 0.14); border-left-color: #10b981; }
-.log-item.loss { background: rgba(239, 68, 68, 0.15); border-left-color: #ef4444; }
-.pnl-badge { display: inline-block; padding: 0 4px; border-radius: 3px; font-size: 8.5px; font-weight: 900; margin-right: 4px; }
-.pnl-badge.gain { background: rgba(16, 185, 129, 0.25); color: #34d399; }
-.pnl-badge.spend { background: rgba(239, 68, 68, 0.25); color: #f87171; }
-.offer-country-link { color: #38bdf8; font-weight: 900; text-decoration: underline; cursor: pointer; }
-
-.act-btn { padding: 6px 10px; border: none; border-radius: 7px; font-size: 10.5px; font-weight: 900; color: #fff; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; }
+.act-btn { padding: 9px 14px; border: none; border-radius: 10px; font-size: 12px; font-weight: 900; color: #fff; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; transition: all 0.16s ease; }
 .act-btn:disabled { opacity: 0.35; cursor: not-allowed; }
 .bg-green { background: linear-gradient(135deg, #10b981, #059669); }
 .bg-gold { background: linear-gradient(135deg, #f59e0b, #d97706); }
@@ -497,28 +273,189 @@ body.fullscreen-okey-mode .okey-edges-layer { display: block; }
 .bg-crimson { background: linear-gradient(135deg, #ef4444, #b91c1c); }
 .bg-slate { background: rgba(51, 65, 85, 0.9); border: 1px solid rgba(255,255,255,0.2); }
 
-/* SOHBET BALONU VE SOHBET PENCERESI */
+/* TAM EKRAN OKEY TARZI 4 KENAR NEON SURE PLAKALARI */
+.okey-edges-layer { position: absolute; inset: 6px; pointer-events: none; z-index: 38; display: none; }
+body.fullscreen-okey-mode .okey-edges-layer { display: block; }
+.okey-seat-plate { position: absolute; pointer-events: auto; background: rgba(9, 13, 24, 0.92); border-radius: 10px; padding: 4px 10px; min-width: 130px; display: flex; align-items: center; gap: 7px; cursor: pointer; box-shadow: 0 6px 16px rgba(0,0,0,0.75); border: 1px solid rgba(255,255,255,0.15); }
+.okey-seat-plate.pos-bottom { bottom: 4px; left: 50%; transform: translateX(-50%); }
+.okey-seat-plate.pos-top { top: 4px; left: 50%; transform: translateX(-50%); }
+.okey-seat-plate.pos-left { left: 4px; top: 50%; transform: translateY(-50%); }
+.okey-seat-plate.pos-right { right: 4px; top: 50%; transform: translateY(-50%); }
+.okey-neon-svg { position: absolute; inset: -2px; width: calc(100% + 4px); height: calc(100% + 4px); pointer-events: none; }
+.okey-neon-rect { fill: none; stroke-width: 3.5; rx: 10px; ry: 10px; stroke-dasharray: 400; stroke-dashoffset: 0; filter: drop-shadow(0 0 6px currentColor); transition: stroke-dashoffset 0.35s linear; }
+
+/* =========================================================
+   MOBIL GORUNUM (body.mobile-mode):
+   - Yan sutunlar gizlenir, tahta tam ekran olur
+   - Kartlarin alt kismi merkeze bakar
+   - Ortada sadece 3 pencere vardir ve Canli Akis ORTADADIR (2. sirada)
+   - Teklifler ve Son Bildirimler penceresi mobilde yoktur
+   - Teklif gelirse 10 sn'lik anlik karar bildirimi cikar
+   ========================================================= */
+.mobile-only-top-bar { display: none; }
+.mobile-only-center-stage { display: none; }
+.mobile-instant-offer-toast {
+  position: absolute;
+  top: 38px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(380px, 94%);
+  background: rgba(15, 23, 42, 0.98);
+  border: 2px solid var(--gold);
+  border-radius: 12px;
+  padding: 8px 11px;
+  z-index: 55;
+  display: none;
+  flex-direction: column;
+  gap: 6px;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.9);
+}
+.mobile-instant-offer-toast.show { display: flex; }
+.toast-progress-track { width: 100%; height: 4px; background: rgba(255,255,255,0.12); border-radius: 99px; overflow: hidden; }
+.toast-progress-fill { height: 100%; width: 100%; background: linear-gradient(90deg, #10b981, #f59e0b, #ef4444); transition: width 1s linear; }
+
+body.mobile-mode { padding: 4px; }
+body.mobile-mode .left-sidebar,
+body.mobile-mode .right-sidebar,
+body.mobile-mode .col-resizer { display: none !important; }
+
+body.mobile-mode .board-wrapper {
+  width: 100%;
+  height: calc(100dvh - 8px);
+  grid-template-columns: 1.22fr repeat(10, minmax(0, 1fr)) 1.22fr;
+  grid-template-rows: 1.22fr repeat(6, minmax(0, 1fr)) 1.22fr;
+  gap: 3px;
+  padding: 4px;
+  border-radius: 14px;
+}
+
+/* Mobilde kartlarin alt tarafi merkeze bakar */
+body.mobile-mode .tile.orient-top .tile-inner { transform: rotate(0deg); }
+body.mobile-mode .tile.orient-bottom .tile-inner { transform: rotate(180deg); }
+body.mobile-mode.bottom-row-upright .tile.orient-bottom .tile-inner { transform: rotate(0deg); }
+body.mobile-mode .tile.orient-right .tile-inner { width: 100cqh; height: 100cqw; transform: rotate(90deg); }
+body.mobile-mode .tile.orient-left .tile-inner { width: 100cqh; height: 100cqw; transform: rotate(-90deg); }
+
+body.mobile-mode .tile-color-strip { height: 11px; font-size: 7px; padding: 0 3px; }
+body.mobile-mode .house-pip { width: 5px; height: 5px; }
+body.mobile-mode .tile-flag { font-size: clamp(9px, 1.35vmin, 13px); margin-bottom: 0; }
+body.mobile-mode .tile-country-name { font-size: clamp(6.8px, 1.05vmin, 9.5px); }
+body.mobile-mode .tile-tokens-row { min-height: 11px; padding-bottom: 0; }
+body.mobile-mode .board-pawn { width: clamp(11px, 1.4vmin, 15px); height: clamp(11px, 1.4vmin, 15px); font-size: 7.5px; border-width: 1.5px; }
+body.mobile-mode .tile-footer { font-size: clamp(6.5px, 0.95vmin, 9px); padding: 1px 3px; }
+
+body.mobile-mode .mobile-only-top-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+  padding: 4px 8px;
+  background: rgba(5, 8, 17, 0.92);
+  border-bottom: 1px solid rgba(255,255,255,0.12);
+  flex-wrap: wrap;
+  z-index: 40;
+  flex-shrink: 0;
+}
+
+.hud-badge { font-size: 9px; font-weight: 900; padding: 2px 6px; border-radius: 5px; background: rgba(255,255,255,0.07); color: #f8fafc; white-space: nowrap; }
+.tiny-ctrl-btn { background: rgba(255,255,255,0.09); border: 1px solid rgba(255,255,255,0.18); color: #fff; padding: 3px 6px; border-radius: 5px; font-size: 8.8px; font-weight: 800; cursor: pointer; white-space: nowrap; }
+.tiny-ctrl-btn.active-win { border-color: #38bdf8; background: rgba(56, 189, 248, 0.22); color: #bae6fd; }
+.tiny-ctrl-btn.pause-btn { background: linear-gradient(135deg, #3b82f6, #1d4ed8); border-color: #60a5fa; }
+.tiny-ctrl-btn.pause-btn.paused-state { background: linear-gradient(135deg, #10b981, #059669); }
+
+body.mobile-mode .mobile-only-center-stage {
+  flex: 1;
+  min-height: 0;
+  padding: 5px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
+  grid-auto-rows: minmax(110px, 1fr);
+  gap: 5px;
+  overflow-y: auto;
+  align-content: stretch;
+  z-index: 10;
+}
+
+body.mobile-mode .mobile-center-slot {
+  display: flex;
+  flex-direction: column;
+  min-height: 115px;
+  max-height: 100%;
+  overflow: hidden;
+}
+
+/* Mobilde merkeze tasinan panellerin kompakt boyutlari */
+body.mobile-mode .info-card-panel.pinned-panel,
+body.mobile-mode .players-panel-wrap,
+body.mobile-mode .mobile-live-win-card {
+  flex: 1;
+  height: 100%;
+  min-height: 110px;
+  border-radius: 10px;
+  background: rgba(15, 23, 42, 0.94);
+  border: 1px solid rgba(255,255,255,0.18);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+body.mobile-mode .insp-banner { height: 34px; padding: 3px 7px; }
+body.mobile-mode .insp-body { padding: 5px 7px; gap: 4px; }
+body.mobile-mode .insp-stat-box { padding: 3px 5px; border-radius: 5px; }
+body.mobile-mode .insp-stat-box span { font-size: 7px; }
+body.mobile-mode .insp-stat-box strong { font-size: 10.5px; }
+body.mobile-mode .mini-act-btn { padding: 4px 5px; font-size: 9px; border-radius: 5px; }
+body.mobile-mode .players-list { padding: 5px; gap: 5px; }
+body.mobile-mode .player-card { padding: 5px 7px; border-radius: 8px; }
+body.mobile-mode .p-badge { width: 22px; height: 22px; font-size: 10px; }
+body.mobile-mode .p-title { font-size: 10.5px; }
+body.mobile-mode .p-sub { font-size: 8px; }
+body.mobile-mode .p-balance { font-size: 11px; }
+body.mobile-mode .asset-chip { padding: 3px 6px; font-size: 9px; }
+
+/* Mobilde Ortadaki Canli Akis & Zar Penceresi Kompakt Stili */
+body.mobile-mode .dice-screen-mode { padding: 8px; gap: 6px; }
+body.mobile-mode .wb-pool-banner { padding: 3px 10px; font-size: 9.5px; }
+body.mobile-mode .econ-cycle-banner { padding: 2px 8px; font-size: 8.5px; }
+body.mobile-mode .dice-cubes-holder { gap: 10px; }
+body.mobile-mode .big-die { width: 42px; height: 42px; font-size: 22px; border-radius: 10px; border-width: 1.5px; }
+body.mobile-mode .roll-main-btn { padding: 6px 18px; font-size: 11.5px; border-radius: 8px; }
+
+body.mobile-mode .card-fullscreen-mode { padding: 7px 9px; gap: 4px; }
+body.mobile-mode .fs-pill { padding: 2px 7px; font-size: 8px; }
+body.mobile-mode .fs-big-pawn { padding: 2px 6px; font-size: 8.5px; }
+body.mobile-mode .fs-title-area h1 { font-size: 15px; margin-bottom: 2px; }
+body.mobile-mode .fs-title-area p { font-size: 9px; }
+body.mobile-mode .tax-visual-card { padding: 5px 8px; border-radius: 8px; gap: 6px; }
+body.mobile-mode .fs-stats-row { grid-template-columns: repeat(2, 1fr); gap: 4px; }
+body.mobile-mode .fs-stat-card { padding: 3px 6px; border-radius: 6px; }
+body.mobile-mode .fs-stat-card span { font-size: 7px; }
+body.mobile-mode .fs-stat-card strong { font-size: 10.5px; }
+body.mobile-mode .act-btn { padding: 5px 9px; font-size: 9.5px; border-radius: 6px; }
+
+/* SOHBET BALONU VE PENCERESI */
 .floating-chat-launcher { position: fixed; bottom: 12px; right: 12px; z-index: 9500; display: flex; align-items: center; gap: 6px; }
-.chat-bubble-btn { width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, #3b82f6, #1d4ed8); border: 2px solid #fff; color: #fff; font-size: 19px; cursor: pointer; box-shadow: 0 8px 22px rgba(37, 99, 235, 0.65); position: relative; display: flex; align-items: center; justify-content: center; }
-.chat-unread-badge { position: absolute; top: -4px; right: -4px; background: #ef4444; color: #fff; border: 1.5px solid #fff; border-radius: 99px; min-width: 19px; height: 19px; padding: 0 4px; font-size: 10px; font-weight: 900; display: none; align-items: center; justify-content: center; }
-.chat-drawer-window { position: fixed; bottom: 64px; right: 12px; width: 300px; max-width: calc(100vw - 24px); height: 320px; max-height: 62dvh; background: rgba(15, 23, 42, 0.98); border: 2px solid rgba(56, 189, 248, 0.6); border-radius: 14px; z-index: 9499; display: none; flex-direction: column; overflow: hidden; box-shadow: 0 20px 55px rgba(0,0,0,0.9); }
+.chat-bubble-btn { width: 46px; height: 46px; border-radius: 50%; background: linear-gradient(135deg, #3b82f6, #1d4ed8); border: 2px solid #fff; color: #fff; font-size: 20px; cursor: pointer; box-shadow: 0 8px 22px rgba(37, 99, 235, 0.65); position: relative; display: flex; align-items: center; justify-content: center; }
+.chat-unread-badge { position: absolute; top: -4px; right: -4px; background: #ef4444; color: #fff; border: 1.5px solid #fff; border-radius: 99px; min-width: 20px; height: 20px; padding: 0 4px; font-size: 10px; font-weight: 900; display: none; align-items: center; justify-content: center; }
+.chat-drawer-window { position: fixed; bottom: 66px; right: 12px; width: 310px; max-width: calc(100vw - 24px); height: 330px; max-height: 62dvh; background: rgba(15, 23, 42, 0.98); border: 2px solid rgba(56, 189, 248, 0.6); border-radius: 14px; z-index: 9499; display: none; flex-direction: column; overflow: hidden; box-shadow: 0 20px 55px rgba(0,0,0,0.9); }
 .chat-drawer-window.open { display: flex; }
-.chat-messages-list { flex: 1; overflow-y: auto; padding: 6px 8px; display: flex; flex-direction: column; gap: 5px; font-size: 10.5px; }
+.chat-messages-list { flex: 1; overflow-y: auto; padding: 6px 8px; display: flex; flex-direction: column; gap: 5px; font-size: 11px; }
 .chat-msg-bubble { background: rgba(255,255,255,0.06); border-left: 3px solid #38bdf8; padding: 4px 7px; border-radius: 6px; word-break: break-word; }
 .chat-input-bar { display: flex; gap: 4px; padding: 6px; background: rgba(0,0,0,0.4); border-top: 1px solid rgba(255,255,255,0.1); }
 .chat-input-bar input { flex: 1; background: #1e293b; border: 1px solid rgba(255,255,255,0.22); color: #fff; padding: 5px 8px; border-radius: 6px; font-size: 11px; user-select: text; }
 
 /* ACIK ARTTIRMA VE PAUSE OVERLAY */
-.auction-overlay { position: absolute; inset: 0; background: rgba(5, 8, 17, 0.94); z-index: 60; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 12px; gap: 8px; text-align: center; }
-.auction-box { background: linear-gradient(145deg, #1e293b, #0f172a); border: 2px solid var(--gold); border-radius: 14px; padding: 14px 18px; max-width: 400px; width: 100%; display: flex; flex-direction: column; gap: 8px; }
-.vote-row { display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12); padding: 5px 9px; border-radius: 8px; font-size: 11px; font-weight: 800; }
+.auction-overlay { position: absolute; inset: 0; background: rgba(5, 8, 17, 0.94); z-index: 60; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 14px; gap: 10px; text-align: center; }
+.auction-box { background: linear-gradient(145deg, #1e293b, #0f172a); border: 2px solid var(--gold); border-radius: 16px; padding: 16px 20px; max-width: 430px; width: 100%; display: flex; flex-direction: column; gap: 8px; }
+.vote-row { display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.12); padding: 6px 10px; border-radius: 8px; font-size: 11.5px; font-weight: 800; }
 
 /* AYARLAR MODALI */
 .settings-modal-backdrop { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.78); z-index: 9999; display: none; align-items: center; justify-content: center; backdrop-filter: blur(4px); }
-.settings-modal-box { background: #0f172a; border: 2px solid rgba(56, 189, 248, 0.5); border-radius: 14px; width: 400px; max-width: 94vw; max-height: 90dvh; overflow-y: auto; padding: 14px 16px; display: flex; flex-direction: column; gap: 8px; }
-.setting-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; background: rgba(255,255,255,0.04); padding: 6px 10px; border-radius: 8px; font-size: 11px; font-weight: 800; }
+.settings-modal-box { background: #0f172a; border: 2px solid rgba(56, 189, 248, 0.5); border-radius: 16px; width: 430px; max-width: 94vw; max-height: 90dvh; overflow-y: auto; padding: 16px 18px; display: flex; flex-direction: column; gap: 8px; }
+.setting-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; background: rgba(255,255,255,0.04); padding: 7px 10px; border-radius: 8px; font-size: 11.5px; font-weight: 800; }
 
 @keyframes shakeDie { 0% { transform: rotate(0deg) scale(1); } 50% { transform: rotate(14deg) scale(1.06); } 100% { transform: rotate(-14deg) scale(1); } }
+@keyframes neonPulse { from { opacity: 1; } to { opacity: 0.4; } }
 </style>
 </head>
 <body>
@@ -529,10 +466,11 @@ body.fullscreen-okey-mode .okey-edges-layer { display: block; }
       <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; border-bottom:1px solid rgba(255,255,255,0.12); padding-bottom:8px;">
         <div>
           <h2 style="font-size:19px; font-weight:900; color:#f59e0b;">🌍 EMLAK TACİRİ — ONLINE ODA & LOBİ</h2>
-          <p style="font-size:10.5px; color:#94a3b8;">Oda Kodu ile arkadaşlarını davet et (Min. 2 — Maks. 4 Kişi). İstersen bot ekleyip çıkarabilirsin.</p>
+          <p style="font-size:10.5px; color:#94a3b8;">Oda Kodu ile arkadaşlarını davet et (Min. 2 — Maks. 4 Kişi). Botları istediğin gibi ekleyip tamamen kaldırabilirsin.</p>
         </div>
         <div style="display:flex; gap:6px; align-items:center;">
-          <button class="tiny-ctrl-btn mic-active" id="btnLobbyMic" onclick="toggleVoiceMic()">🎙️ Mikrofon Açık</button>
+          <button class="icon-ctrl-btn mic-active" id="btnLobbyMic" onclick="toggleVoiceMic()">🎙️ Mikrofon Açık</button>
+          <button class="icon-ctrl-btn" onclick="toggleViewModeManual()">📱/🖥️ PC-Mobil Görünüm</button>
         </div>
       </div>
 
@@ -544,15 +482,14 @@ body.fullscreen-okey-mode .okey-edges-layer { display: block; }
             <button class="act-btn bg-gold" onclick="createHostRoomWithCode()">🏠 Yeni Oda Kur</button>
           </div>
 
-          <!-- ODA KODU GOSTERGESI VE ARKADASININ KODUYLA BAGLANMA -->
           <div class="room-code-banner">
             <div>
               <div style="font-size:9px; color:#cbd5e1; font-weight:800;">AKTİF ODA KODU (ARKADAŞLARINA GÖNDER):</div>
               <div class="room-code-text" id="lblActiveRoomCode">------</div>
             </div>
             <div style="display:flex; gap:5px;">
-              <button class="tiny-ctrl-btn" onclick="copyRoomCode()">📋 Kodu Kopyala</button>
-              <button class="tiny-ctrl-btn" onclick="generateNewRoomCode()">🔄 Yeni Kod</button>
+              <button class="icon-ctrl-btn" onclick="copyRoomCode()">📋 Kodu Kopyala</button>
+              <button class="icon-ctrl-btn" onclick="generateNewRoomCode()">🔄 Yeni Kod</button>
             </div>
           </div>
 
@@ -562,14 +499,14 @@ body.fullscreen-okey-mode .okey-edges-layer { display: block; }
           </div>
 
           <div style="font-size:10px; color:#fde68a;" id="lobbyConnStatus">
-            💡 Oda kurduğunda oluşan <b>Oda Kodunu</b> arkadaşlarına ver; aynı kodu girip <b>Koda Bağlan</b> dediklerinde odana düşerler.
+            💡 Oda kurduğunda oluşan <b>Oda Kodunu</b> arkadaşlarına ver; aynı kodu girip <b>Koda Bağlan</b> dediklerinde odana katılırlar.
           </div>
 
           <div style="display:flex; justify-content:space-between; align-items:center; margin-top:2px;">
             <span style="font-size:10.5px; font-weight:900; color:#f59e0b;">2. ODADAKİ OYUNCULAR (MAKS 4 KİŞİ)</span>
             <div style="display:flex; gap:4px;" id="hostBotControls">
-              <button class="tiny-ctrl-btn" onclick="hostAddBot()">+ 🤖 Bot Ekle</button>
-              <button class="tiny-ctrl-btn" onclick="hostRemoveBot()">- Bot Çıkar</button>
+              <button class="icon-ctrl-btn" onclick="hostAddBot()">+ 🤖 Bot Ekle</button>
+              <button class="icon-ctrl-btn" onclick="hostRemoveBot()">- Bot Çıkar</button>
             </div>
           </div>
 
@@ -588,7 +525,6 @@ body.fullscreen-okey-mode .okey-edges-layer { display: block; }
           </div>
         </div>
 
-        <!-- LOBI SOHBET -->
         <div class="lobby-box" style="height:100%; min-height:250px;">
           <div style="font-size:10.5px; font-weight:900; color:#10b981;">💬 LOBİ & OYUN İÇİ CANLI SOHBET</div>
           <div class="chat-messages-list" id="lobbyChatList" style="background:rgba(0,0,0,0.35); border-radius:8px;"></div>
@@ -605,73 +541,171 @@ body.fullscreen-okey-mode .okey-edges-layer { display: block; }
   <div class="settings-modal-backdrop" id="settingsBackdrop" onclick="closeSettingsModal()">
     <div class="settings-modal-box" onclick="event.stopPropagation()">
       <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.12); padding-bottom:6px;">
-        <h3 style="font-size:13px; font-weight:900; color:#f59e0b;">⚙️ Pencereler & Görünüm Ayarları</h3>
-        <button class="tiny-ctrl-btn" onclick="closeSettingsModal()">✖ Kapat</button>
+        <h3 style="font-size:14px; font-weight:900; color:#f59e0b;">⚙️ Oyun, Pencere ve Görünüm Ayarları</h3>
+        <button class="icon-ctrl-btn" onclick="closeSettingsModal()">✖ Kapat</button>
       </div>
       <div class="setting-row">
-        <label for="chkWinDice">🎲 Zar & Canlı Kare Penceresi</label>
-        <input type="checkbox" id="chkWinDice" checked onchange="setPanelVisibility('winDiceLive', this.checked)">
+        <label>🖥️ / 📱 Görünüm Modu Değiştir</label>
+        <button class="icon-ctrl-btn" onclick="toggleViewModeManual()">PC / Mobil Geçiş Yap</button>
+      </div>
+      <div class="setting-row">
+        <label for="chkWinLive">📍 Akıştaki Canlı Kart Penceresi</label>
+        <input type="checkbox" id="chkWinLive" checked onchange="setPanelVisibility('liveCardPanel', this.checked)">
       </div>
       <div class="setting-row">
         <label for="chkWinPinned">📌 Tıkladığın Kart & İşlemler Penceresi</label>
         <input type="checkbox" id="chkWinPinned" checked onchange="setPanelVisibility('pinnedCardPanel', this.checked)">
       </div>
       <div class="setting-row">
-        <label for="chkWinPlayers">👥 Oyuncular & Mülkler Penceresi</label>
+        <label for="chkWinPlayers">👥 Oyuncular ve Mülk Listesi Penceresi</label>
         <input type="checkbox" id="chkWinPlayers" checked onchange="setPanelVisibility('rightPlayersPanel', this.checked)">
       </div>
-      <div class="setting-row">
-        <label for="chkWinTrade">🤝 Diplomasi & Teklifler Penceresi</label>
+      <div class="setting-row" id="rowSetLog">
+        <label for="chkWinLog">📜 Son Bildirimler Penceresi (PC)</label>
+        <input type="checkbox" id="chkWinLog" checked onchange="setPanelVisibility('leftLogPanel', this.checked)">
+      </div>
+      <div class="setting-row" id="rowSetTrade">
+        <label for="chkWinTrade">🤝 Diplomasi ve Teklifler Penceresi (PC)</label>
         <input type="checkbox" id="chkWinTrade" checked onchange="setPanelVisibility('rightTradeDock', this.checked)">
       </div>
       <div class="setting-row">
-        <label for="chkWinLog">📜 Son Bildirimler Penceresi</label>
-        <input type="checkbox" id="chkWinLog" checked onchange="setPanelVisibility('leftLogPanel', this.checked)">
-      </div>
-      <div class="setting-row">
-        <label for="chkBottomUpright">🔄 Alt Sıradaki Kartların Yazısını Düz Çevir</label>
-        <input type="checkbox" id="chkBottomUpright" onchange="document.body.classList.toggle('bottom-row-upright', this.checked)">
-      </div>
-      <div class="setting-row">
-        <label for="chkDisableNeon">✨ Neon Işıkları Kapat</label>
+        <label for="chkDisableNeon">✨ Neon Işıkları Tamamen Kapat</label>
         <input type="checkbox" id="chkDisableNeon" onchange="applyVisualSettings()">
       </div>
       <div class="setting-row">
         <label>💡 Neon Parlaklığı (<span id="lblNeonVal">35%</span>)</label>
         <input type="range" id="rngNeonIntensity" min="0" max="100" value="35" oninput="applyVisualSettings()">
       </div>
+      <div class="setting-row">
+        <label for="chkBwMode">🎬 Siyah - Beyaz Modu</label>
+        <input type="checkbox" id="chkBwMode" onchange="applyVisualSettings()">
+      </div>
       <div style="display:flex; gap:6px; margin-top:4px;">
-        <button class="act-btn bg-slate" style="flex:1; justify-content:center;" onclick="resetVisualSettings()">🔄 Tüm Pencereleri Aç</button>
+        <button class="act-btn bg-slate" style="flex:1; justify-content:center;" onclick="resetVisualSettings()">🔄 Tümünü Sıfırla</button>
         <button class="act-btn bg-green" style="flex:1; justify-content:center;" onclick="closeSettingsModal()">✅ Tamam</button>
       </div>
     </div>
   </div>
 
-  <!-- TAM EKRAN 12x8 OYUN TAHTASI VE MERKEZDEKI PENCERELER -->
+  <!-- =========================================================
+       PC SOL SUTUN (ORIJINAL PC GORUNUMU)
+       ========================================================= -->
+  <aside class="left-sidebar" id="leftSidebar">
+    <div class="info-card-panel live-panel" id="liveCardPanel">
+      <div class="panel-tag-bar">
+        <span style="color:#38bdf8;">📍 Akıştaki Canlı Kart</span>
+        <div style="display:flex; align-items:center; gap:6px;">
+          <span id="liveFlowPlayerTag" style="color:#cbd5e1;">Başlangıç</span>
+          <button class="panel-close-x" onclick="setPanelVisibility('liveCardPanel', false)">✖</button>
+        </div>
+      </div>
+      <div class="insp-banner" id="liveBanner">
+        <div class="insp-banner-top">
+          <span class="fs-pill" id="liveRegion" style="font-size:9px; padding:2px 8px;">BÖLGE</span>
+          <span class="fs-pill" id="liveIdBadge" style="background:rgba(0,0,0,0.65); font-size:9px; padding:2px 7px;">#1</span>
+        </div>
+        <div class="insp-banner-bottom">
+          <div style="font-size:14.5px; font-weight:900; color:#fff; text-shadow:0 2px 6px #000;" id="liveTitle">BAŞLANGIÇ</div>
+          <div style="font-size:10px; font-weight:800; color:#fde68a;" id="liveOwner">Özel</div>
+        </div>
+      </div>
+      <div class="insp-body">
+        <div class="insp-stats-grid">
+          <div class="insp-stat-box"><span>DEĞER / İPOTEK</span><strong id="livePrice">-</strong></div>
+          <div class="insp-stat-box"><span>GÜNCEL KİRA</span><strong id="liveRent" style="color:#fde047;">-</strong></div>
+          <div class="insp-stat-box"><span>EV / PLAZA MALİYETİ</span><strong id="liveHouseCost" style="font-size:12px;">-</strong></div>
+          <div class="insp-stat-box"><span>YAPI & HİSSE PAYI</span><strong id="liveBuildings" style="font-size:11px; color:#34d399;">-</strong></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="info-card-panel pinned-panel" id="pinnedCardPanel">
+      <div class="panel-tag-bar">
+        <span style="color:var(--gold);">📌 Tıkladığın Kart & İşlemler</span>
+        <div style="display:flex; align-items:center; gap:6px;">
+          <span style="color:#94a3b8;">Sabit Panel</span>
+          <button class="panel-close-x" onclick="setPanelVisibility('pinnedCardPanel', false)">✖</button>
+        </div>
+      </div>
+      <div class="insp-banner" id="pinBanner">
+        <div class="insp-banner-top">
+          <span class="fs-pill" id="pinRegion" style="font-size:9px; padding:2px 8px;">BÖLGE</span>
+          <span class="fs-pill" id="pinIdBadge" style="background:rgba(0,0,0,0.65); font-size:9px; padding:2px 7px;">#6</span>
+        </div>
+        <div class="insp-banner-bottom">
+          <div style="font-size:14.5px; font-weight:900; color:#fff; text-shadow:0 2px 6px #000;" id="pinTitle">Türkiye</div>
+          <div style="font-size:10px; font-weight:800; color:#fde68a;" id="pinOwner">Satılık</div>
+        </div>
+      </div>
+      <div class="insp-body">
+        <div class="insp-stats-grid">
+          <div class="insp-stat-box"><span>DEĞER / İPOTEK</span><strong id="pinPrice">-</strong></div>
+          <div class="insp-stat-box"><span>GÜNCEL KİRA</span><strong id="pinRent" style="color:#fde047;">-</strong></div>
+          <div class="insp-stat-box"><span>EV / PLAZA MALİYETİ</span><strong id="pinHouseCost" style="font-size:12px;">-</strong></div>
+          <div class="insp-stat-box"><span>YAPI & HİSSE PAYI</span><strong id="pinBuildings" style="font-size:11px; color:#34d399;">-</strong></div>
+        </div>
+        <div class="pin-actions-area">
+          <div class="inline-btns-grid" id="pinActionBtns"></div>
+          <div class="inline-mini-form" id="pinSubform" onclick="event.stopPropagation()"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row-resizer" id="leftRowResizer"></div>
+
+    <!-- SON BILDIRIMLER (PC'DE KALIR, MOBILDE GIZLENIR) -->
+    <div class="log-panel" id="leftLogPanel">
+      <div class="sidebar-header">
+        <h3>📜 Son Bildirimler</h3>
+        <div style="display:flex; align-items:center; gap:5px;">
+          <button class="icon-ctrl-btn" id="btnSound" onclick="toggleSound()">🔊 Ses</button>
+          <button class="panel-close-x" onclick="setPanelVisibility('leftLogPanel', false)">✖</button>
+        </div>
+      </div>
+      <div class="log-container" id="gameLog"></div>
+    </div>
+  </aside>
+
+  <div class="col-resizer" id="leftColResizer"></div>
+
+  <!-- =========================================================
+       ORTA ALAN: 12x8 TAHTA VE MERKEZ EKRAN
+       ========================================================= -->
   <main class="board-wrapper" id="boardGrid">
     <section class="single-center-screen" id="centerScreen">
 
-      <!-- MERKEZ UST KOMPAKT BAR (PAUSE BUTONU + PENCERE BUTONLARI + SAYACLAR) -->
-      <div class="center-top-bar">
-        <div class="hud-status-group">
-          <span class="hud-badge" id="turnStatusText" style="color:#fde047;">SIRA: SEN</span>
-          <span class="hud-badge" id="timerClock" style="color:#34d399;">⏱️ 30 sn</span>
-          <span class="hud-badge" id="topInflationClock" style="color:#fde68a;">📈 10:00</span>
-          <span class="hud-badge" id="wbBannerDice" style="color:#6ee7b7;">🏦 2.500 ₺</span>
-          <span class="hud-badge" id="roomCodeInGameBadge" style="color:#38bdf8;">🔑 Kod: ------</span>
+      <!-- MOBIL UST BAR (SADECE MOBILDE GORUNUR) -->
+      <div class="mobile-only-top-bar" id="mobileTopBar">
+        <div style="display:flex; align-items:center; gap:4px; flex-wrap:wrap;">
+          <span class="hud-badge" id="mobTurnBadge" style="color:#fde047;">SIRA: SEN</span>
+          <span class="hud-badge" id="mobTimerBadge" style="color:#34d399;">⏱️ 30 sn</span>
+          <span class="hud-badge" id="mobInfBadge" style="color:#fde68a;">📈 10:00</span>
+          <span class="hud-badge" id="mobWbBadge" style="color:#6ee7b7;">🏦 2.500 ₺</span>
         </div>
-
-        <div class="hud-btn-group">
-          <button class="tiny-ctrl-btn pause-btn" id="btnPausePlay" onclick="requestPauseOrResumeVote()">⏸️ Durdur</button>
-          <button class="tiny-ctrl-btn active-win" id="btnToggleWinDice" onclick="toggleCenterWin('winDiceLive')">🎲 Zar</button>
-          <button class="tiny-ctrl-btn active-win" id="btnToggleWinPin" onclick="toggleCenterWin('pinnedCardPanel')">📌 İşlem</button>
-          <button class="tiny-ctrl-btn active-win" id="btnToggleWinPlayers" onclick="toggleCenterWin('rightPlayersPanel')">👥 Oyuncu</button>
-          <button class="tiny-ctrl-btn active-win" id="btnToggleWinTrade" onclick="toggleCenterWin('rightTradeDock')">🤝 Teklif</button>
-          <button class="tiny-ctrl-btn active-win" id="btnToggleWinLog" onclick="toggleCenterWin('leftLogPanel')">📜 Günlük</button>
-          <button class="tiny-ctrl-btn" onclick="toggleFullscreenOkeyMode()" title="Tam Ekran">⛶</button>
-          <button class="tiny-ctrl-btn" id="btnSound" onclick="toggleSound()">🔊</button>
+        <div style="display:flex; align-items:center; gap:3px; flex-wrap:wrap;">
+          <button class="tiny-ctrl-btn pause-btn" id="btnPausePlayMob" onclick="requestPauseOrResumeVote()">⏸️ Durdur</button>
+          <button class="tiny-ctrl-btn active-win" id="btnMobPin" onclick="toggleMobileWindow('pinnedCardPanel')">📌 İşlem</button>
+          <button class="tiny-ctrl-btn active-win" id="btnMobLive" onclick="toggleMobileWindow('mobileLiveCenterWin')">🎲 Canlı Akış</button>
+          <button class="tiny-ctrl-btn active-win" id="btnMobPlayers" onclick="toggleMobileWindow('rightPlayersPanel')">👥 Oyuncu</button>
+          <button class="tiny-ctrl-btn" onclick="toggleFullscreenOkeyMode()">⛶</button>
           <button class="tiny-ctrl-btn" onclick="openSettingsModal()">⚙️</button>
-          <button class="tiny-ctrl-btn" style="background:rgba(239,68,68,0.28);" onclick="leaveRoomOrGame()">🚪</button>
+          <button class="tiny-ctrl-btn" style="background:rgba(239,68,68,0.3);" onclick="leaveRoomOrGame()">🚪</button>
+        </div>
+      </div>
+
+      <!-- MOBIL 10 SANIYELIK ANLIK TEKLIF BILDIRIMI (ISTEK 2: MOBILDE TEKLIF PENCERESI YERINE ANLIK 10 SN KARAR) -->
+      <div class="mobile-instant-offer-toast" id="mobileOfferToast">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <span style="font-size:10px; font-weight:900; color:#fde047;" id="mobToastHeader">🤝 ANLIK TEKLİF (10 sn)</span>
+          <button class="panel-close-x" onclick="dismissMobileOfferToast()">✖</button>
+        </div>
+        <div style="font-size:11px; color:#f8fafc; line-height:1.3;" id="mobToastDesc"></div>
+        <div style="display:flex; gap:6px;">
+          <button class="mini-act-btn bg-green" id="mobToastAcceptBtn">✅ Kabul Et</button>
+          <button class="mini-act-btn bg-crimson" id="mobToastRejectBtn">✖ Reddet</button>
+        </div>
+        <div class="toast-progress-track">
+          <div class="toast-progress-fill" id="mobToastBar"></div>
         </div>
       </div>
 
@@ -681,10 +715,10 @@ body.fullscreen-okey-mode .okey-edges-layer { display: block; }
       <!-- ONAYLI PAUSE EKRANI -->
       <div class="auction-overlay" id="pauseVoteOverlay">
         <div class="auction-box">
-          <div style="font-size:11px; font-weight:900; color:#f59e0b;" id="pauseModalTag">⏸️ OYUN DURAKLATMA OYLAMASI</div>
-          <h2 id="pauseModalTitle" style="font-size:16px; font-weight:900;">Oyuncuların Onayı Bekleniyor...</h2>
-          <div id="pauseVotesList" style="display:flex; flex-direction:column; gap:5px; margin:4px 0;"></div>
-          <div id="pauseModalBtns" style="display:flex; gap:6px; justify-content:center;"></div>
+          <div style="font-size:12px; font-weight:900; color:var(--gold);" id="pauseModalTag">⏸️ OYUN DURAKLATMA OYLAMASI</div>
+          <h2 id="pauseModalTitle" style="font-size:20px; font-weight:900;">Oyuncuların Onayı Bekleniyor...</h2>
+          <div id="pauseVotesList" style="display:flex; flex-direction:column; gap:6px; margin:4px 0;"></div>
+          <div id="pauseModalBtns" style="display:flex; gap:8px; justify-content:center;"></div>
         </div>
       </div>
 
@@ -692,123 +726,147 @@ body.fullscreen-okey-mode .okey-edges-layer { display: block; }
       <div class="auction-overlay" id="auctionOverlay">
         <div class="auction-box">
           <div style="display:flex; justify-content:space-between; align-items:center;">
-            <span style="font-size:11px; font-weight:900; color:#f59e0b;">🔨 CANLI AÇIK ARTTIRMA</span>
-            <span id="aucTimerBadge" style="background:#ef4444; color:#fff; padding:2px 9px; border-radius:99px; font-size:11px; font-weight:900;">⏱️ 20 sn</span>
+            <span style="font-size:12px; font-weight:900; color:var(--gold);">🔨 CANLI AÇIK ARTTIRMA</span>
+            <span id="aucTimerBadge" style="background:#ef4444; color:#fff; padding:4px 12px; border-radius:99px; font-size:13px; font-weight:900;">⏱️ 20 sn</span>
           </div>
-          <h2 id="aucTileTitle" style="font-size:18px; font-weight:900;">🇶🇦 Katar</h2>
-          <p id="aucStatusText" style="font-size:11px; color:#e2e8f0;">Teklifler alınıyor...</p>
-          <div style="background:rgba(0,0,0,0.45); padding:8px; border-radius:10px;">
-            <div id="aucHighestBid" style="font-size:20px; font-weight:900; color:#10b981;">0 ₺</div>
-            <div id="aucHighestBidder" style="font-size:10.5px; color:#fde68a; font-weight:800;">Henüz teklif yok</div>
+          <h2 id="aucTileTitle" style="font-size:22px; font-weight:900;">🇶🇦 Katar</h2>
+          <p id="aucStatusText" style="font-size:12.5px; color:#e2e8f0;">Teklifler alınıyor...</p>
+          <div style="background:rgba(0,0,0,0.45); padding:10px; border-radius:12px; border:1px solid rgba(255,255,255,0.12);">
+            <div id="aucHighestBid" style="font-size:26px; font-weight:900; color:#10b981;">0 ₺</div>
+            <div id="aucHighestBidder" style="font-size:12px; color:#fde68a; font-weight:800;">Henüz teklif yok</div>
           </div>
-          <div style="display:flex; gap:6px; justify-content:center;" id="aucActionBtns"></div>
+          <div style="display:flex; gap:8px; justify-content:center;" id="aucActionBtns"></div>
         </div>
       </div>
 
-      <!-- MERKEZ PENCERELER ALANI (HEPSI KARTLARIN ARASINDA SABIT VE ✖ ILE KAPATILABILIR) -->
-      <div class="center-windows-stage" id="centerWindowsStage">
+      <!-- MOBIL MERKEZ PENCERELER ALANI (ISTEK 3: CANLI AKIS PENCERESI TAM ORTADA 2. SIRADA!) -->
+      <div class="mobile-only-center-stage" id="mobileCenterStage">
+        <!-- 1. SOL SLOT: SECILI KART & ISLEMLER -->
+        <div class="mobile-center-slot" id="mobileSlotLeft"></div>
 
-        <!-- PENCERE 1: ZAR ATMA & GELINEN CANLI KARE -->
-        <div class="center-win-card" id="winDiceLive">
-          <div class="win-header">
-            <span style="color:#f59e0b;">🎲 Zar & Canlı Akış</span>
-            <button class="panel-close-x" onclick="setPanelVisibility('winDiceLive', false)">✖</button>
-          </div>
-          <div class="win-body">
-            <div class="dice-compact-area" id="diceView">
-              <div style="font-size:9.5px; color:#fde68a; font-weight:800;" id="econCycleBanner">Maaş: +5.000 ₺</div>
-              <p style="color:#cbd5e1; font-size:10px;" id="dicePromptText">Sıra sende! Zar atınca +5 sn eklenir.</p>
-              <div class="dice-cubes-holder">
-                <div class="big-die" id="die1">1</div>
-                <div class="big-die" id="die2">6</div>
-              </div>
-              <div style="display:flex; gap:6px; flex-wrap:wrap; justify-content:center;" id="diceScreenButtons">
-                <button class="roll-main-btn" id="btnRollMain" onclick="triggerRoll()">🎲 ZAR AT</button>
-              </div>
+        <!-- 2. ORTA SLOT: CANLI AKIS & ZAR PENCERESI (ORTADA!) -->
+        <div class="mobile-center-slot" id="mobileSlotMiddle">
+          <div class="mobile-live-win-card" id="mobileLiveCenterWin">
+            <div class="panel-tag-bar">
+              <span style="color:#f59e0b;">🎲 Zar & Canlı Akış</span>
+              <button class="panel-close-x" onclick="toggleMobileWindow('mobileLiveCenterWin', false)">✖</button>
             </div>
-
-            <div class="live-landed-box" id="cardView">
-              <div style="display:flex; justify-content:space-between; align-items:center; gap:4px;">
-                <span class="hud-badge" id="fsRegionBadge" style="background:#3b82f6;">BÖLGE</span>
-                <div id="fsOccupantsBar" style="display:flex; gap:3px;"></div>
-              </div>
-              <div>
-                <div style="font-size:14px; font-weight:900; color:#fff;" id="fsCountryTitle">🇹🇷 Türkiye</div>
-                <div style="font-size:9.5px; color:#cbd5e1;" id="fsCountryDesc">Açıklama</div>
-              </div>
-              <div class="insp-stats-grid">
-                <div class="insp-stat-box"><span>DEĞER</span><strong id="fsPrice">-</strong></div>
-                <div class="insp-stat-box"><span>KİRA</span><strong id="fsRent" style="color:#fde047;">-</strong></div>
-                <div class="insp-stat-box"><span>EV</span><strong id="fsHouseCost">-</strong></div>
-                <div class="insp-stat-box"><span>YAPI</span><strong id="fsBuildings">-</strong></div>
-              </div>
-              <div style="font-size:9px; color:#fde68a; font-weight:800;" id="fsRentShares">Satılık</div>
-              <div style="display:flex; gap:4px; flex-wrap:wrap;" id="fsActionButtons"></div>
-            </div>
+            <div id="mobileLiveBody" style="flex:1; display:flex; flex-direction:column; overflow:hidden; position:relative;"></div>
           </div>
         </div>
 
-        <!-- PENCERE 2: TIKLADIGIN SABIT KART & ISLEMLER -->
-        <div class="center-win-card" id="pinnedCardPanel">
-          <div class="win-header">
-            <span style="color:#38bdf8;">📌 Seçili Kart & İşlemler</span>
-            <button class="panel-close-x" onclick="setPanelVisibility('pinnedCardPanel', false)">✖</button>
-          </div>
-          <div class="win-body">
-            <div class="insp-banner" id="pinBanner">
-              <div style="font-size:12px; font-weight:900; color:#fff;" id="pinTitle">🇹🇷 TÜRKİYE</div>
-              <div style="font-size:9.5px; font-weight:800; color:#fde68a;" id="pinOwner">Satılık</div>
-            </div>
-            <div class="insp-stats-grid">
-              <div class="insp-stat-box"><span>DEĞER</span><strong id="pinPrice">-</strong></div>
-              <div class="insp-stat-box"><span>KİRA</span><strong id="pinRent" style="color:#fde047;">-</strong></div>
-              <div class="insp-stat-box"><span>EV / PLAZA</span><strong id="pinHouseCost">-</strong></div>
-              <div class="insp-stat-box"><span>DURUM</span><strong id="pinBuildings" style="color:#34d399;">-</strong></div>
-            </div>
-            <div class="inline-btns-grid" id="pinActionBtns"></div>
-            <div class="inline-mini-form" id="pinSubform" onclick="event.stopPropagation()"></div>
-          </div>
-        </div>
-
-        <!-- PENCERE 3: OYUNCULAR VE MULK LISTESI -->
-        <div class="center-win-card" id="rightPlayersPanel">
-          <div class="win-header">
-            <span style="color:#10b981;">👥 Oyuncular & Mülkler</span>
-            <button class="panel-close-x" onclick="setPanelVisibility('rightPlayersPanel', false)">✖</button>
-          </div>
-          <div class="win-body" id="playersList"></div>
-        </div>
-
-        <!-- PENCERE 4: DIPLOMASI & SON BILDIRIMLER -->
-        <div class="center-win-card" id="rightTradeDock">
-          <div class="win-header">
-            <span style="color:#c084fc;">🤝 Teklifler (<span id="offerCounterText">0/0</span>)</span>
-            <div style="display:flex; gap:3px; align-items:center;">
-              <button class="tiny-ctrl-btn" id="btnPrevOffer" onclick="navigateOffers(-1)">◀</button>
-              <button class="tiny-ctrl-btn" id="btnNextOffer" onclick="navigateOffers(1)">▶</button>
-              <button class="tiny-ctrl-btn" id="btnToggleOffers" onclick="toggleIncomingOffers()">🔔</button>
-              <button class="panel-close-x" onclick="setPanelVisibility('rightTradeDock', false)">✖</button>
-            </div>
-          </div>
-          <div class="win-body" id="tradeDockBody"></div>
-        </div>
-
-        <!-- PENCERE 5: SON BILDIRIMLER GUNLUGU -->
-        <div class="center-win-card" id="leftLogPanel">
-          <div class="win-header">
-            <span style="color:#fde047;">📜 Son Bildirimler</span>
-            <button class="panel-close-x" onclick="setPanelVisibility('leftLogPanel', false)">✖</button>
-          </div>
-          <div class="win-body" id="gameLog"></div>
-        </div>
-
+        <!-- 3. SAG SLOT: OYUNCULAR & MULKLER -->
+        <div class="mobile-center-slot" id="mobileSlotRight"></div>
       </div>
+
+      <!-- PC VE MOBIL ORTAK: ZAR SAHNESI VE CANLI KART GORUNUMU -->
+      <div class="dice-screen-mode" id="diceView">
+        <div class="wb-pool-banner" id="wbBannerDice">🏦 Dünya Bankası Vergi Fonu: 2.500 ₺</div>
+        <div class="econ-cycle-banner" id="econCycleBanner">📈 Enflasyona Kalan Süre: 10:00 • Maaş: +5.000 ₺</div>
+        <p style="color:#cbd5e1; font-size:13px; max-width:520px;" id="dicePromptText">
+          Sıra sende! Zar atınca mevcut sürene <b>+5 sn</b>, kareye inince <b>+5 sn</b> daha eklenir.
+        </p>
+        <div class="dice-cubes-holder">
+          <div class="big-die" id="die1">1</div>
+          <div class="big-die" id="die2">6</div>
+        </div>
+        <div style="display:flex; gap:10px; flex-wrap:wrap; justify-content:center;" id="diceScreenButtons">
+          <button class="roll-main-btn" id="btnRollMain" onclick="triggerRoll()">🎲 ZAR AT</button>
+        </div>
+      </div>
+
+      <div class="card-fullscreen-mode" id="cardView">
+        <div class="fs-top-bar">
+          <div class="fs-badges">
+            <span class="fs-pill" id="fsRegionBadge" style="background:#3b82f6;">KÖRFEZ BÖLGESİ</span>
+            <span class="fs-pill" id="fsWorldBankPill" style="background:rgba(16,185,129,0.85);">🏦 Dünya Bankası: 2.500 ₺</span>
+          </div>
+          <div class="fs-occupants-bar" id="fsOccupantsBar"></div>
+        </div>
+
+        <div class="fs-Hero">
+          <div class="fs-title-area">
+            <h1 id="fsCountryTitle">🇹🇷 Türkiye</h1>
+            <p id="fsCountryDesc">Boğaziçi Köprüsü & Avrasya Ticaret Merkezi</p>
+          </div>
+          <div id="fsSpecialBox"></div>
+        </div>
+
+        <div class="fs-bottom-area">
+          <div class="fs-stats-row">
+            <div class="fs-stat-card"><span>ÜLKE DEĞERİ</span><strong id="fsPrice">3.200 ₺</strong></div>
+            <div class="fs-stat-card"><span>GÜNCEL KİRA</span><strong id="fsRent" style="color:#fde047;">820 ₺</strong></div>
+            <div class="fs-stat-card"><span>EV MALİYETİ</span><strong id="fsHouseCost">1.500 ₺</strong></div>
+            <div class="fs-stat-card"><span>YAPI & İPOTEK</span><strong id="fsBuildings">Bina Yok</strong></div>
+            <div class="fs-stat-card"><span>TAPU & KİRA PAYLAŞIMI</span><strong id="fsRentShares" style="font-size:12px; color:#fde68a;">Satılık</strong></div>
+          </div>
+          <div class="fs-actions-bar" id="fsActionButtons"></div>
+        </div>
+      </div>
+
     </section>
   </main>
 
+  <div class="col-resizer" id="rightColResizer"></div>
+
+  <!-- =========================================================
+       PC SAG SUTUN (ISTEK 4: PC VERSIYONUNDA TAM EKRAN BUTONU EKLENDI)
+       ========================================================= -->
+  <aside class="right-sidebar" id="rightSidebar">
+    <div class="top-timer-widget" id="pcTopTimerWidget">
+      <div class="timer-head">
+        <span class="timer-label" id="turnStatusText">SIRA: SEN</span>
+        <div style="display:flex; align-items:center; gap:4px; flex-wrap:wrap;">
+          <button class="icon-ctrl-btn" onclick="toggleFullscreenOkeyMode()" title="Oyunu Tam Ekran Yap">⛶ Tam Ekran</button>
+          <button class="icon-ctrl-btn" onclick="openSettingsModal()" title="Pencereleri ve Görünümü Özelleştir">⚙️</button>
+          <button class="icon-ctrl-btn" onclick="leaveRoomOrGame()" title="Oyundan Ayrıl">🚪</button>
+          <button class="pause-play-btn" id="btnPausePlay" onclick="requestPauseOrResumeVote()">⏸️ Durdur</button>
+          <span class="timer-clock" id="timerClock">30 sn</span>
+        </div>
+      </div>
+      <div class="timer-bar-track">
+        <div class="timer-bar-fill" id="timerBarFill"></div>
+      </div>
+      <div class="inflation-countdown-row">
+        <span>📈 Enflasyona Kalan Süre:</span>
+        <span id="topInflationClock" style="color:#34d399; font-size:12.5px; font-weight:900;">10:00</span>
+      </div>
+      <div style="font-size:9.5px; color:#38bdf8; margin-top:3px; font-weight:800;" id="roomCodeInGameBadge">
+        🔑 Oda Kodu: ------
+      </div>
+    </div>
+
+    <div class="players-panel-wrap" id="rightPlayersPanel">
+      <div class="sidebar-header">
+        <h3>👥 Oyuncular & Mülkler</h3>
+        <button class="panel-close-x" onclick="setPanelVisibility('rightPlayersPanel', false)">✖</button>
+      </div>
+      <div class="players-list" id="playersList"></div>
+    </div>
+
+    <div class="row-resizer" id="rightRowResizer"></div>
+
+    <!-- DIPLOMASI & TEKLIFLER (PC'DE KALIR, MOBILDE GIZLENIR) -->
+    <div class="trade-center-dock" id="rightTradeDock">
+      <div class="sidebar-header">
+        <h3>🤝 Diplomasi & Teklifler</h3>
+        <div style="display:flex; align-items:center; gap:5px;">
+          <button class="icon-ctrl-btn" id="btnToggleOffers" onclick="toggleIncomingOffers()">🔔 Açık</button>
+          <button class="panel-close-x" onclick="setPanelVisibility('rightTradeDock', false)">✖</button>
+        </div>
+      </div>
+      <div class="trade-nav-bar">
+        <button class="nav-arrow-btn" id="btnPrevOffer" onclick="navigateOffers(-1)">◀ Önceki</button>
+        <span id="offerCounterText">Teklif: 0 / 0</span>
+        <button class="nav-arrow-btn" id="btnNextOffer" onclick="navigateOffers(1)">Sonraki ▶</button>
+      </div>
+      <div class="trade-dock-body" id="tradeDockBody"></div>
+    </div>
+  </aside>
+
   <!-- YUZEN SOHBET BALONU VE MIKROFON -->
   <div class="floating-chat-launcher">
-    <button class="tiny-ctrl-btn mic-active" id="btnFloatingMic" onclick="toggleVoiceMic()" style="height:38px; padding:0 10px; border-radius:99px; font-size:10.5px;">
+    <button class="icon-ctrl-btn mic-active" id="btnFloatingMic" onclick="toggleVoiceMic()" style="height:40px; padding:0 11px; border-radius:99px; font-size:11px;">
       🎙️ Ses Açık
     </button>
     <button class="chat-bubble-btn" onclick="toggleChatDrawer()" title="Sohbeti Aç / Kapat">
@@ -819,8 +877,8 @@ body.fullscreen-okey-mode .okey-edges-layer { display: block; }
 
   <!-- OYUN ICI SOHBET PENCERESI -->
   <div class="chat-drawer-window" id="gameChatDrawer">
-    <div class="win-header">
-      <span style="color:#38bdf8;">💬 Canlı Oyun Sohbeti</span>
+    <div class="sidebar-header">
+      <h3>💬 Canlı Oyun Sohbeti</h3>
       <button class="panel-close-x" onclick="toggleChatDrawer()">✖</button>
     </div>
     <div class="chat-messages-list" id="gameChatList"></div>
@@ -843,46 +901,73 @@ body.fullscreen-okey-mode .okey-edges-layer { display: block; }
     return Math.floor(Math.random() * 6) + 1;
   }
 
-  /* PENCERE KAPATMA (✖) VE UST BARDAN ACMA */
-  const PANEL_CHECKBOX_MAP = {
-    winDiceLive: "chkWinDice",
-    pinnedCardPanel: "chkWinPinned",
-    rightPlayersPanel: "chkWinPlayers",
-    rightTradeDock: "chkWinTrade",
-    leftLogPanel: "chkWinLog"
-  };
+  /* =========================================================
+     PC VE MOBIL DINAMIK YERLESIM MOTORU (ISTEK 1, 2, 3, 4)
+     ========================================================= */
+  let isMobileView = false;
+  let manualViewOverride = null;
 
-  const PANEL_BTN_MAP = {
-    winDiceLive: "btnToggleWinDice",
-    pinnedCardPanel: "btnToggleWinPin",
-    rightPlayersPanel: "btnToggleWinPlayers",
-    rightTradeDock: "btnToggleWinTrade",
-    leftLogPanel: "btnToggleWinLog"
-  };
+  function detectAndApplyDeviceMode() {
+    if (manualViewOverride !== null) {
+      isMobileView = manualViewOverride;
+    } else {
+      const uaMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+      const touchPoints = navigator.maxTouchPoints && navigator.maxTouchPoints > 1;
+      const smallScreen = window.innerWidth <= 960 || window.screen.width <= 960;
+      isMobileView = Boolean(uaMobile || (touchPoints && smallScreen) || window.innerWidth <= 900);
+    }
 
-  const panelVisibilityState = {
-    winDiceLive: true,
-    pinnedCardPanel: true,
-    rightPlayersPanel: true,
-    rightTradeDock: true,
-    leftLogPanel: true
-  };
+    document.body.classList.toggle("mobile-mode", isMobileView);
+    syncDeviceLayoutDOM();
+  }
 
-  function setPanelVisibility(panelId, isVisible) {
-    panelVisibilityState[panelId] = isVisible;
-    const el = document.getElementById(panelId);
-    if (el) el.style.display = isVisible ? "flex" : "none";
-    const chkId = PANEL_CHECKBOX_MAP[panelId];
-    if (chkId && document.getElementById(chkId)) document.getElementById(chkId).checked = isVisible;
-    const btnId = PANEL_BTN_MAP[panelId];
-    if (btnId && document.getElementById(btnId)) {
-      document.getElementById(btnId).classList.toggle("active-win", isVisible);
+  function syncDeviceLayoutDOM() {
+    const pinnedPanel = document.getElementById("pinnedCardPanel");
+    const playersPanel = document.getElementById("rightPlayersPanel");
+    const diceEl = document.getElementById("diceView");
+    const cardEl = document.getElementById("cardView");
+
+    if (isMobileView) {
+      // MOBIL: 1. Sol = Secili Kart & Islemler, 2. ORTA = Canli Akis & Zar, 3. Sag = Oyuncular
+      const slotLeft = document.getElementById("mobileSlotLeft");
+      const liveBody = document.getElementById("mobileLiveBody");
+      const slotRight = document.getElementById("mobileSlotRight");
+
+      if (slotLeft && pinnedPanel.parentElement !== slotLeft) slotLeft.appendChild(pinnedPanel);
+      if (liveBody && diceEl.parentElement !== liveBody) {
+        liveBody.appendChild(diceEl);
+        liveBody.appendChild(cardEl);
+      }
+      if (slotRight && playersPanel.parentElement !== slotRight) slotRight.appendChild(playersPanel);
+    } else {
+      // PC: Orijinal 3 sutunlu yerlesime geri tasi
+      const leftSb = document.getElementById("leftSidebar");
+      const leftResizer = document.getElementById("leftRowResizer");
+      const rightSb = document.getElementById("rightSidebar");
+      const rightResizer = document.getElementById("rightRowResizer");
+      const centerScr = document.getElementById("centerScreen");
+
+      if (leftSb && pinnedPanel.parentElement !== leftSb) leftSb.insertBefore(pinnedPanel, leftResizer);
+      if (rightSb && playersPanel.parentElement !== rightSb) rightSb.insertBefore(playersPanel, rightResizer);
+      if (centerScr && diceEl.parentElement !== centerScr) {
+        centerScr.appendChild(diceEl);
+        centerScr.appendChild(cardEl);
+      }
+      updateSidebarLayoutVisibility();
     }
   }
 
-  function toggleCenterWin(panelId) {
-    setPanelVisibility(panelId, !panelVisibilityState[panelId]);
+  function toggleViewModeManual() {
+    manualViewOverride = !isMobileView;
+    detectAndApplyDeviceMode();
+    renderBoard();
+    renderRightPlayersList();
+    renderOkeyEdgesHUD();
   }
+
+  window.addEventListener("resize", () => {
+    if (manualViewOverride === null) detectAndApplyDeviceMode();
+  });
 
   function toggleFullscreenOkeyMode() {
     if (!document.fullscreenElement) {
@@ -900,6 +985,71 @@ body.fullscreen-okey-mode .okey-edges-layer { display: block; }
     renderOkeyEdgesHUD();
   });
 
+  /* PENCERE KAPATMA (✖) VE ACMA */
+  const PANEL_CHECKBOX_MAP = {
+    liveCardPanel: "chkWinLive",
+    pinnedCardPanel: "chkWinPinned",
+    leftLogPanel: "chkWinLog",
+    rightPlayersPanel: "chkWinPlayers",
+    rightTradeDock: "chkWinTrade"
+  };
+
+  const panelVisibilityState = {
+    liveCardPanel: true,
+    pinnedCardPanel: true,
+    leftLogPanel: true,
+    rightPlayersPanel: true,
+    rightTradeDock: true,
+    mobileLiveCenterWin: true
+  };
+
+  function setPanelVisibility(panelId, isVisible) {
+    panelVisibilityState[panelId] = isVisible;
+    const el = document.getElementById(panelId);
+    if (el) el.style.display = isVisible ? "flex" : "none";
+
+    if (panelId === "pinnedCardPanel") {
+      const slotL = document.getElementById("mobileSlotLeft");
+      if (slotL) slotL.style.display = isVisible ? "flex" : "none";
+      const b = document.getElementById("btnMobPin");
+      if (b) b.classList.toggle("active-win", isVisible);
+    } else if (panelId === "rightPlayersPanel") {
+      const slotR = document.getElementById("mobileSlotRight");
+      if (slotR) slotR.style.display = isVisible ? "flex" : "none";
+      const b = document.getElementById("btnMobPlayers");
+      if (b) b.classList.toggle("active-win", isVisible);
+    }
+
+    const chkId = PANEL_CHECKBOX_MAP[panelId];
+    if (chkId && document.getElementById(chkId)) document.getElementById(chkId).checked = isVisible;
+    if (!isMobileView) updateSidebarLayoutVisibility();
+  }
+
+  function toggleMobileWindow(panelId, forceState) {
+    const nextState = forceState !== undefined ? forceState : !panelVisibilityState[panelId];
+    if (panelId === "mobileLiveCenterWin") {
+      panelVisibilityState.mobileLiveCenterWin = nextState;
+      const slotM = document.getElementById("mobileSlotMiddle");
+      if (slotM) slotM.style.display = nextState ? "flex" : "none";
+      const b = document.getElementById("btnMobLive");
+      if (b) b.classList.toggle("active-win", nextState);
+    } else {
+      setPanelVisibility(panelId, nextState);
+    }
+  }
+
+  function updateSidebarLayoutVisibility() {
+    if (isMobileView) return;
+    const anyLeftOpen = panelVisibilityState.liveCardPanel || panelVisibilityState.pinnedCardPanel || panelVisibilityState.leftLogPanel;
+    document.getElementById("leftSidebar").style.display = anyLeftOpen ? "flex" : "none";
+    document.getElementById("leftColResizer").style.display = anyLeftOpen ? "flex" : "none";
+    const showLeftResizer = panelVisibilityState.leftLogPanel && (panelVisibilityState.liveCardPanel || panelVisibilityState.pinnedCardPanel);
+    document.getElementById("leftRowResizer").style.display = showLeftResizer ? "flex" : "none";
+    const showRightResizer = panelVisibilityState.rightPlayersPanel && panelVisibilityState.rightTradeDock;
+    document.getElementById("rightRowResizer").style.display = showRightResizer ? "flex" : "none";
+  }
+
+  /* GORUNUM VE NEON */
   let neonDisabled = false;
   let neonIntensity = 0.35;
   let spotlightTileId = null;
@@ -913,6 +1063,7 @@ body.fullscreen-okey-mode .okey-edges-layer { display: block; }
     const rawSlider = parseInt(document.getElementById("rngNeonIntensity").value) || 0;
     neonIntensity = neonDisabled ? 0 : (rawSlider / 100);
     document.getElementById("lblNeonVal").textContent = neonDisabled ? "Kapalı" : `${rawSlider}%`;
+    document.body.classList.toggle("bw-mode", document.getElementById("chkBwMode").checked);
     renderBoard();
     renderRightPlayersList();
   }
@@ -920,7 +1071,11 @@ body.fullscreen-okey-mode .okey-edges-layer { display: block; }
   function resetVisualSettings() {
     document.getElementById("chkDisableNeon").checked = false;
     document.getElementById("rngNeonIntensity").value = 35;
-    Object.keys(panelVisibilityState).forEach(pid => setPanelVisibility(pid, true));
+    document.getElementById("chkBwMode").checked = false;
+    Object.keys(panelVisibilityState).forEach(pid => {
+      if (pid === "mobileLiveCenterWin") toggleMobileWindow("mobileLiveCenterWin", true);
+      else setPanelVisibility(pid, true);
+    });
     applyVisualSettings();
   }
 
@@ -932,8 +1087,16 @@ body.fullscreen-okey-mode .okey-edges-layer { display: block; }
 
   function getInwardNeonShadow(tileId, hexColor) {
     if (neonDisabled || neonIntensity <= 0.01) return "none";
-    const blur = Math.round(14 * neonIntensity);
-    return `0 0 ${blur}px ${hexToRgba(hexColor, 0.75 * neonIntensity)}, inset 0 0 ${blur}px ${hexToRgba(hexColor, 0.45 * neonIntensity)}`;
+    const pos = getTileGridPos(tileId);
+    const reach = Math.round(14 * neonIntensity);
+    let dx = 0, dy = 0;
+    if (pos.row === 1) dy = reach;
+    else if (pos.row === 8) dy = -reach;
+    if (pos.col === 1) dx = reach;
+    else if (pos.col === 12) dx = -reach;
+    const blurOuter = Math.round(24 * neonIntensity);
+    const blurInner = Math.round(12 * neonIntensity);
+    return `${dx}px ${dy}px ${blurOuter}px ${hexToRgba(hexColor, 0.85 * neonIntensity)}, 0 0 ${blurInner}px ${hexToRgba(hexColor, 0.65 * neonIntensity)}, inset 0 0 ${blurInner}px ${hexToRgba(hexColor, 0.45 * neonIntensity)}`;
   }
 
   function highlightAndFocusTile(tileId) {
@@ -971,13 +1134,13 @@ body.fullscreen-okey-mode .okey-edges-layer { display: block; }
   function updateMicButtonsUI() {
     [document.getElementById("btnLobbyMic"), document.getElementById("btnFloatingMic")].forEach(btn => {
       if (!btn) return;
-      btn.className = `tiny-ctrl-btn ${isMicMuted ? "mic-muted" : "mic-active"}`;
+      btn.className = `icon-ctrl-btn ${isMicMuted ? "mic-muted" : "mic-active"}`;
       btn.textContent = isMicMuted ? "🔇 Ses Kapalı" : "🎙️ Ses Açık";
     });
   }
 
   function ensureAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
-  function toggleSound() { soundOn = !soundOn; document.getElementById("btnSound").textContent = soundOn ? "🔊" : "🔇"; }
+  function toggleSound() { soundOn = !soundOn; document.getElementById("btnSound").textContent = soundOn ? "🔊 Ses" : "🔇 Sessiz"; }
 
   function playTone(freq, type, dur, delay = 0, vol = 0.11) {
     if (!soundOn) return;
@@ -1073,7 +1236,6 @@ body.fullscreen-okey-mode .okey-edges-layer { display: block; }
 
   const NEON_PALETTE = ["#f59e0b", "#00f5d4", "#ff2a85", "#a855f7", "#22c55e", "#38bdf8", "#f97316"];
 
-  // ISTEK 1: Oyun baslangicta otomatik bot eklemez! Sadece 1 kisi (Kurucu) ile acilir, arkadaslar katilabilir veya bot eklenip 0 bota kadar silinebilir.
   let players = [
     { id: 0, name: "Kurucu", isBot: false, isReady: false, isHost: true, disconnected: false, disconnectSec: 60, money: 15000, pos: 0, lap: 1, turnsPlayed: 0, jailWaitTurns: 0, missedTurns: 0, color: "#f59e0b", code: "K", bankrupt: false }
   ];
@@ -1107,9 +1269,10 @@ body.fullscreen-okey-mode .okey-edges-layer { display: block; }
   let currentOfferIdx = 0;
   let chatMessages = [];
   let unreadChatCount = 0;
+  let mobileOfferToastInterval = null;
 
   /* =========================================================
-     ODA KODU URETME, KOPYALAMA VE PEERJS BAGLANTISI (ISTEK 1 & 2)
+     ODA KODU URETME VE ONLINE LOBI BAGLANTISI
      ========================================================= */
   function generateRandomCode() {
     const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
@@ -1122,7 +1285,7 @@ body.fullscreen-okey-mode .okey-edges-layer { display: block; }
     const lbl = document.getElementById("lblActiveRoomCode");
     const badge = document.getElementById("roomCodeInGameBadge");
     if (lbl) lbl.textContent = myRoomCode || "------";
-    if (badge) badge.textContent = `🔑 Kod: ${myRoomCode || "------"}`;
+    if (badge) badge.textContent = `🔑 Oda Kodu: ${myRoomCode || "------"}`;
   }
 
   function generateNewRoomCode() {
@@ -1206,6 +1369,7 @@ body.fullscreen-okey-mode .okey-edges-layer { display: block; }
       document.getElementById("lobbyBackdrop").style.display = "none";
       renderBoard();
       renderRightPlayersList();
+      refreshLivePanelOnly();
       refreshPinnedStatsOnly();
       renderOkeyEdgesHUD();
     }
@@ -1377,7 +1541,6 @@ body.fullscreen-okey-mode .okey-edges-layer { display: block; }
     saveRoomSnapshot();
   }
 
-  // ISTEK 1: Bot ekleme ve SON BOT DAHIL tamamen kaldirabilme!
   function hostAddBot() {
     if (players.length >= 4) return alert("Oda maksimum 4 kişilik olabilir!");
     const botNames = ["El-Tacir", "Şahin Bey", "Kleopatra", "Körfez Emiri"];
@@ -1429,7 +1592,6 @@ body.fullscreen-okey-mode .okey-edges-layer { display: block; }
     }
   }
 
-  // ISTEK 1: 2 kisi olmadan baslatmaya calisirsa o zaman uyari verir!
   function hostStartMatch() {
     if (players.length < 2) {
       alert("⚠️ Oyunu başlatmak için odada en az 2 kişi (arkadaşın veya bot) olmak zorundadır!");
@@ -1450,6 +1612,8 @@ body.fullscreen-okey-mode .okey-edges-layer { display: block; }
     saveRoomSnapshot();
     renderBoard();
     renderRightPlayersList();
+    refreshLivePanelOnly();
+    refreshPinnedStatsOnly();
     renderOkeyEdgesHUD();
     startTurn();
   }
@@ -1600,17 +1764,26 @@ body.fullscreen-okey-mode .okey-edges-layer { display: block; }
               <rect class="okey-neon-rect" x="2" y="2" width="156" height="40" stroke="${p.color}" style="stroke-dashoffset:${dashOffset};"></rect>
             </svg>
           ` : ""}
-          <div class="p-badge" style="width:20px; height:20px; font-size:9.5px; background:${p.color};">${p.code}</div>
+          <div class="p-badge" style="width:22px; height:22px; font-size:10px; background:${p.color};">${p.code}</div>
           <div style="line-height:1.1;">
-            <div style="font-size:10px; font-weight:900; color:#fff;">${p.name} ${isTurn ? `(${timeLeft}sn)` : ""}</div>
-            <div style="font-size:9.5px; font-weight:900; color:#34d399;">${p.money.toLocaleString("tr-TR")} ₺</div>
+            <div style="font-size:10.5px; font-weight:900; color:#fff;">${p.name} ${isTurn ? `(${timeLeft}sn)` : ""}</div>
+            <div style="font-size:10px; font-weight:900; color:#34d399;">${p.money.toLocaleString("tr-TR")} ₺</div>
           </div>
         </div>
       `;
     }).join("");
+
+    const mt = document.getElementById("mobTurnBadge");
+    const mcl = document.getElementById("mobTimerBadge");
+    const minf = document.getElementById("mobInfBadge");
+    const mwb = document.getElementById("mobWbBadge");
+    if (mt && players[currentTurn]) mt.textContent = `SIRA: ${players[currentTurn].name.toUpperCase()}`;
+    if (mcl) mcl.textContent = `⏱️ ${timeLeft} sn`;
+    if (minf) minf.textContent = `📈 ${formatMMSS(inflationSecondsLeft)}`;
+    if (mwb) mwb.textContent = `🏦 ${worldBankPool.toLocaleString("tr-TR")} ₺`;
   }
 
-  /* TAHTA POZISYONU VE KART YONU (ALT TARAFI EKRANIN ORTASINA BAKAR) */
+  /* TAHTA POZISYONU */
   function getTileGridPos(idx) {
     if (idx <= 11) return { row: 1, col: idx + 1, orient: "orient-top" };
     if (idx <= 17) return { row: idx - 10, col: 12, orient: "orient-right" };
@@ -1644,6 +1817,7 @@ body.fullscreen-okey-mode .okey-edges-layer { display: block; }
     playSfx("plaza");
     addLog(`📈 ENFLASYON (${inflationWaveCount}. Dalga): Vergiler %4, mülk ve maaşlar %6 arttı!`);
     renderBoard();
+    refreshLivePanelOnly();
     refreshPinnedStatsOnly();
   }
 
@@ -1658,12 +1832,13 @@ body.fullscreen-okey-mode .okey-edges-layer { display: block; }
   function updateEconBanner() {
     const timeStr = formatMMSS(inflationSecondsLeft);
     const topClock = document.getElementById("topInflationClock");
-    if (topClock) topClock.textContent = `📈 ${timeStr}`;
+    if (topClock) topClock.textContent = timeStr;
     const el = document.getElementById("econCycleBanner");
     if (el) {
       const genPct = Math.round((globalGeneralMultiplier - 1) * 100);
-      el.textContent = `Maaş: +${getPlayerLapSalary().toLocaleString("tr-TR")} ₺ • Zam: +%${genPct}`;
+      el.textContent = `📈 Enflasyon: ${timeStr} • Maaş: +${getPlayerLapSalary().toLocaleString("tr-TR")} ₺ • Zam: +%${genPct}`;
     }
+    renderOkeyEdgesHUD();
   }
 
   /* PAUSE OYLAMASI */
@@ -1727,16 +1902,16 @@ body.fullscreen-okey-mode .okey-edges-layer { display: block; }
 
   function applyPauseState(pauseNow) {
     isGamePaused = pauseNow;
-    const btn = document.getElementById("btnPausePlay");
+    [document.getElementById("btnPausePlay"), document.getElementById("btnPausePlayMob")].forEach(btn => {
+      if (!btn) return;
+      btn.textContent = isGamePaused ? "▶️ Başlat" : "⏸️ Durdur";
+      btn.classList.toggle("paused-state", isGamePaused);
+    });
     if (isGamePaused) {
       clearTimeout(botTimer);
-      btn.textContent = "▶️ Başlat";
-      btn.classList.add("paused-state");
       document.getElementById("turnStatusText").textContent = "⏸️ DURAKLATILDI";
       addLog("⏸️ Oyun duraklatıldı.");
     } else {
-      btn.textContent = "⏸️ Durdur";
-      btn.classList.remove("paused-state");
       const p = players[currentTurn];
       document.getElementById("turnStatusText").textContent = `SIRA: ${p.name.toUpperCase()}`;
       addLog("▶️ Oyun devam ediyor!");
@@ -1745,6 +1920,29 @@ body.fullscreen-okey-mode .okey-edges-layer { display: block; }
         else if (hasRolled && !isMoving) botTimer = setTimeout(() => executeBotDecisions(p, TILES[p.pos]), 700);
       }
     }
+  }
+
+  /* PC SURUKLENEBILIR SUTUNLAR */
+  function setupResizablePanels() {
+    const bindDrag = (el, onMove) => {
+      if (!el) return;
+      el.addEventListener("mousedown", (e) => {
+        e.preventDefault();
+        el.classList.add("dragging");
+        const mv = (ev) => onMove(ev);
+        const up = () => {
+          el.classList.remove("dragging");
+          window.removeEventListener("mousemove", mv);
+          window.removeEventListener("mouseup", up);
+        };
+        window.addEventListener("mousemove", mv);
+        window.addEventListener("mouseup", up);
+      });
+    };
+    bindDrag(document.getElementById("leftColResizer"), ev => document.documentElement.style.setProperty("--left-col-w", `${Math.min(520, Math.max(255, ev.clientX - 8))}px`));
+    bindDrag(document.getElementById("rightColResizer"), ev => document.documentElement.style.setProperty("--right-col-w", `${Math.min(520, Math.max(260, window.innerWidth - ev.clientX - 8))}px`));
+    bindDrag(document.getElementById("leftRowResizer"), ev => document.documentElement.style.setProperty("--left-log-h", `${Math.min(360, Math.max(100, window.innerHeight - ev.clientY - 12))}px`));
+    bindDrag(document.getElementById("rightRowResizer"), ev => document.documentElement.style.setProperty("--right-trade-h", `${Math.min(380, Math.max(130, window.innerHeight - ev.clientY - 12))}px`));
   }
 
   function calculateRent(tile) {
@@ -1801,7 +1999,9 @@ body.fullscreen-okey-mode .okey-edges-layer { display: block; }
 
   function updateWorldBankBadges() {
     const b1 = document.getElementById("wbBannerDice");
-    if (b1) b1.textContent = `🏦 ${worldBankPool.toLocaleString("tr-TR")} ₺`;
+    const b2 = document.getElementById("fsWorldBankPill");
+    if (b1) b1.textContent = `🏦 Dünya Bankası Vergi Fonu: ${worldBankPool.toLocaleString("tr-TR")} ₺`;
+    if (b2) b2.textContent = `🏦 Dünya Bankası: ${worldBankPool.toLocaleString("tr-TR")} ₺`;
     updateEconBanner();
   }
 
@@ -1831,9 +2031,9 @@ body.fullscreen-okey-mode .okey-edges-layer { display: block; }
 
       let pipsHTML = "";
       if (tile.mortgaged) {
-        pipsHTML = `<span style="background:#ef4444; padding:0 2px; border-radius:2px; font-size:6.5px;">İPT</span>`;
+        pipsHTML = `<span style="background:#ef4444; padding:0 2px; border-radius:2px; font-size:7px;">İPOTEK</span>`;
       } else if (tile.houseOwners && tile.houseOwners.length > 0) {
-        if (tile.houseOwners.length >= 5) pipsHTML = `<span style="color:#fde047;">🏙️</span>`;
+        if (tile.houseOwners.length >= 5) pipsHTML = `<span style="color:#fde047;">🏙️PLZ</span>`;
         else pipsHTML = `<div class="house-indicators">` + tile.houseOwners.map(pid => `<span class="house-pip" style="background:${players[pid] ? players[pid].color : '#fff'}"></span>`).join("") + `</div>`;
       }
 
@@ -1858,7 +2058,7 @@ body.fullscreen-okey-mode .okey-edges-layer { display: block; }
           <div class="tile-tokens-row" id="tokens-${tile.id}"></div>
           <div class="tile-footer">
             <span>${footerPrice}</span>
-            <span style="width:7px;height:7px;border-radius:50%;background:${ownerColor};opacity:${tile.owner !== undefined ? 1 : 0};border:1px solid #fff;"></span>
+            <span style="width:8px;height:8px;border-radius:50%;background:${ownerColor};opacity:${tile.owner !== undefined ? 1 : 0};border:1px solid #fff;"></span>
           </div>
         </div>
       `;
@@ -1887,33 +2087,60 @@ body.fullscreen-okey-mode .okey-edges-layer { display: block; }
     });
   }
 
-  function refreshPinnedStatsOnly() {
-    const tile = TILES[pinnedTileId] || TILES[0];
-    document.getElementById("pinBanner").style.backgroundImage = `url('${tile.photo}')`;
-    document.getElementById("pinTitle").textContent = `${tile.flag} ${tile.name}`;
-    const ownerEl = document.getElementById("pinOwner");
-    if (tile.type === "property") {
-      ownerEl.textContent = (tile.owner === undefined || !players[tile.owner]) ? "🏳️ Satılık" : `👑 ${players[tile.owner].name}`;
-    } else {
-      ownerEl.textContent = "Özel Kare";
+  function fillInfoCardDOM(prefix, tileId) {
+    const tile = TILES[tileId] || TILES[0];
+    const banner = document.getElementById(`${prefix}Banner`);
+    if (banner) banner.style.backgroundImage = `url('${tile.photo}')`;
+    const regEl = document.getElementById(`${prefix}Region`);
+    if (regEl) {
+      regEl.textContent = tile.region;
+      regEl.style.background = tile.color;
+    }
+    const idBadge = document.getElementById(`${prefix}IdBadge`);
+    if (idBadge) idBadge.textContent = `#${tile.id + 1}`;
+    const titleEl = document.getElementById(`${prefix}Title`);
+    if (titleEl) titleEl.textContent = `${tile.flag} ${tile.name}`;
+
+    const ownerEl = document.getElementById(`${prefix}Owner`);
+    if (ownerEl) {
+      if (tile.type === "property") {
+        ownerEl.textContent = (tile.owner === undefined || !players[tile.owner]) ? "🏳️ Satılık" : `👑 ${players[tile.owner].name}`;
+      } else if (tile.type === "worldbank") {
+        ownerEl.textContent = `🏦 Fon: ${worldBankPool} ₺`;
+      } else {
+        ownerEl.textContent = "✨ Özel Kare";
+      }
     }
 
     const effPrice = getPlayerPrice(tile);
     const effHouse = getPlayerHouseCost(tile);
     const effPlaza = getPlayerPlazaCost(tile);
-    document.getElementById("pinPrice").textContent = tile.price ? `${effPrice.toLocaleString("tr-TR")} ₺` : "-";
-    document.getElementById("pinRent").textContent = tile.rent ? `${calculateRent(tile).toLocaleString("tr-TR")} ₺` : "-";
-    document.getElementById("pinHouseCost").textContent = tile.houseCost ? `${effHouse}₺ / P:${effPlaza}₺` : "-";
+    const effTax = getPlayerTaxAmount(tile);
+
+    document.getElementById(`${prefix}Price`).textContent = tile.price ? `${effPrice.toLocaleString("tr-TR")} ₺` : (tile.type === "worldbank" ? `${worldBankPool.toLocaleString("tr-TR")} ₺` : "-");
+    document.getElementById(`${prefix}Rent`).textContent = tile.rent ? `${calculateRent(tile).toLocaleString("tr-TR")} ₺` : (tile.taxAmount ? `-${effTax.toLocaleString("tr-TR")} ₺` : "-");
+    document.getElementById(`${prefix}HouseCost`).textContent = tile.houseCost ? `${effHouse} ₺ / Plaza:${effPlaza} ₺` : "-";
 
     const hCount = (tile.houseOwners || []).length;
     if (tile.mortgaged) {
-      document.getElementById("pinBuildings").textContent = `🔴 İpotekli (${tile.mortgageTurnsLeft || 3}T)`;
+      document.getElementById(`${prefix}Buildings`).textContent = `🔴 İpotekli (${tile.mortgageTurnsLeft || 3}T)`;
     } else if (tile.type === "property" && tile.owner !== undefined) {
-      document.getElementById("pinBuildings").textContent = hCount === 0 ? "Bina Yok" : (hCount >= 5 ? "🏙️ PLAZA" : `🏠 ${hCount} Ev`);
+      const shares = getOwnershipShares(tile).map(b => `${players[b.playerId] ? players[b.playerId].name : ''}:%${b.percent}`).join(", ");
+      const bText = hCount === 0 ? "Bina Yok" : (hCount >= 5 ? "🏙️ PLAZA" : `🏠 ${hCount} Ev`);
+      document.getElementById(`${prefix}Buildings`).textContent = `${bText} (${shares})`;
     } else {
-      document.getElementById("pinBuildings").textContent = "-";
+      document.getElementById(`${prefix}Buildings`).textContent = "-";
     }
   }
+
+  function refreshLivePanelOnly() {
+    const activeP = players[currentTurn] || players[0];
+    fillInfoCardDOM("live", activeCenterTileId);
+    const tag = document.getElementById("liveFlowPlayerTag");
+    if (tag && activeP) tag.textContent = `${activeP.name} Oynuyor`;
+  }
+
+  function refreshPinnedStatsOnly() { fillInfoCardDOM("pin", pinnedTileId); }
 
   function selectPinnedCardByUser(tileId) {
     pinnedTileId = tileId;
@@ -1933,6 +2160,7 @@ body.fullscreen-okey-mode .okey-edges-layer { display: block; }
     players[pid].color = newColor;
     renderBoard();
     renderRightPlayersList();
+    refreshLivePanelOnly();
     refreshPinnedStatsOnly();
     renderOkeyEdgesHUD();
     saveRoomSnapshot();
@@ -1956,7 +2184,7 @@ body.fullscreen-okey-mode .okey-edges-layer { display: block; }
       let colorPickerHTML = "";
       if (p.id === 0) {
         colorPickerHTML = `<div class="color-swatch-row" onclick="event.stopPropagation();">
-          <span style="font-size:8.5px; color:#cbd5e1; font-weight:800;">Renk:</span>
+          <span style="font-size:9px; color:#cbd5e1; font-weight:800;">Renk:</span>
           ${NEON_PALETTE.map(c => `<div class="color-dot-btn" style="background:${c};" onclick="setPlayerColor(0, '${c}')"></div>`).join("")}
         </div>`;
       }
@@ -1979,12 +2207,12 @@ body.fullscreen-okey-mode .okey-edges-layer { display: block; }
       drawer.className = "p-assets-drawer";
 
       if (ownedTiles.length === 0) {
-        drawer.innerHTML = `<div style="font-size:9px; color:#64748b;">Mülkü yok.</div>`;
+        drawer.innerHTML = `<div style="font-size:9.5px; color:#64748b;">Henüz mülkü yok.</div>`;
       } else {
         ownedTiles.forEach(t => {
           const totH = (t.houseOwners || []).length;
           let badge = t.owner === p.id ? "Tapu" : "Ortak";
-          if (totH >= 5) badge += "•🏙️";
+          if (totH >= 5) badge += "•🏙️Plaza";
           else if (totH > 0) badge += `•🏠${totH}`;
           if (t.mortgaged) badge = `🔴İpotek`;
 
@@ -2332,6 +2560,7 @@ body.fullscreen-okey-mode .okey-edges-layer { display: block; }
   function afterUserOwnPinAction(tileId) {
     renderBoard();
     renderRightPlayersList();
+    refreshLivePanelOnly();
     selectPinnedCardByUser(tileId);
     renderOkeyEdgesHUD();
     if (document.getElementById("cardView").style.display === "flex") {
@@ -2401,10 +2630,16 @@ body.fullscreen-okey-mode .okey-edges-layer { display: block; }
     });
   }
 
+  /* =========================================================
+     PC TEKLIF DOCK & MOBIL 10 SN ANLIK TEKLIF BILDIRIMI (ISTEK 2)
+     ========================================================= */
   function toggleIncomingOffers() {
     incomingOffersEnabled = !incomingOffersEnabled;
-    document.getElementById("btnToggleOffers").textContent = incomingOffersEnabled ? "🔔" : "🔕";
-    if (!incomingOffersEnabled) activeOffersQueue = [];
+    document.getElementById("btnToggleOffers").textContent = incomingOffersEnabled ? "🔔 Açık" : "🔕 Kapalı";
+    if (!incomingOffersEnabled) {
+      activeOffersQueue = [];
+      dismissMobileOfferToast();
+    }
     renderTradeDock();
   }
 
@@ -2420,6 +2655,76 @@ body.fullscreen-okey-mode .okey-edges-layer { display: block; }
     renderTradeDock();
   }
 
+  function executeOfferAcceptance(offer) {
+    const bot = players[offer.botId];
+    const tile = TILES[offer.tileId];
+    if (!tile || tile.owner !== 0 || tile.mortgaged || !bot || bot.money < offer.cash) return;
+
+    if (offer.kind === "buyDeed") {
+      changeMoney(bot.id, -offer.cash);
+      const distLog = distributeSaleProceedsByShare(tile, offer.cash, "Teklif");
+      tile.owner = bot.id;
+      tile.houseOwners = (tile.houseOwners || []).map(() => bot.id);
+      addLog(`🤝 ${bot.name}'ın teklifini kabul ettin! [${distLog}]`);
+    } else {
+      changeMoney(0, offer.cash);
+      changeMoney(bot.id, -offer.cash);
+      if (tile.houseOwners.length < 5) tile.houseOwners.push(bot.id);
+      addLog(`🏠🤝 ${bot.name} ile ${tile.name} ülkesinde ortak oldun (+${offer.cash} ₺)!`, offer.cash);
+    }
+    afterUserOwnPinAction(tile.id);
+  }
+
+  function dismissMobileOfferToast() {
+    clearInterval(mobileOfferToastInterval);
+    const toastEl = document.getElementById("mobileOfferToast");
+    if (toastEl) toastEl.classList.remove("show");
+  }
+
+  function showMobileInstantOfferToast(offer) {
+    clearInterval(mobileOfferToastInterval);
+    const toastEl = document.getElementById("mobileOfferToast");
+    const headEl = document.getElementById("mobToastHeader");
+    const descEl = document.getElementById("mobToastDesc");
+    const barEl = document.getElementById("mobToastBar");
+    const btnAcc = document.getElementById("mobToastAcceptBtn");
+    const btnRej = document.getElementById("mobToastRejectBtn");
+
+    const bot = players[offer.botId];
+    const tile = TILES[offer.tileId];
+    if (!bot || !tile) return;
+
+    let secLeft = 10;
+    headEl.textContent = `🤝 ANLIK TEKLİF (${secLeft} sn)`;
+    descEl.innerHTML = `<b>${bot.name}:</b> ${tile.flag} <b>${tile.name}</b> için <b style="color:#34d399;">+${offer.cash.toLocaleString("tr-TR")} ₺</b> (${offer.kind === "partner" ? "Ortaklık" : "Tapu"}) veriyor!`;
+    barEl.style.width = "100%";
+    toastEl.classList.add("show");
+
+    btnAcc.onclick = () => {
+      executeOfferAcceptance(offer);
+      activeOffersQueue = activeOffersQueue.filter(o => o !== offer);
+      renderTradeDock();
+      dismissMobileOfferToast();
+    };
+
+    btnRej.onclick = () => {
+      activeOffersQueue = activeOffersQueue.filter(o => o !== offer);
+      renderTradeDock();
+      dismissMobileOfferToast();
+    };
+
+    mobileOfferToastInterval = setInterval(() => {
+      secLeft--;
+      headEl.textContent = `🤝 ANLIK TEKLİF (${secLeft} sn)`;
+      barEl.style.width = `${Math.max(0, (secLeft / 10) * 100)}%`;
+      if (secLeft <= 0) {
+        activeOffersQueue = activeOffersQueue.filter(o => o !== offer);
+        renderTradeDock();
+        dismissMobileOfferToast();
+      }
+    }, 1000);
+  }
+
   function renderTradeDock() {
     activeOffersQueue = activeOffersQueue.filter(of => {
       const t = TILES[of.tileId];
@@ -2427,44 +2732,38 @@ body.fullscreen-okey-mode .okey-edges-layer { display: block; }
       return t && t.owner === 0 && !t.mortgaged && bot && !bot.bankrupt;
     });
     const total = activeOffersQueue.length;
-    document.getElementById("offerCounterText").textContent = total > 0 ? `${currentOfferIdx + 1}/${total}` : `0/0`;
+    document.getElementById("offerCounterText").textContent = total > 0 ? `Teklif: ${currentOfferIdx + 1} / ${total}` : `Teklif: 0 / 0`;
     document.getElementById("btnPrevOffer").disabled = (total <= 1);
     document.getElementById("btnNextOffer").disabled = (total <= 1);
 
     const dock = document.getElementById("tradeDockBody");
     if (!incomingOffersEnabled || total === 0) {
-      dock.innerHTML = `<div style="color:#94a3b8; font-size:9.5px; margin:auto; text-align:center;">Bekleyen teklif yok.</div>`;
+      dock.innerHTML = `<div style="color:#94a3b8; font-size:11px; margin:auto; text-align:center;">Şu an bekleyen bir teklif yok.</div>`;
       return;
     }
 
     const offer = activeOffersQueue[currentOfferIdx];
     const bot = players[offer.botId];
     const tile = TILES[offer.tileId];
-    const link = `<span class="offer-country-link" onclick="highlightAndFocusTile(${tile.id})">${tile.flag} ${tile.name}</span>`;
+    const link = `<span class="offer-country-link" onclick="highlightAndFocusTile(${tile.id})">${tile.flag} ${tile.name} 🔍</span>`;
 
     dock.innerHTML = `
-      <div><b>${bot.name}:</b> ${link} için <b>+${offer.cash.toLocaleString("tr-TR")} ₺</b> (${offer.kind === "partner" ? "Ortaklık" : "Tapu"}) teklif ediyor!</div>
-      <div style="display:flex; gap:4px; margin-top:4px;">
-        <button class="mini-act-btn bg-green" id="dockAcceptBtn">✅ Kabul</button>
-        <button class="mini-act-btn bg-crimson" id="dockRejectBtn">✖ Red</button>
+      <div><b>${bot.name}:</b> Senin ${link} mülkün için <b>+${offer.cash.toLocaleString("tr-TR")} ₺</b> (${offer.kind === "partner" ? "Ortaklık" : "Tapu"}) teklif ediyor!</div>
+      <div style="display:flex; gap:6px; margin-top:6px;">
+        <button class="mini-act-btn bg-green" id="dockAcceptBtn">✅ Kabul Et</button>
+        <button class="mini-act-btn bg-crimson" id="dockRejectBtn">✖ Reddet</button>
       </div>
     `;
 
     document.getElementById("dockAcceptBtn").onclick = () => {
-      if (offer.kind === "buyDeed") {
-        changeMoney(bot.id, -offer.cash);
-        distributeSaleProceedsByShare(tile, offer.cash, "Teklif");
-        tile.owner = bot.id;
-        tile.houseOwners = (tile.houseOwners || []).map(() => bot.id);
-      } else {
-        changeMoney(0, offer.cash);
-        changeMoney(bot.id, -offer.cash);
-        if (tile.houseOwners.length < 5) tile.houseOwners.push(bot.id);
-      }
+      executeOfferAcceptance(offer);
       removeOfferAtIndex(currentOfferIdx);
-      afterUserOwnPinAction(tile.id);
+      dismissMobileOfferToast();
     };
-    document.getElementById("dockRejectBtn").onclick = () => removeOfferAtIndex(currentOfferIdx);
+    document.getElementById("dockRejectBtn").onclick = () => {
+      removeOfferAtIndex(currentOfferIdx);
+      dismissMobileOfferToast();
+    };
   }
 
   function maybeTriggerBotOfferToHuman(bot) {
@@ -2475,12 +2774,17 @@ body.fullscreen-okey-mode .okey-edges-layer { display: block; }
     const isPartner = Math.random() < 0.45 && targetTile.houseOwners.length < 5;
     const cash = isPartner ? Math.round(getPlayerHouseCost(targetTile) * 1.25) : Math.round(getPlayerPrice(targetTile) * 1.25);
     if (bot.money < cash) return;
-    activeOffersQueue.push({ botId: bot.id, tileId: targetTile.id, kind: isPartner ? "partner" : "buyDeed", cash });
+    const newOffer = { botId: bot.id, tileId: targetTile.id, kind: isPartner ? "partner" : "buyDeed", cash };
+    activeOffersQueue.push(newOffer);
     currentOfferIdx = activeOffersQueue.length - 1;
     playSfx("offer");
     renderTradeDock();
+    if (isMobileView) showMobileInstantOfferToast(newOffer);
   }
 
+  /* =========================================================
+     ZAR VE KAREYE INIS EKRANLARI
+     ========================================================= */
   function showDiceScreen() {
     document.getElementById("diceView").style.display = "flex";
     document.getElementById("cardView").style.display = "none";
@@ -2493,13 +2797,13 @@ body.fullscreen-okey-mode .okey-edges-layer { display: block; }
     if (!p.isBot && p.jailWaitTurns > 0) {
       document.getElementById("dicePromptText").innerHTML = `🚓 <b>NEZARETHANEDESİN!</b> (${bailCost} ₺ kefalet veya 1 tur bekle)`;
       btnHolder.innerHTML = `
-        <button class="roll-main-btn" style="background:#10b981;" ${p.money < bailCost ? "disabled" : ""} onclick="payJailBailAndRoll()">🔓 Kefalet</button>
-        <button class="roll-main-btn" style="background:#ef4444;" onclick="skipTurnInJail()">⏳ Bekle</button>
+        <button class="roll-main-btn" style="background:#10b981;" ${p.money < bailCost ? "disabled" : ""} onclick="payJailBailAndRoll()">🔓 Kefalet Öde</button>
+        <button class="roll-main-btn" style="background:#ef4444;" onclick="skipTurnInJail()">⏳ 1 Tur Bekle</button>
       `;
     } else {
       btnHolder.innerHTML = `<button class="roll-main-btn" id="btnRollMain" onclick="triggerRoll()">🎲 ZAR AT</button>`;
       document.getElementById("btnRollMain").disabled = (p.isBot || hasRolled || isMoving);
-      document.getElementById("dicePromptText").innerHTML = p.isBot ? `<b>${p.name}</b> zar atıyor...` : `Sıra sende! Zar atınca +5 sn eklenir.`;
+      document.getElementById("dicePromptText").innerHTML = p.isBot ? `<b>${p.name}</b> zar atıyor...` : `Sıra sende! Zar atınca <b>+5 sn</b> eklenir.`;
     }
   }
 
@@ -2524,6 +2828,7 @@ body.fullscreen-okey-mode .okey-edges-layer { display: block; }
     const tile = TILES[tileId];
     const p0 = players[0];
 
+    refreshLivePanelOnly();
     refreshPinnedStatsOnly();
 
     document.getElementById("diceView").style.display = "none";
@@ -2537,7 +2842,7 @@ body.fullscreen-okey-mode .okey-edges-layer { display: block; }
 
     const occBar = document.getElementById("fsOccupantsBar");
     const herePlayers = players.filter(pl => !pl.bankrupt && pl.pos === tile.id);
-    occBar.innerHTML = herePlayers.map(pl => `<span class="hud-badge" style="background:${pl.color};">${pl.code}</span>`).join("");
+    occBar.innerHTML = herePlayers.map(pl => `<div class="fs-big-pawn" style="background:${pl.color};"><span>${pl.code}</span><span>${pl.name}</span></div>`).join("");
 
     document.getElementById("fsCountryTitle").textContent = `${tile.flag} ${tile.name}`;
     document.getElementById("fsCountryDesc").textContent = customEventCard ? customEventCard.desc : tile.sub;
@@ -2551,7 +2856,7 @@ body.fullscreen-okey-mode .okey-edges-layer { display: block; }
     document.getElementById("fsHouseCost").textContent = tile.houseCost ? `${effHouse.toLocaleString("tr-TR")} ₺` : "-";
 
     const hCount = (tile.houseOwners || []).length;
-    document.getElementById("fsBuildings").textContent = tile.mortgaged ? "🔴 İPOTEK" : (hCount === 0 ? "Yok" : (hCount >= 5 ? "🏙️ PLAZA" : `🏠 ${hCount} Ev`));
+    document.getElementById("fsBuildings").textContent = tile.mortgaged ? "🔴 İPOTEKLİ" : (hCount === 0 ? "Bina Yok" : (hCount >= 5 ? "🏙️ 1 PLAZA" : `🏠 ${hCount} Ev`));
 
     const sharesEl = document.getElementById("fsRentShares");
     if (tile.type === "property" && tile.owner !== undefined && !tile.mortgaged) {
@@ -2572,11 +2877,15 @@ body.fullscreen-okey-mode .okey-edges-layer { display: block; }
       bar.appendChild(btnBuy);
     }
 
+    const spacer = document.createElement("div");
+    spacer.style.flex = "1";
+    bar.appendChild(spacer);
+
     if (currentTurn === 0 && !p0.bankrupt && hasRolled) {
       const isStillInDebt = (p0.money < 0);
       const endBtn = document.createElement("button");
       endBtn.className = `act-btn ${isStillInDebt ? "bg-crimson" : "bg-gold"}`;
-      endBtn.textContent = isStillInDebt ? `🚨 Borcu Kapat (${p0.money}₺)` : "⏭️ Turu Bitir";
+      endBtn.textContent = isStillInDebt ? `🚨 Borcu Kapat (${p0.money}₺)` : "⏭️ Turu Tamamla";
       endBtn.disabled = (isStillInDebt && hasSellableAssets(0));
       endBtn.onclick = () => finishHumanTurn();
       bar.appendChild(endBtn);
@@ -2608,6 +2917,7 @@ body.fullscreen-okey-mode .okey-edges-layer { display: block; }
     document.getElementById("turnStatusText").textContent = `SIRA: ${p.name.toUpperCase()}`;
     renderBoard();
     renderRightPlayersList();
+    refreshLivePanelOnly();
     refreshPinnedStatsOnly();
     renderOkeyEdgesHUD();
     showDiceScreen();
@@ -2672,7 +2982,9 @@ body.fullscreen-okey-mode .okey-edges-layer { display: block; }
 
   function updateTimerUI() {
     const clk = document.getElementById("timerClock");
-    if (clk) clk.textContent = `⏱️ ${timeLeft} sn`;
+    const bar = document.getElementById("timerBarFill");
+    if (clk) clk.textContent = `${timeLeft} sn`;
+    if (bar) bar.style.width = `${Math.min(100, Math.max(0, (timeLeft / maxTimerSeconds) * 100))}%`;
   }
 
   function applyTimeoutPenalty() {
@@ -2817,6 +3129,7 @@ body.fullscreen-okey-mode .okey-edges-layer { display: block; }
     checkDebtOrBankruptcy(player);
     renderBoard();
     renderRightPlayersList();
+    refreshLivePanelOnly();
     refreshPinnedStatsOnly();
     renderTradeDock();
     renderOkeyEdgesHUD();
@@ -2905,10 +3218,10 @@ body.fullscreen-okey-mode .okey-edges-layer { display: block; }
     const div = document.createElement("div");
     if (myNetDelta > 0) {
       div.className = "log-item profit";
-      div.innerHTML = `<span class="pnl-badge gain">+${myNetDelta.toLocaleString("tr-TR")}₺</span><span>${msg}</span>`;
+      div.innerHTML = `<span class="pnl-badge gain">+${myNetDelta.toLocaleString("tr-TR")} ₺ GELİR</span><span>${msg}</span>`;
     } else if (myNetDelta < 0) {
       div.className = "log-item loss";
-      div.innerHTML = `<span class="pnl-badge spend">${myNetDelta.toLocaleString("tr-TR")}₺</span><span>${msg}</span>`;
+      div.innerHTML = `<span class="pnl-badge spend">${myNetDelta.toLocaleString("tr-TR")} ₺ GİDER</span><span>${msg}</span>`;
     } else {
       div.className = "log-item";
       div.textContent = msg;
@@ -2920,12 +3233,15 @@ body.fullscreen-okey-mode .okey-edges-layer { display: block; }
   function initGame() {
     myRoomCode = generateRandomCode();
     updateRoomCodeLabels();
+    detectAndApplyDeviceMode();
+    setupResizablePanels();
     start10MinInflationTimer();
     start60SecDisconnectWatcher();
     renderLobbySeats();
     renderBoard();
     renderRightPlayersList();
     renderTradeDock();
+    refreshLivePanelOnly();
     selectPinnedCardByUser(5);
     renderOkeyEdgesHUD();
   }
