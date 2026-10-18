@@ -68,15 +68,13 @@ body.bw-mode { filter: grayscale(100%) contrast(1.08); }
 .mini-act-btn { flex: 1 1 calc(50% - 5px); padding: 6px 8px; border: none; border-radius: 7px; font-size: 11px; font-weight: 900; color: #fff; cursor: pointer; text-align: center; transition: transform 0.12s, filter 0.12s; }
 .mini-act-btn:hover:not(:disabled) { transform: translateY(-1px); filter: brightness(1.15); }
 .mini-act-btn.full { flex: 1 1 100%; }
-.mini-act-btn:disabled { opacity: 0.35; cursor: not-allowed; }
-.inline-mini-form { background: rgba(5, 8, 17, 0.95); border: 1.5px solid var(--gold); border-radius: 8px; padding: 8px; display: none; flex-direction: column; gap: 5px; }
+.inline-mini-form { background: rgba(0,0,0,0.5); border: 1px dashed var(--gold); border-radius: 8px; padding: 8px; display: none; flex-direction: column; gap: 5px; }
 .inline-mini-form.open { display: flex; }
 .inline-mini-form label { font-size: 10px; color: #fde68a; font-weight: 800; }
-.inline-mini-form input, .inline-mini-form select { width: 100%; background: #1e293b; border: 1px solid rgba(255,255,255,0.25); color: #fff; padding: 5px 7px; border-radius: 5px; font-size: 11px; font-weight: 700; user-select: text; }
-
-.log-panel { height: var(--left-log-h); min-height: 100px; max-height: 400px; flex-shrink: 0; background: var(--panel-bg); border: 1px solid var(--border-subtle); border-radius: 14px; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 12px 35px rgba(0,0,0,0.6); }
-.sidebar-header { padding: 7px 11px; background: rgba(0, 0, 0, 0.4); border-bottom: 1px solid var(--border-subtle); display: flex; justify-content: space-between; align-items: center; }
-.sidebar-header h3 { font-size: 11px; font-weight: 900; letter-spacing: 0.5px; color: var(--gold); text-transform: uppercase; }
+.inline-mini-form input { background: #0b1120; border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 4px 7px; border-radius: 6px; font-size: 12px; font-weight: 800; user-select: text; }
+.log-panel { height: var(--left-log-h); min-height: 120px; max-height: 380px; flex-shrink: 0; background: var(--panel-bg); border: 1px solid var(--border-subtle); border-radius: 14px; display: flex; flex-direction: column; overflow: hidden; }
+.sidebar-header { padding: 8px 12px; background: rgba(0, 0, 0, 0.45); border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; align-items: center; flex-shrink: 0; }
+.sidebar-header h3 { font-size: 12px; font-weight: 900; color: #cbd5e1; display: flex; align-items: center; gap: 6px; }
 .icon-ctrl-btn { background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.16); color: #fff; padding: 4px 8px; border-radius: 7px; font-size: 10.5px; font-weight: 800; cursor: pointer; transition: background 0.15s; }
 .icon-ctrl-btn:hover { background: rgba(255,255,255,0.18); }
 .icon-ctrl-btn.mic-active { background: rgba(16, 185, 129, 0.3); border-color: #10b981; color: #6ee7b7; box-shadow: 0 0 10px rgba(16, 185, 129, 0.4); }
@@ -237,8 +235,8 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
 .setting-row label { font-size: 12px; font-weight: 800; color: #e2e8f0; }
 
 @media (max-height: 520px) {
-  .center-compact-dice-box { padding: 5px 8px; gap: 4px; max-width: 280px; }
-  .big-die { width: 30px; height: 30px; font-size: 16px; border-radius: 8px; }
+  .center-compact-dice-box { padding: 4px 8px; gap: 4px; max-width: 270px; margin-right: 44px; }
+  .big-die { width: 26px; height: 26px; font-size: 15px; border-radius: 6px; }
   .roll-main-btn { padding: 5px 16px; font-size: 12px; }
   .endturn-main-btn { padding: 5px 14px; font-size: 11.5px; }
   .center-top-liveflow-bar { padding: 2px 8px; font-size: 10px; }
@@ -301,43 +299,99 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
               ✋ Hazır Ver
             </button>
             <button class="act-btn bg-green" id="btnHostStartGame" style="flex:1.2; justify-content:center;" onclick="hostStartMatch()" disabled>
-              🚀 Oyunu Başlat (Kurucu)
+              🚀 Oyunu Başlat (En az 2 kişi)
             </button>
-            <button class="act-btn bg-crimson" id="btnLeaveLobby" onclick="completelyExitAndReset()" disabled>
+            <button class="act-btn bg-crimson" id="btnLeaveLobby" style="flex:0.8; justify-content:center;" onclick="completelyExitAndReset()" disabled>
               🚪 Tamamen Ayrıl
             </button>
           </div>
         </div>
 
-        <div class="lobby-box" style="height:100%; min-height:290px;">
-          <div style="font-size:11px; font-weight:900; color:#10b981;">💬 LOBİ & OYUN İÇİ CANLI SOHBET</div>
-          <div class="chat-messages-list" id="lobbyChatList" style="background:rgba(0,0,0,0.35); border-radius:10px;"></div>
-          <div class="chat-input-bar" style="border-radius:10px;">
-            <input type="text" id="inpLobbyChat" placeholder="Mesaj yazın..." onkeydown="if(event.key==='Enter') sendChatMessage('lobby')">
-            <button class="act-btn bg-blue" onclick="sendChatMessage('lobby')">Gönder</button>
+        <div class="lobby-box">
+          <div style="font-size:11px; font-weight:900; color:#10b981;">💬 LOBİ SOHBETİ & İLETİŞİM</div>
+          <div class="chat-messages-list" id="lobbyChatList" style="height:190px;"></div>
+          <div class="chat-input-bar">
+            <input type="text" id="inpLobbyChat" placeholder="Odadakilere mesaj yaz..." onkeydown="if(event.key==='Enter') sendChatMessage('lobby')">
+            <button class="mini-act-btn bg-blue" onclick="sendChatMessage('lobby')">Gönder</button>
           </div>
         </div>
       </div>
     </div>
   </div>
 
+  <button class="mobile-fab-trigger" id="mobileMenuFab" onclick="openMobileSlideDrawer()">
+    <span>☰</span> Menü
+  </button>
+  <div class="mobile-drawer-backdrop" id="mobileDrawerBackdrop" onclick="closeMobileSlideDrawer()"></div>
+  <aside class="mobile-slide-drawer" id="mobileSlideDrawer">
+    <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.12); padding-bottom:10px;">
+      <h3 style="font-size:15px; font-weight:900; color:#38bdf8;">📱 Hızlı Menü</h3>
+      <button class="panel-close-x" onclick="closeMobileSlideDrawer()">✖</button>
+    </div>
+    <div style="display:flex; flex-direction:column; gap:8px;">
+      <button class="act-btn bg-green" id="btnDrawerMic" onclick="toggleVoiceMic()">🎙️ Mikrofon: Açık</button>
+      <button class="act-btn bg-blue" onclick="closeMobileSlideDrawer(); requestPauseOrResumeVote();">⏸️/▶️ Oyunu Durdur / Başlat</button>
+      <button class="act-btn bg-purple" onclick="closeMobileSlideDrawer(); openMobileCenterHub('players');">👥 Oyuncu Durumları & Nakit</button>
+      <button class="act-btn bg-gold" onclick="closeMobileSlideDrawer(); openMobileCenterHub('card');">🏠 Seçili Kart Detayı & İşlem</button>
+      <button class="act-btn bg-slate" onclick="closeMobileSlideDrawer(); openSettingsModal();">🎨 Görsel & Neon Ayarları</button>
+      <button class="act-btn bg-slate" onclick="toggleSound(); updateDrawerSoundBtn();" id="btnDrawerSound">🔊 Ses: Açık</button>
+      <button class="act-btn bg-crimson" style="margin-top:14px;" onclick="completelyExitAndReset()">🚪 Oyundan Tamamen Ayrıl</button>
+    </div>
+  </aside>
+
+  <div class="mobile-incoming-offer-toast" id="mobileOfferToast">
+    <div style="display:flex; justify-content:space-between; align-items:center;">
+      <span style="font-size:11px; font-weight:900; color:#f59e0b;">📨 ANLIK TEKLİF GELDİ</span>
+      <span style="font-size:10px; font-weight:900; color:#94a3b8;" id="mobOfferCountdownBadge">⏱️ 10sn</span>
+    </div>
+    <div class="toast-countdown-track">
+      <div class="toast-countdown-fill" id="mobOfferProgressBar"></div>
+    </div>
+    <div style="font-size:12px; font-weight:800; color:#fff;" id="mobOfferText"></div>
+    <div style="display:flex; gap:6px; margin-top:2px;">
+      <button class="mini-act-btn bg-green" id="mobOfferAcceptBtn">✅ Kabul Et</button>
+      <button class="mini-act-btn bg-crimson" id="mobOfferRejectBtn">❌ Reddet</button>
+    </div>
+  </div>
+
+  <div class="floating-chat-launcher">
+    <button class="icon-ctrl-btn mic-active" id="btnFloatingMic" onclick="toggleVoiceMic()" title="Mikrofon Aç/Kapat">🎙️</button>
+    <button class="icon-ctrl-btn" id="btnSoundFloat" onclick="toggleSound()" title="Ses Aç/Kapat">🔊</button>
+    <div class="chat-bubble-btn" onclick="toggleGameChatDrawer()" title="Sohbeti Aç/Kapat">
+      💬
+      <div class="chat-unread-badge" id="chatUnreadBadge">0</div>
+    </div>
+  </div>
+
+  <div class="chat-drawer-window" id="gameChatDrawer">
+    <div class="sidebar-header">
+      <h3>💬 Oyun İçi Canlı Sohbet</h3>
+      <button class="panel-close-x" onclick="toggleGameChatDrawer()">✖</button>
+    </div>
+    <div class="chat-messages-list" id="gameChatList"></div>
+    <div class="chat-input-bar">
+      <input type="text" id="inpGameChat" placeholder="Tüm oyunculara yaz..." onkeydown="if(event.key==='Enter') sendChatMessage('game')">
+      <button class="mini-act-btn bg-blue" onclick="sendChatMessage('game')">Gönder</button>
+    </div>
+  </div>
+
   <div class="settings-modal-backdrop" id="settingsBackdrop" onclick="closeSettingsModal()">
     <div class="settings-modal-box" onclick="event.stopPropagation()">
       <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.12); padding-bottom:8px;">
-        <h3 style="font-size:15px; font-weight:900; color:#f59e0b;">⚙️ Oyun, Pencere ve Görünüm Ayarları</h3>
-        <button class="icon-ctrl-btn" onclick="closeSettingsModal()">✖ Kapat</button>
+        <h2 style="font-size:15px; font-weight:900; color:#38bdf8;">⚙️ Arayüz, Panel ve Görünüm Ayarları</h2>
+        <button class="panel-close-x" onclick="closeSettingsModal()">✖</button>
       </div>
-      <div class="setting-section-title">🪟 Pencereleri Göster / Gizle</div>
+      <div class="setting-section-title">🖥️ PC / Masaüstü Panelleri</div>
       <div class="setting-row">
-        <label for="chkWinPinned">📌 Tıkladığın Kart & İşlemler Penceresi</label>
+        <label for="chkWinPinned">📌 Sabit Kart ve Hızlı İşlem Paneli</label>
         <input type="checkbox" id="chkWinPinned" checked onchange="togglePanelFromSettings('pinnedCardPanel', this.checked)">
       </div>
       <div class="setting-row">
-        <label for="chkWinLog">📜 Son Bildirimler Penceresi</label>
+        <label for="chkWinLog">📜 Son Bildirimler ve Olay Kayıtları</label>
         <input type="checkbox" id="chkWinLog" checked onchange="togglePanelFromSettings('leftLogPanel', this.checked)">
       </div>
       <div class="setting-row">
-        <label for="chkWinPlayers">👥 Oyuncular ve Mülk Listesi Penceresi</label>
+        <label for="chkWinPlayers">👥 Oyuncular ve Cüzdanlar Listesi</label>
         <input type="checkbox" id="chkWinPlayers" checked onchange="togglePanelFromSettings('rightPlayersPanel', this.checked)">
       </div>
       <div class="setting-row">
@@ -521,7 +575,9 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
             <div class="fs-stat-card"><span>GÜNCEL KİRA</span><strong id="fsRent" style="color:#fde047;">820 ₺</strong></div>
             <div class="fs-stat-card"><span>EV MALİYETİ</span><strong id="fsHouseCost">1.500 ₺</strong></div>
             <div class="fs-stat-card"><span>YAPI & İPOTEK</span><strong id="fsBuildings">Bina Yok</strong></div>
-            <div class="fs-stat-card"><span>TAPU & KİRA PAYLAŞIMI</span><strong id="fsRentShares" style="font-size:11px; color:#fde68a;">Satılık</strong></div>
+          </div>
+          <div style="font-size:10.5px; color:#cbd5e1; font-weight:800; background:rgba(0,0,0,0.5); padding:4px 8px; border-radius:6px;">
+            Hisse Dağılımı: <span id="fsRentShares">-</span>
           </div>
           <div class="fs-actions-bar" id="fsActionButtons"></div>
         </div>
@@ -535,28 +591,26 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
   <aside class="right-sidebar" id="rightSidebar">
     <div class="top-timer-widget">
       <div class="timer-head">
-        <span class="timer-label" id="turnStatusText">SIRA: SEN</span>
-        <div style="display:flex; align-items:center; gap:4px; flex-wrap:wrap;">
-          <button class="icon-ctrl-btn" onclick="toggleFullscreenOkeyMode()" title="Tam Ekran Okey Modu">⛶ Tam Ekran</button>
-          <button class="icon-ctrl-btn" onclick="openSettingsModal()" title="Ayarlar">⚙️</button>
-          <button class="icon-ctrl-btn" onclick="leaveRoomOrGame()" title="Oyundan Ayrıl">🚪</button>
-          <button class="pause-play-btn" id="btnPausePlay" onclick="requestPauseOrResumeVote()">⏸️ Durdur</button>
-          <span class="timer-clock" id="timerClock">30 sn</span>
-        </div>
+        <span class="timer-label" id="turnStatusText">SIRA: BEKLENİYOR</span>
+        <button class="pause-play-btn" id="btnPausePlay" onclick="requestPauseOrResumeVote()">⏸️ Durdur</button>
+        <span class="timer-clock" id="timerClock">30 sn</span>
       </div>
       <div class="timer-bar-track">
         <div class="timer-bar-fill" id="timerBarFill"></div>
       </div>
       <div class="inflation-countdown-row">
-        <span>📈 Enflasyona Kalan Süre:</span>
-        <span id="topInflationClock" style="color:#34d399; font-size:12px; font-weight:900;">10:00</span>
+        <span>📈 10 Dakikalık Enflasyon:</span>
+        <span id="topInflationClock">10:00</span>
       </div>
     </div>
 
     <div class="players-panel-wrap" id="rightPlayersPanel">
       <div class="sidebar-header">
-        <h3>👥 Oyuncular & Mülkler</h3>
-        <button class="panel-close-x" onclick="setPanelVisibility('rightPlayersPanel', false)">✖</button>
+        <h3>👥 Oyuncu Listesi</h3>
+        <div style="display:flex; align-items:center; gap:5px;">
+          <button class="icon-ctrl-btn" onclick="openSettingsModal()">⚙️ Ayarlar</button>
+          <button class="panel-close-x" onclick="setPanelVisibility('rightPlayersPanel', false)">✖</button>
+        </div>
       </div>
       <div class="players-list" id="playersList"></div>
     </div>
@@ -564,126 +618,63 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
     <div class="row-resizer" id="rightRowResizer"></div>
 
     <div class="trade-center-dock" id="rightTradeDock">
-      <div class="sidebar-header">
-        <h3>🤝 Diplomasi & Teklifler</h3>
-        <div style="display:flex; align-items:center; gap:5px;">
-          <button class="icon-ctrl-btn" id="btnToggleOffers" onclick="toggleIncomingOffers()">🔔 Açık</button>
-          <button class="panel-close-x" onclick="setPanelVisibility('rightTradeDock', false)">✖</button>
-        </div>
-      </div>
       <div class="trade-nav-bar">
-        <button class="nav-arrow-btn" id="btnPrevOffer" onclick="navigateOffers(-1)">◀ Önceki</button>
-        <span id="offerCounterText">Teklif: 0 / 0</span>
-        <button class="nav-arrow-btn" id="btnNextOffer" onclick="navigateOffers(1)">Sonraki ▶</button>
+        <span>🤝 GELEN TEKLİFLER</span>
+        <div style="display:flex; gap:4px; align-items:center;">
+          <button class="nav-arrow-btn" id="dockPrevBtn" onclick="prevOffer()">&lt;</button>
+          <span id="dockCounter">0/0</span>
+          <button class="nav-arrow-btn" id="dockNextBtn" onclick="nextOffer()">&gt;</button>
+          <button class="panel-close-x" style="margin-left:4px;" onclick="setPanelVisibility('rightTradeDock', false)">✖</button>
+        </div>
       </div>
       <div class="trade-dock-body" id="tradeDockBody"></div>
     </div>
   </aside>
 
-  <button class="mobile-fab-trigger" id="btnMobileMenuFab" onclick="toggleMobileSlideDrawer()">
-    ⚡ <span>Hızlı Menü</span>
-  </button>
-
-  <div class="mobile-drawer-backdrop" id="mobileDrawerBackdrop" onclick="closeMobileSlideDrawer()"></div>
-  <div class="mobile-slide-drawer" id="mobileSlideDrawer">
-    <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid rgba(255,255,255,0.12); padding-bottom:8px;">
-      <h3 style="font-size:14px; font-weight:900; color:#f59e0b;">⚡ Hızlı Kontrol</h3>
-      <button class="panel-close-x" onclick="closeMobileSlideDrawer()">✖</button>
-    </div>
-    <div style="display:flex; flex-direction:column; gap:8px;">
-      <button class="act-btn bg-green" id="btnDrawerMic" onclick="toggleVoiceMic()">🎙️ Mikrofon: Açık</button>
-      <button class="act-btn bg-blue" onclick="closeMobileSlideDrawer(); requestPauseOrResumeVote();">⏸️/▶️ Oyunu Durdur / Başlat</button>
-      <button class="act-btn bg-purple" onclick="closeMobileSlideDrawer(); openMobileCenterHub('players');">👥 Oyuncular & Merkez İşlem</button>
-      <button class="act-btn bg-green" onclick="closeMobileSlideDrawer(); openMobileCenterHub('card');">🏠 Seçili Mülkü Yönet</button>
-      <button class="act-btn bg-slate" onclick="closeMobileSlideDrawer(); toggleFullscreenOkeyMode();">⛶ Tam Ekran Okey Modu</button>
-      <button class="act-btn bg-slate" onclick="closeMobileSlideDrawer(); openSettingsModal();">⚙️ Görünüm & Ayarlar</button>
-      <button class="act-btn bg-crimson" onclick="closeMobileSlideDrawer(); completelyExitAndReset();">🚪 Tamamen Ayrıl (Sıfırla)</button>
-    </div>
-    <div style="margin-top:auto; font-size:10.5px; color:#94a3b8; text-align:center;">
-      Emlak Taciri v2.5 Online
-    </div>
-  </div>
-
-  <div class="mobile-incoming-offer-toast" id="mobileOfferToast">
-    <div style="display:flex; justify-content:space-between; align-items:center;">
-      <span style="font-size:11px; font-weight:900; color:#f59e0b;">🤝 YENİ TEKLİF GELDİ</span>
-      <button class="panel-close-x" onclick="dismissMobileOfferToast()">✖</button>
-    </div>
-    <div id="mobileOfferToastText" style="font-size:11.5px; color:#e2e8f0; line-height:1.35;"></div>
-    <div class="toast-countdown-track">
-      <div class="toast-countdown-fill" id="mobileToastBar"></div>
-    </div>
-    <div style="display:flex; gap:6px; margin-top:2px;">
-      <button class="mini-act-btn bg-green" id="btnMobOfferAccept" style="flex:1;">✅ Kabul Et</button>
-      <button class="mini-act-btn bg-crimson" id="btnMobOfferReject" style="flex:1;">✖ Reddet</button>
-    </div>
-  </div>
-
-  <div class="floating-chat-launcher">
-    <button class="icon-ctrl-btn mic-active" id="btnFloatingMic" onclick="toggleVoiceMic()" style="height:44px; padding:0 12px; border-radius:99px; font-size:12px;">
-      🎙️ Ses Açık
-    </button>
-    <button class="chat-bubble-btn" onclick="toggleChatDrawer()" title="Sohbeti Aç / Kapat">
-      💬
-      <span class="chat-unread-badge" id="chatUnreadBadge">0</span>
-    </button>
-  </div>
-
-  <div class="chat-drawer-window" id="gameChatDrawer">
-    <div class="sidebar-header">
-      <h3>💬 Canlı Oyun Sohbeti</h3>
-      <button class="panel-close-x" onclick="toggleChatDrawer()">✖</button>
-    </div>
-    <div class="chat-messages-list" id="gameChatList"></div>
-    <div class="chat-input-bar">
-      <input type="text" id="inpGameChat" placeholder="Mesajınızı yazın..." onkeydown="if(event.key==='Enter') sendChatMessage('game')">
-      <button class="act-btn bg-blue" onclick="sendChatMessage('game')">Gönder</button>
-    </div>
-  </div>
   <div id="remoteAudioContainer" style="display:none;"></div>
 
 <script>
-  function rollTrueRandomDie() {
-    if (window.crypto && window.crypto.getRandomValues) {
-      const buf = new Uint32Array(1);
-      const maxValid = Math.floor(0xFFFFFFFF / 6) * 6;
-      let r;
-      do {
-        window.crypto.getRandomValues(buf);
-        r = buf[0];
-      } while (r >= maxValid);
-      return (r % 6) + 1;
-    }
-    return Math.floor(Math.random() * 6) + 1;
-  }
-
   let isMobileView = false;
-  let manualViewOverride = null;
 
   function detectAndApplyDeviceMode() {
-    if (manualViewOverride !== null) {
-      isMobileView = manualViewOverride;
-    } else {
-      const uaMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
-      const touchPoints = navigator.maxTouchPoints && navigator.maxTouchPoints > 1;
-      const smallScreen = window.innerWidth <= 980 || window.screen.width <= 980;
-      isMobileView = Boolean(uaMobile || (touchPoints && smallScreen) || window.innerWidth <= 900);
-    }
+    const isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+    const isNarrow = window.innerWidth <= 900;
+    const isMobileAspect = (window.innerWidth / window.innerHeight) < 1.15;
+    const shouldBeMobile = (isTouch && (isNarrow || isMobileAspect)) || window.innerWidth <= 768;
+    applyDeviceMode(shouldBeMobile);
+  }
+
+  function applyDeviceMode(asMobile) {
+    isMobileView = asMobile;
     document.body.classList.toggle("mobile-mode", isMobileView);
+    const mFab = document.getElementById("mobileMenuFab");
+    if (mFab) mFab.style.display = isMobileView ? "flex" : "none";
+    if (isMobileView) {
+      document.getElementById("leftSidebar").style.display = "none";
+      document.getElementById("rightSidebar").style.display = "none";
+      document.getElementById("leftColResizer").style.display = "none";
+      document.getElementById("rightColResizer").style.display = "none";
+      const mobToast = document.getElementById("mobileOfferToast");
+      if (mobToast && activeOffersQueue.length > 0) mobToast.classList.add("show");
+    } else {
+      updateSidebarLayoutVisibility();
+      closeMobileSlideDrawer();
+      closeMobileCenterHub();
+    }
+    renderBoard();
   }
 
   function toggleViewModeManual() {
-    manualViewOverride = !isMobileView;
-    detectAndApplyDeviceMode();
-    renderBoard();
-    renderInitialsRail();
+    applyDeviceMode(!isMobileView);
   }
 
-  function toggleMobileSlideDrawer() {
-    const drw = document.getElementById("mobileSlideDrawer");
-    const bg = document.getElementById("mobileDrawerBackdrop");
-    const isOpen = drw.classList.toggle("open");
-    bg.classList.toggle("open", isOpen);
+  window.addEventListener("resize", () => {
+    detectAndApplyDeviceMode();
+  });
+
+  function openMobileSlideDrawer() {
+    document.getElementById("mobileSlideDrawer").classList.add("open");
+    document.getElementById("mobileDrawerBackdrop").classList.add("open");
   }
 
   function closeMobileSlideDrawer() {
@@ -691,23 +682,32 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
     document.getElementById("mobileDrawerBackdrop").classList.remove("open");
   }
 
-  function toggleFullscreenOkeyMode() {
-    if (!document.fullscreenElement) {
-      document.documentElement.requestFullscreen().catch(() => {});
-      document.body.classList.add("fullscreen-okey-mode");
-    } else {
-      document.exitFullscreen().catch(() => {});
-      document.body.classList.remove("fullscreen-okey-mode");
-    }
-    renderInitialsRail();
+  function updateDrawerSoundBtn() {
+    const btn = document.getElementById("btnDrawerSound");
+    if (btn) btn.textContent = soundOn ? "🔊 Ses: Açık" : "🔇 Ses: Kapalı";
   }
 
-  document.addEventListener("fullscreenchange", () => {
-    document.body.classList.toggle("fullscreen-okey-mode", Boolean(document.fullscreenElement));
-    renderInitialsRail();
-  });
+  function toggleGameChatDrawer() {
+    const drawer = document.getElementById("gameChatDrawer");
+    drawer.classList.toggle("open");
+    if (drawer.classList.contains("open")) {
+      unreadChatCount = 0;
+      updateUnreadBadgeUI();
+      const list = document.getElementById("gameChatList");
+      if (list) list.scrollTop = list.scrollHeight;
+    }
+  }
 
-  window.addEventListener("resize", detectAndApplyDeviceMode);
+  function updateUnreadBadgeUI() {
+    const badge = document.getElementById("chatUnreadBadge");
+    if (!badge) return;
+    if (unreadChatCount > 0) {
+      badge.textContent = unreadChatCount > 9 ? "9+" : unreadChatCount;
+      badge.style.display = "flex";
+    } else {
+      badge.style.display = "none";
+    }
+  }
 
   const PANEL_CHECKBOX_MAP = {
     pinnedCardPanel: "chkWinPinned",
@@ -791,28 +791,17 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
   function getInwardNeonShadow(tileId, hexColor) {
     if (neonDisabled || neonIntensity <= 0.01) return "none";
     const pos = getTileGridPos(tileId);
-    const reach = Math.round(14 * neonIntensity);
-    let dx = 0, dy = 0;
-    if (pos.row === 1) dy = reach;
-    else if (pos.row === 8) dy = -reach;
-    if (pos.col === 1) dx = reach;
-    else if (pos.col === 12) dx = -reach;
-    const blurOuter = Math.round(24 * neonIntensity);
-    const blurInner = Math.round(12 * neonIntensity);
-    return `${dx}px ${dy}px ${blurOuter}px ${hexToRgba(hexColor, 0.85 * neonIntensity)}, 0 0 ${blurInner}px ${hexToRgba(hexColor, 0.65 * neonIntensity)}, inset 0 0 ${blurInner}px ${hexToRgba(hexColor, 0.45 * neonIntensity)}`;
+    let ox = 0, oy = 0;
+    if (pos.row === 1) oy = 14;
+    else if (pos.row === 8) oy = -14;
+    else if (pos.col === 1) ox = 14;
+    else if (pos.col === 12) ox = -14;
+    const alpha = (0.75 * neonIntensity).toFixed(2);
+    const blur = Math.round(28 * neonIntensity);
+    const spread = Math.round(6 * neonIntensity);
+    return `${ox}px ${oy}px ${blur}px ${spread}px ${hexToRgba(hexColor, alpha)}`;
   }
 
-  function highlightAndFocusTile(tileId) {
-    setPanelVisibility("pinnedCardPanel", true);
-    selectPinnedCardByUser(tileId);
-    spotlightTileId = tileId;
-    clearTimeout(spotlightTimeout);
-    renderBoard();
-    spotlightTimeout = setTimeout(() => { spotlightTileId = null; renderBoard(); }, 3500);
-  }
-
-  let soundOn = true;
-  let audioCtx = null;
   let localAudioStream = null;
   let isMicMuted = false;
 
@@ -824,81 +813,108 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
     if (!localAudioStream && navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
       try {
         localAudioStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
-        localAudioStream.getAudioTracks().forEach(tr => { tr.enabled = !isMicMuted; });
-      } catch (e) {}
+        isMicMuted = false;
+        localAudioStream.getAudioTracks().forEach(track => { track.enabled = true; });
+        if (peerNode && peerConnections.length > 0) {
+          const hostPeerId = `emlak-taciri-${myRoomCode.toLowerCase()}-host`;
+          peerConnections.forEach(conn => {
+            try { peerNode.call(conn.peer || hostPeerId, localAudioStream); } catch(e){}
+          });
+        }
+      } catch (e) {
+        isMicMuted = true;
+      }
+    } else if (localAudioStream) {
+      localAudioStream.getAudioTracks().forEach(track => { track.enabled = !isMicMuted; });
     }
     updateMicButtonsUI();
   }
 
   async function toggleVoiceMic() {
-    isMicMuted = !isMicMuted;
-    const me = getMySeat();
-    if (me) me.isMicMuted = isMicMuted;
-
-    if (!isMicMuted) {
-      if (!localAudioStream && navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+    if (!localAudioStream) {
+      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
         try {
           localAudioStream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
-          localAudioStream.getAudioTracks().forEach(tr => { tr.enabled = true; });
-          if (peerNode) {
+          isMicMuted = false;
+          localAudioStream.getAudioTracks().forEach(track => { track.enabled = true; });
+          if (peerNode && peerConnections.length > 0) {
+            const hostPeerId = `emlak-taciri-${myRoomCode.toLowerCase()}-host`;
             peerConnections.forEach(conn => {
-              if (conn && conn.peer) {
-                try {
-                  const call = peerNode.call(conn.peer, localAudioStream);
-                  if (call) call.on("stream", rs => attachRemoteAudio(rs));
-                } catch (e) {}
-              }
+              try { peerNode.call(conn.peer || hostPeerId, localAudioStream); } catch(e){}
             });
           }
-          addLog("🎙️ Mikrofon açıldı.");
         } catch (err) {
-          addLog("⚠️ Mikrofon izni verilemedi veya donanım bulunamadı.");
+          isMicMuted = !isMicMuted;
         }
-      } else if (localAudioStream) {
-        localAudioStream.getAudioTracks().forEach(tr => { tr.enabled = true; });
-        addLog("🎙️ Mikrofon açıldı.");
       } else {
-        addLog("🎙️ Mikrofon açıldı.");
+        isMicMuted = !isMicMuted;
       }
     } else {
-      if (localAudioStream) {
-        localAudioStream.getAudioTracks().forEach(tr => { tr.enabled = false; });
-      }
-      addLog("🔇 Mikrofon kapatıldı.");
+      isMicMuted = !isMicMuted;
+      localAudioStream.getAudioTracks().forEach(track => {
+        track.enabled = !isMicMuted;
+      });
     }
 
     updateMicButtonsUI();
-    broadcastNetworkPayload({
-      type: "MIC_STATUS_CHANGE",
-      playerId: me ? me.id : 0,
-      isMuted: isMicMuted
-    });
-    renderInitialsRail();
-    renderRightPlayersList();
+
+    const me = getMySeat();
+    if (me) {
+      me.isMicMuted = isMicMuted;
+      broadcastNetworkPayload({
+        type: "MIC_STATUS_CHANGE",
+        playerId: me.id,
+        isMuted: isMicMuted
+      });
+      renderInitialsRail();
+      renderRightPlayersList();
+    }
   }
 
   function updateMicButtonsUI() {
     const lobbyBtn = document.getElementById("btnLobbyMic");
     const floatBtn = document.getElementById("btnFloatingMic");
     const drawerBtn = document.getElementById("btnDrawerMic");
+
     if (lobbyBtn) {
-      lobbyBtn.className = `icon-ctrl-btn ${isMicMuted ? "mic-muted" : "mic-active"}`;
+      lobbyBtn.className = `icon-ctrl-btn ${isMicMuted ? 'mic-muted' : 'mic-active'}`;
       lobbyBtn.textContent = isMicMuted ? "🔇 Mikrofon Kapalı" : "🎙️ Mikrofon Açık";
     }
     if (floatBtn) {
-      floatBtn.className = `icon-ctrl-btn ${isMicMuted ? "mic-muted" : "mic-active"}`;
-      floatBtn.textContent = isMicMuted ? "🔇 Ses Kapalı" : "🎙️ Ses Açık";
+      floatBtn.className = `icon-ctrl-btn ${isMicMuted ? 'mic-muted' : 'mic-active'}`;
+      floatBtn.textContent = isMicMuted ? "🔇" : "🎙️";
+      floatBtn.title = isMicMuted ? "Mikrofon Kapalı (Açmak için tıkla)" : "Mikrofon Açık (Kapatmak için tıkla)";
     }
     if (drawerBtn) {
-      drawerBtn.className = `act-btn ${isMicMuted ? "bg-crimson" : "bg-green"}`;
+      drawerBtn.className = `act-btn ${isMicMuted ? 'bg-crimson' : 'bg-green'}`;
       drawerBtn.textContent = isMicMuted ? "🔇 Mikrofon: Kapalı" : "🎙️ Mikrofon: Açık";
     }
   }
 
-  function ensureAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
-  function toggleSound() { soundOn = !soundOn; document.getElementById("btnSound").textContent = soundOn ? "🔊 Ses" : "🔇 Sessiz"; }
+  let soundOn = true;
+  let audioCtx = null;
 
-  function playTone(freq, type, dur, delay = 0, vol = 0.11) {
+  function ensureAudio() {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === "suspended") audioCtx.resume();
+  }
+
+  function toggleSound() {
+    soundOn = !soundOn;
+    const b1 = document.getElementById("btnSound");
+    const b2 = document.getElementById("btnSoundFloat");
+    if (b1) {
+      b1.textContent = soundOn ? "🔊 Ses" : "🔇 Sessiz";
+      b1.style.borderColor = soundOn ? "rgba(255,255,255,0.16)" : "#ef4444";
+    }
+    if (b2) {
+      b2.textContent = soundOn ? "🔊" : "🔇";
+      b2.title = soundOn ? "Ses Açık" : "Ses Kapalı";
+    }
+    updateDrawerSoundBtn();
+  }
+
+  function playTone(freq, type = "sine", dur = 0.1, delay = 0, vol = 0.12) {
     if (!soundOn) return;
     try {
       ensureAudio();
@@ -1436,6 +1452,137 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
     saveRoomSnapshot();
   }
 
+  function updateRoomCodeDisplay() {
+    const inp = document.getElementById("inpRoomCode");
+    const code = inp ? (inp.value.trim().toUpperCase() || "ODA101") : "ODA101";
+    myRoomCode = code;
+    const tag = document.getElementById("displayRoomCodeTag");
+    if (tag) tag.textContent = code;
+  }
+
+  function copyRoomCodeToClipboard() {
+    const code = myRoomCode || "ODA101";
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(code).catch(() => {});
+    }
+    const txt = document.getElementById("lobbyCopyStatusText");
+    if (txt) {
+      txt.textContent = `✅ "${code}" kopyalandı!`;
+      setTimeout(() => { if (txt) txt.textContent = ""; }, 3000);
+    }
+  }
+
+  function copyShareLinkToClipboard() {
+    const code = myRoomCode || "ODA101";
+    const shareUrl = `${window.location.origin}${window.location.pathname}?room=${encodeURIComponent(code)}`;
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(shareUrl).catch(() => {});
+    }
+    const txt = document.getElementById("lobbyCopyStatusText");
+    if (txt) {
+      txt.textContent = "✅ Davet linki kopyalandı!";
+      setTimeout(() => { if (txt) txt.textContent = ""; }, 3000);
+    }
+  }
+
+  function hostRemoveBot() {
+    if (players.length <= 1) return alert("Odada en az 1 kişi kalmalıdır!");
+    const botIdx = players.map(p => p.isBot).lastIndexOf(true);
+    if (botIdx === -1) return alert("Çıkarılacak bot kalmadı.");
+    players.splice(botIdx, 1);
+    players.forEach((p, idx) => {
+      p.id = idx;
+      if (idx === 0) p.isHost = true;
+    });
+    renderLobbySeats();
+    saveRoomSnapshot();
+  }
+
+  function hostRemoveAllBots() {
+    const hasBots = players.some(p => p.isBot);
+    if (!hasBots) return alert("Odada çıkarılacak bot bulunmuyor.");
+    const realPlayers = players.filter(p => !p.isBot);
+    if (realPlayers.length === 0) {
+      const hostName = myLocalPlayerName || (players[0] ? players[0].name : "Sen");
+      players = [{
+        id: 0,
+        name: hostName,
+        isBot: false,
+        isReady: false,
+        isHost: true,
+        disconnected: false,
+        disconnectSec: 60,
+        money: 15000,
+        pos: 0,
+        lap: 1,
+        turnsPlayed: 0,
+        jailWaitTurns: 0,
+        missedTurns: 0,
+        color: NEON_PALETTE[0],
+        code: hostName.charAt(0).toUpperCase(),
+        bankrupt: false
+      }];
+    } else {
+      players = realPlayers;
+    }
+    players.forEach((p, idx) => {
+      p.id = idx;
+      if (idx === 0) p.isHost = true;
+    });
+    myLocalPlayerId = 0;
+    renderLobbySeats();
+    saveRoomSnapshot();
+    addLog("🤖 Tüm botlar lobiden çıkarıldı.");
+  }
+
+  function renderLobbySeats() {
+    const box = document.getElementById("lobbySeatsContainer");
+    if (!box) return;
+    box.innerHTML = players.map((p, idx) => {
+      const roleBadge = idx === 0 ? "👑 Kurucu" : (p.isBot ? "🤖 Bot" : "👤 Oyuncu");
+      const readyBadge = p.disconnected
+        ? `<span style="color:#ef4444;">🔌 Ayrıldı</span>`
+        : (p.isReady ? `<span style="color:#10b981;">✅ HAZIR</span>` : `<span style="color:#fde047;">⏳ Bekleniyor</span>`);
+      return `
+        <div class="lobby-seat ${p.isReady ? 'ready' : ''}" style="border-left:4px solid ${p.color};">
+          <div>
+            <span>#${idx + 1} <b>${p.name}</b></span>
+            <span style="font-size:10.5px; color:#94a3b8; margin-left:6px;">(${roleBadge})</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:8px;">${readyBadge}</div>
+        </div>
+      `;
+    }).join("");
+
+    const validCount = players.length >= 2 && players.length <= 4;
+    const allReady = validCount && players.every(p => p.isReady && !p.disconnected);
+    const startBtn = document.getElementById("btnHostStartGame");
+    if (startBtn) {
+      startBtn.disabled = !allReady;
+      if (players.length < 2) {
+        startBtn.textContent = `⏳ En Az 2 Oyuncu Gerekli (Şu an: ${players.length}/4)`;
+      } else if (!allReady) {
+        startBtn.textContent = `⏳ Oyuncuların Hazır Vermesi Bekleniyor (${players.filter(p => p.isReady).length}/${players.length})`;
+      } else {
+        startBtn.textContent = `🚀 Oyunu Başlat (${players.length} Kişi)`;
+      }
+    }
+  }
+
+  function hostStartMatch() {
+    if (players.length < 2) return alert("Oyunu başlatmak için en az 2 oyuncu olmalıdır!");
+    const allReady = players.length >= 2 && players.length <= 4 && players.every(p => p.isReady);
+    if (!allReady) return;
+    isMatchStarted = true;
+    document.getElementById("lobbyBackdrop").style.display = "none";
+    expandedPlayerIds = new Set(players.map(p => p.id));
+    pushSystemChat(`🚀 Oda Kurucusu oyunu başlattı! İyi eğlenceler.`);
+    saveRoomSnapshot();
+    renderBoard();
+    renderRightPlayersList();
+    renderInitialsRail();
+    startTurn();
+  }
 
   function completelyExitAndReset() {
     const me = getMySeat();
@@ -1505,43 +1652,6 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
     renderRightPlayersList();
     renderInitialsRail();
     start10MinInflationTimer();
-  }
-
-  function leaveRoomOrGame() {
-    completelyExitAndReset();
-  }
-
-  window.addEventListener("beforeunload", () => {
-    if (isMatchStarted && myLocalPlayerName) {
-      const me = getMySeat();
-      if (me) {
-        broadcastNetworkPayload({
-          type: "PLAYER_PERMANENT_LEAVE",
-          playerId: me.id
-        });
-      }
-    }
-  });
-
-  function toggleChatDrawer() {
-    const drw = document.getElementById("gameChatDrawer");
-    const isOpen = drw.classList.toggle("open");
-    if (isOpen) {
-      unreadChatCount = 0;
-      updateUnreadBadgeUI();
-      renderChatLists();
-    }
-  }
-
-  function updateUnreadBadgeUI() {
-    const b = document.getElementById("chatUnreadBadge");
-    if (!b) return;
-    if (unreadChatCount > 0) {
-      b.style.display = "flex";
-      b.textContent = unreadChatCount > 99 ? "99+" : unreadChatCount;
-    } else {
-      b.style.display = "none";
-    }
   }
 
   function sendChatMessage(source) {
@@ -1672,52 +1782,75 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
           assetsBox.innerHTML = `<div style="font-size:11px; color:#94a3b8;">Bu oyuncunun henüz mülkü yok.</div>`;
         } else {
           owned.forEach(t => {
-            const item = document.createElement("div");
-            item.style.cssText = "background:rgba(0,0,0,0.45); border:1px solid rgba(255,255,255,0.14); border-radius:8px; padding:7px;";
-            item.innerHTML = `<div style="font-size:12px; font-weight:900; color:#fde047; margin-bottom:5px;">${t.flag} ${t.name} (Kira: ${calculateRent(t)} ₺)</div>`;
-            const btnGrid = document.createElement("div");
-            btnGrid.className = "inline-btns-grid";
-            const subForm = document.createElement("div");
-            subForm.className = "inline-mini-form";
-            populateTileActionButtons(t, btnGrid, subForm);
-            item.appendChild(btnGrid);
-            item.appendChild(subForm);
-            assetsBox.appendChild(item);
+            const hCount = (t.houseOwners || []).length;
+            const bld = t.mortgaged ? "🔴 İpotekli" : (hCount === 0 ? "Arsa" : (hCount >= 5 ? "🏙️ Plaza" : `🏠 ${hCount} Ev`));
+            const chip = document.createElement("div");
+            chip.className = "asset-chip";
+            chip.innerHTML = `
+              <span>${t.flag} <b>${t.name}</b> (${bld})</span>
+              <span style="color:#fde047;">${calculateRent(t)} ₺ Kira</span>
+            `;
+            chip.onclick = () => {
+              selectPinnedCardByUser(t.id);
+              openMobileCenterHub("card");
+            };
+            assetsBox.appendChild(chip);
           });
         }
         pWrap.appendChild(assetsBox);
         body.appendChild(pWrap);
       });
-    } else if (tab === "card") {
-      const t = TILES[pinnedTileId] || TILES[0];
-      title.textContent = `${t.flag} ${t.name} — İşlemler`;
-      const statInfo = document.createElement("div");
-      statInfo.style.cssText = "font-size:12px; color:#e2e8f0; background:rgba(255,255,255,0.05); padding:8px; border-radius:8px;";
-      statInfo.innerHTML = `Değer: <b>${getPlayerPrice(t)} ₺</b> • Kira: <b style="color:#fde047;">${calculateRent(t)} ₺</b> • Ev: <b>${getPlayerHouseCost(t)} ₺</b>`;
-      const btnGrid = document.createElement("div");
-      btnGrid.className = "inline-btns-grid";
-      const subForm = document.createElement("div");
-      subForm.className = "inline-mini-form";
-      populateTileActionButtons(t, btnGrid, subForm);
-      body.appendChild(statInfo);
-      body.appendChild(btnGrid);
-      body.appendChild(subForm);
+    } else {
+      title.textContent = "🏠 Seçili Kart Detayı & Hızlı İşlemler";
+      const tile = TILES[pinnedTileId] || TILES[5];
+      const me = getMySeat();
+
+      const topCard = document.createElement("div");
+      topCard.className = "insp-banner";
+      topCard.style.backgroundImage = `url('${tile.photo}')`;
+      topCard.innerHTML = `
+        <div class="insp-banner-top">
+          <span class="fs-pill" style="font-size:9px; padding:2px 8px; background:${tile.color};">${tile.region}</span>
+          <span class="fs-pill" style="background:rgba(0,0,0,0.65); font-size:9px; padding:2px 7px;">#${tile.id + 1}</span>
+        </div>
+        <div class="insp-banner-bottom">
+          <div style="font-size:15px; font-weight:900; color:#fff; text-shadow:0 2px 6px #000;">${tile.flag} ${tile.name}</div>
+          <div style="font-size:11px; font-weight:800; color:#fde68a;">${tile.owner !== undefined ? players[tile.owner].name : "Satılık"}</div>
+        </div>
+      `;
+      body.appendChild(topCard);
+
+      const stats = document.createElement("div");
+      stats.className = "insp-stats-grid";
+      const effPrice = getPlayerPrice(tile);
+      const effHouse = getPlayerHouseCost(tile);
+      const effPlaza = getPlayerPlazaCost(tile);
+      const hCount = (tile.houseOwners || []).length;
+      const bld = tile.mortgaged ? "🔴 İpotekli" : (hCount === 0 ? "Bina Yok" : (hCount >= 5 ? "🏙️ 1 Plaza" : `🏠 ${hCount} Ev`));
+
+      stats.innerHTML = `
+        <div class="insp-stat-box"><span>DEĞER</span><strong>${tile.price ? `${effPrice.toLocaleString("tr-TR")} ₺` : "-"}</strong></div>
+        <div class="insp-stat-box"><span>GÜNCEL KİRA</span><strong style="color:#fde047;">${tile.rent ? `${calculateRent(tile).toLocaleString("tr-TR")} ₺` : "-"}</strong></div>
+        <div class="insp-stat-box"><span>EV / PLAZA</span><strong style="font-size:11px;">${tile.houseCost ? `${effHouse} ₺ / P:${effPlaza} ₺` : "-"}</strong></div>
+        <div class="insp-stat-box"><span>DURUM</span><strong style="font-size:11px; color:#34d399;">${bld}</strong></div>
+      `;
+      body.appendChild(stats);
+
+      const actContainer = document.createElement("div");
+      actContainer.className = "pin-actions-area";
+      const actGrid = document.createElement("div");
+      actGrid.className = "inline-btns-grid";
+      const subform = document.createElement("div");
+      subform.className = "inline-mini-form";
+      populateTileActionButtons(tile, actGrid, subform);
+      actContainer.appendChild(actGrid);
+      actContainer.appendChild(subform);
+      body.appendChild(actContainer);
     }
   }
 
-  function closeMobileCenterHub() { document.getElementById("mobileCenterHub").classList.remove("open"); }
-
-  function getTileGridPos(idx) {
-    if (idx <= 11) return { row: 1, col: idx + 1 };
-    if (idx <= 17) return { row: idx - 10, col: 12 };
-    if (idx <= 29) return { row: 8, col: 12 - (idx - 18) };
-    return { row: 8 - (idx - 29), col: 1 };
-  }
-
-  function formatMMSS(sec) {
-    const m = Math.floor(sec / 60);
-    const s = sec % 60;
-    return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+  function closeMobileCenterHub() {
+    document.getElementById("mobileCenterHub").classList.remove("open");
   }
 
   function start10MinInflationTimer() {
@@ -1972,34 +2105,54 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
 
   function getOwnershipShares(tile) {
     if (tile.owner === undefined) return [];
-    const hOwners = tile.houseOwners || [];
-    if (hOwners.length > 0) {
-      const counts = {};
-      hOwners.forEach(pid => { counts[pid] = (counts[pid] || 0) + 1; });
-      const totalH = hOwners.length;
-      return Object.keys(counts).map(pidStr => {
-        const pid = parseInt(pidStr);
-        const c = counts[pid];
-        const ratio = c / totalH;
-        return { playerId: pid, houseCount: c, totalHouses: totalH, ratio, percent: Math.round(ratio * 100) };
-      });
-    }
-    return [{ playerId: tile.owner, houseCount: 0, totalHouses: 0, ratio: 1, percent: 100 }];
+    const counts = {};
+    counts[tile.owner] = (counts[tile.owner] || 0) + 1;
+    (tile.houseOwners || []).forEach(pid => {
+      counts[pid] = (counts[pid] || 0) + 1;
+    });
+    const totalUnits = 1 + (tile.houseOwners || []).length;
+    return Object.entries(counts).map(([pidStr, count]) => {
+      const pid = parseInt(pidStr);
+      const ratio = count / totalUnits;
+      return {
+        playerId: pid,
+        units: count,
+        totalUnits,
+        ratio,
+        percent: Math.round(ratio * 100)
+      };
+    });
   }
 
   function getRentBreakdown(tile) {
     const totalRent = calculateRent(tile);
-    if (!tile.rent || tile.owner === undefined || tile.mortgaged) return [];
-    return getOwnershipShares(tile).map(s => ({ ...s, amount: Math.round(totalRent * s.ratio) }));
+    const shares = getOwnershipShares(tile);
+    let distributed = 0;
+    const breakdown = shares.map((s, idx) => {
+      let amount = Math.floor(totalRent * s.ratio);
+      if (idx === shares.length - 1) amount = totalRent - distributed;
+      else distributed += amount;
+      return {
+        playerId: s.playerId,
+        amount,
+        percent: s.percent
+      };
+    });
+    return breakdown;
   }
 
-  function distributeSaleProceedsByShare(tile, totalSalePrice, label) {
+  function distributeSaleProceedsByShare(tile, totalProceeds, logActionTitle = "Mülk Satışı") {
     const shares = getOwnershipShares(tile);
+    let distributed = 0;
     const summaryParts = [];
-    shares.forEach(s => {
-      const payout = Math.round(totalSalePrice * s.ratio);
-      if (payout > 0 && players[s.playerId] && !players[s.playerId].bankrupt) {
-        changeMoney(s.playerId, payout, label);
+
+    shares.forEach((s, idx) => {
+      let payout = Math.floor(totalProceeds * s.ratio);
+      if (idx === shares.length - 1) payout = totalProceeds - distributed;
+      else distributed += payout;
+
+      if (players[s.playerId]) {
+        changeMoney(s.playerId, payout, `${tile.name} ${logActionTitle} (%${s.percent})`);
         summaryParts.push(`${players[s.playerId].name}: +${payout.toLocaleString("tr-TR")} ₺ (%${s.percent})`);
       }
     });
@@ -2124,7 +2277,7 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
         const ownText = tile.owner !== undefined ? (players[tile.owner] ? players[tile.owner].name : "Sahipsiz") : "Satılık";
         tDetails.textContent = `Kira: ${calculateRent(tile).toLocaleString("tr-TR")} ₺ | Değer: ${getPlayerPrice(tile).toLocaleString("tr-TR")} ₺ | Sahip: ${ownText}`;
       } else if (tile.type === "tax") {
-        tDetails.textContent = `Vergi: -${getPlayerTaxAmount(tile).toLocaleString("tr-TR")} ₺`;
+        tDetails.textContent = `Vergi: -${getPlayerTaxAmount(tile)} ₺`;
       } else if (tile.type === "worldbank") {
         tDetails.textContent = `Dünya Bankası Havuzu: ${worldBankPool.toLocaleString("tr-TR")} ₺`;
       } else {
@@ -2232,48 +2385,47 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
       let colorPickerHTML = "";
       const me = getMySeat();
       if (p.id === me.id) {
-        colorPickerHTML = `<div class="color-swatch-row" onclick="event.stopPropagation();">
-          <span style="font-size:9.5px; color:#cbd5e1; font-weight:800;">Rengin:</span>
-          ${NEON_PALETTE.map(c => `<div class="color-dot-btn" style="background:${c};" onclick="setPlayerColor(${p.id}, '${c}')"></div>`).join("")}
-        </div>`;
+        colorPickerHTML = `
+          <div class="color-swatch-row">
+            <span style="font-size:9px; color:#cbd5e1; font-weight:800;">Renk Değiştir:</span>
+            ${NEON_PALETTE.map(col => `
+              <div class="color-dot-btn" style="background:${col};" onclick="event.stopPropagation(); setPlayerColor(${p.id}, '${col}')"></div>
+            `).join("")}
+          </div>
+        `;
       }
 
-      const discBadge = p.disconnected ? ` • 🔌 Ayrıldı` : "";
       card.innerHTML = `
-        <div class="p-card-top">
+        <div class="p-card-top" onclick="togglePlayerCardExpansion(${p.id})">
           <div class="p-identity">
             <div class="p-badge" style="background:${p.color};">${p.code}</div>
             <div>
-              <div class="p-title">${p.name} ${isTurn ? "⚡" : ""}</div>
-              <div class="p-sub">${p.bankrupt ? "❌ ELENDİ" : `📍 ${TILES[p.pos].name} • ${ownedTiles.length} Mülk${discBadge}`}</div>
+              <div class="p-title">${p.name} ${p.isBot ? "🤖" : (p.disconnected ? "(Ayrıldı)" : "")}</div>
+              <div class="p-sub">📍 ${TILES[p.pos].name} • Tur ${p.lap} • ${ownedTiles.length} Mülk</div>
             </div>
           </div>
-          <div class="p-balance ${p.money < 0 ? "neg" : ""}">${p.bankrupt ? "0 ₺" : p.money.toLocaleString("tr-TR") + " ₺"}</div>
+          <div class="p-balance ${p.money < 0 ? 'neg' : ''}">${p.money.toLocaleString("tr-TR")} ₺</div>
         </div>
         ${colorPickerHTML}
+        <div class="p-assets-drawer" id="drawer-${p.id}"></div>
       `;
 
-      const drawer = document.createElement("div");
-      drawer.className = "p-assets-drawer";
-
+      const drawer = card.querySelector(`#drawer-${p.id}`);
       if (ownedTiles.length === 0) {
-        drawer.innerHTML = `<div style="font-size:10px; color:#64748b;">Henüz mülkü yok.</div>`;
+        drawer.innerHTML = `<div style="font-size:10px; color:#94a3b8; font-style:italic;">Henüz tapu veya ev hissesi yok.</div>`;
       } else {
         ownedTiles.forEach(t => {
-          const totH = (t.houseOwners || []).length;
-          const myShareObj = getOwnershipShares(t).find(s => s.playerId === p.id);
-          const sharePct = myShareObj ? `%${myShareObj.percent}` : "";
-          let badge = t.owner === p.id ? `Tapu (${sharePct})` : `Ortak (${sharePct})`;
-          if (totH >= 5) badge += " • 🏙️ Plaza";
-          else if (totH > 0) badge += ` • 🏠 ${totH} Ev`;
-          if (t.mortgaged) badge = `🔴 İpotek (${t.mortgageTurnsLeft || 3}T)`;
-
+          const hCount = (t.houseOwners || []).length;
+          const isSole = t.owner === p.id && (hCount === 0 || t.houseOwners.every(id => id === p.id));
+          const badgeType = t.mortgaged ? "🔴 İpotek" : (hCount >= 5 ? "🏙️ Plaza" : (hCount === 0 ? "Arsa" : `🏠 ${hCount} Ev`));
           const chip = document.createElement("div");
-          chip.className = `asset-chip ${pinnedTileId === t.id ? "active-asset" : ""}`;
-          chip.style.borderLeft = `3px solid ${p.color}`;
-          chip.innerHTML = `<span><b>${t.flag} ${t.name}</b></span><span style="color:#fde047; font-weight:800;">${badge}</span>`;
-          chip.onclick = (ev) => {
-            ev.stopPropagation();
+          chip.className = `asset-chip ${pinnedTileId === t.id ? 'active-asset' : ''}`;
+          chip.innerHTML = `
+            <span>${t.flag} <b>${t.name}</b> <span style="font-size:8.5px; opacity:0.8;">(${badgeType})</span></span>
+            <span style="color:#fde047; font-weight:900;">${calculateRent(t)} ₺</span>
+          `;
+          chip.onclick = (e) => {
+            e.stopPropagation();
             selectPinnedCardByUser(t.id);
             if (isMobileView) openMobileCenterHub("card");
           };
@@ -2281,447 +2433,273 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
         });
       }
 
-      card.appendChild(drawer);
-      card.onclick = () => {
-        if (expandedPlayerIds.has(p.id)) expandedPlayerIds.delete(p.id);
-        else expandedPlayerIds.add(p.id);
-        renderRightPlayersList();
-      };
       list.appendChild(card);
     });
   }
 
-  function populateTileActionButtons(tile, actBox, subform) {
-    const me = getMySeat();
-    if (!tile || tile.type !== "property" || me.bankrupt) return;
+  function togglePlayerCardExpansion(pid) {
+    if (expandedPlayerIds.has(pid)) expandedPlayerIds.delete(pid);
+    else expandedPlayerIds.add(pid);
+    renderRightPlayersList();
+  }
 
-    const hList = tile.houseOwners || [];
-    const hCount = hList.length;
-    const myHousesHere = hList.filter(id => id === me.id).length;
+  function populateTileActionButtons(tile, container, subform) {
+    container.innerHTML = "";
+    subform.classList.remove("open");
+    subform.innerHTML = "";
+    const me = getMySeat();
+
+    const isFullOwner = (tile.owner === me.id);
+    const hasHouseShare = (tile.houseOwners || []).includes(me.id);
+    const isUnowned = (tile.type === "property" && tile.owner === undefined);
+    const hCount = (tile.houseOwners || []).length;
     const effPrice = getPlayerPrice(tile);
     const effHouse = getPlayerHouseCost(tile);
     const effPlaza = getPlayerPlazaCost(tile);
 
-    const makeBtn = (label, cls, fn) => {
-      const b = document.createElement("button");
-      b.className = `mini-act-btn ${cls}`;
-      b.textContent = label;
-      b.onclick = (ev) => { ev.stopPropagation(); fn(); };
-      return b;
-    };
-
-    if (tile.owner === undefined && currentTurn === me.id && hasRolled && me.pos === tile.id) {
-      const bBuy = makeBtn(`✅ Satın Al (${effPrice} ₺)`, "bg-green full", () => buyUnownedTile(tile));
-      bBuy.disabled = (me.money < effPrice);
-      actBox.appendChild(bBuy);
+    if (tile.type !== "property") {
+      container.innerHTML = `<span style="font-size:11px; color:#94a3b8;">Bu özel bir karedir, alınıp satılamaz.</span>`;
+      return;
     }
 
-    if (tile.owner !== undefined && tile.owner !== me.id && !tile.mortgaged) {
-      const ownerP = players[tile.owner];
-      actBox.appendChild(makeBtn(`💵 Tapu Teklifi`, "bg-gold", () => openSubformOfferDeed(tile, ownerP, subform)));
-      actBox.appendChild(makeBtn(`🤝 Ortaklık Teklifi`, "bg-purple", () => openSubformOfferPartnership(tile, ownerP, subform)));
-      actBox.appendChild(makeBtn(`🔄 Takas Yap`, "bg-blue full", () => openSubformSwapOffer(tile, ownerP, subform)));
+    if (isUnowned) {
+      const bOfferBank = document.createElement("button");
+      bOfferBank.className = "mini-act-btn bg-green full";
+      bOfferBank.textContent = `🏛️ Bankaya Teklif Ver (${effPrice} ₺)`;
+      bOfferBank.onclick = () => openSubformOfferBank(tile, subform);
+      container.appendChild(bOfferBank);
+      return;
     }
 
-    if (tile.owner === me.id) {
+    if (isFullOwner) {
       if (!tile.mortgaged) {
-        const alreadyBuiltThisLap = (tile.lastBuiltLap === me.lap);
         if (hCount < 4) {
-          const bBuild = makeBtn(alreadyBuiltThisLap ? `⏳ Bu Devir Dikildi` : `🏠 Ev Dik (${effHouse} ₺)`, "bg-purple", () => buildHouseOnTile(tile));
-          bBuild.disabled = (alreadyBuiltThisLap || me.money < effHouse);
-          actBox.appendChild(bBuild);
+          const bBuild = document.createElement("button");
+          bBuild.className = "mini-act-btn bg-green";
+          bBuild.textContent = `🏠 +1 Ev (${effHouse} ₺)`;
+          bBuild.disabled = (me.money < effHouse || tile.lastBuiltLap === me.lap);
+          bBuild.title = tile.lastBuiltLap === me.lap ? "Her turda maksimum 1 ev inşa edebilirsin!" : "";
+          bBuild.onclick = () => buildHouseInstant(tile);
+          container.appendChild(bBuild);
         } else if (hCount === 4) {
-          const bPlaza = makeBtn(alreadyBuiltThisLap ? `⏳ Bu Devir Dikildi` : `🏙️ Plaza Dik (${effPlaza} ₺)`, "bg-gold", () => buildHouseOnTile(tile));
-          bPlaza.disabled = (alreadyBuiltThisLap || me.money < effPlaza);
-          actBox.appendChild(bPlaza);
+          const bPlaza = document.createElement("button");
+          bPlaza.className = "mini-act-btn bg-purple";
+          bPlaza.textContent = `🏙️ PLAZAYA ÇEVİR (${effPlaza} ₺)`;
+          bPlaza.disabled = (me.money < effPlaza || tile.lastBuiltLap === me.lap);
+          bPlaza.title = tile.lastBuiltLap === me.lap ? "Her turda maksimum 1 geliştirme yapabilirsin!" : "";
+          bPlaza.onclick = () => upgradeToPlazaInstant(tile);
+          container.appendChild(bPlaza);
         }
-        if (hCount === 0) {
-          actBox.appendChild(makeBtn(`🏦 İpotek Et (+${effPrice} ₺)`, "bg-crimson", () => toggleMortgageTile(tile)));
-        }
-        actBox.appendChild(makeBtn(`🔨 Açık Arttırma`, "bg-gold", () => openSubformStartAuction(tile, subform)));
-        actBox.appendChild(makeBtn(`🏷️ Sabit Fiyatla Sat`, "bg-blue", () => openSubformFixedPriceSale(tile, subform)));
 
-        const totalBankBundle = effPrice + (hCount * effHouse);
-        actBox.appendChild(makeBtn(`🏦 Kasaya Sat (+${totalBankBundle} ₺)`, "bg-green full", () => sellFullBundleToBank(tile)));
+        const bMortgage = document.createElement("button");
+        bMortgage.className = "mini-act-btn bg-crimson";
+        bMortgage.textContent = `🔴 İpotek Et (+${Math.round(effPrice * 0.5)} ₺)`;
+        bMortgage.onclick = () => mortgageProperty(tile);
+        container.appendChild(bMortgage);
+
+        const bSellBank = document.createElement("button");
+        bSellBank.className = "mini-act-btn bg-gold";
+        bSellBank.textContent = "🏦 Bankaya Sat";
+        bSellBank.onclick = () => sellFullBundleToBank(tile);
+        container.appendChild(bSellBank);
+
+        const bAuction = document.createElement("button");
+        bAuction.className = "mini-act-btn bg-blue";
+        bAuction.textContent = "🔨 Açık Arttırma";
+        bAuction.onclick = () => openSubformStartAuction(tile, subform);
+        container.appendChild(bAuction);
       } else {
-        const bUnm = makeBtn(`🔓 İpoteği Kaldır (-${effPrice} ₺)`, "bg-green full", () => toggleMortgageTile(tile));
-        bUnm.disabled = (me.money < effPrice);
-        actBox.appendChild(bUnm);
+        const liftCost = Math.round(effPrice * 0.6);
+        const bLift = document.createElement("button");
+        bLift.className = "mini-act-btn bg-green full";
+        bLift.textContent = `🟢 İpoteği Kaldır (${liftCost} ₺ - Kalan: ${tile.mortgageTurnsLeft || 3} Tur)`;
+        bLift.disabled = (me.money < liftCost);
+        bLift.onclick = () => liftMortgage(tile);
+        container.appendChild(bLift);
+      }
+    } else if (hasHouseShare) {
+      const myHousesCount = tile.houseOwners.filter(id => id === me.id).length;
+      const bSellHouses = document.createElement("button");
+      bSellHouses.className = "mini-act-btn bg-gold full";
+      bSellHouses.textContent = `🏠 Hisseni Bankaya Sat (${myHousesCount} Ev = +${Math.round(myHousesCount * effHouse * 0.7)} ₺)`;
+      bSellHouses.onclick = () => sellMyHousesFromTile(tile);
+      container.appendChild(bSellHouses);
+    } else {
+      const ownerP = players[tile.owner];
+      const bOfferDeed = document.createElement("button");
+      bOfferDeed.className = "mini-act-btn bg-gold";
+      bOfferDeed.textContent = `📜 ${ownerP.name}'a Tapu Teklifi`;
+      bOfferDeed.onclick = () => openSubformOfferDeed(tile, ownerP, subform);
+      container.appendChild(bOfferDeed);
+
+      if (hCount < 5 && !tile.mortgaged) {
+        const bOfferPartner = document.createElement("button");
+        bOfferPartner.className = "mini-act-btn bg-purple";
+        bOfferPartner.textContent = `🤝 1 Evle Ortak Ol (${effHouse} ₺)`;
+        bOfferPartner.onclick = () => openSubformOfferPartnership(tile, ownerP, subform);
+        container.appendChild(bOfferPartner);
       }
     }
-
-    if (myHousesHere > 0 && !tile.mortgaged) {
-      actBox.appendChild(makeBtn(`🏘️ 1 Ev Sat (+${effHouse} ₺)`, "bg-slate", () => sellHousesCount(tile, 1)));
-      if (myHousesHere > 1) {
-        actBox.appendChild(makeBtn(`🏘️ Tüm Evleri Sat (+${myHousesHere * effHouse} ₺)`, "bg-crimson", () => sellHousesCount(tile, myHousesHere)));
-      }
-    }
   }
 
-  function openSubformFixedPriceSale(tile, sub) {
+  function buildHouseInstant(tile) {
+    const me = getMySeat();
+    const effHouse = getPlayerHouseCost(tile);
+    if (me.money < effHouse) return alert("Nakit yetersiz!");
+    if (tile.lastBuiltLap === me.lap) return alert("Her turda maksimum 1 bina geliştirebilirsiniz!");
+    changeMoney(me.id, -effHouse, `${tile.name} Ev İnşası`);
+    tile.houseOwners.push(me.id);
+    tile.lastBuiltLap = me.lap;
+    playSfx("build");
+    addLog(`🏠 ${me.name}, ${tile.name} mülküne yeni bir ev inşa etti! (${effHouse} ₺)`, -effHouse);
+    afterUserOwnPinAction(tile.id);
+  }
+
+  function upgradeToPlazaInstant(tile) {
+    const me = getMySeat();
+    const effPlaza = getPlayerPlazaCost(tile);
+    if (me.money < effPlaza) return alert("Nakit yetersiz!");
+    if (tile.lastBuiltLap === me.lap) return alert("Her turda maksimum 1 bina geliştirebilirsiniz!");
+    changeMoney(me.id, -effPlaza, `${tile.name} Plaza Çevirme`);
+    tile.houseOwners.push(me.id);
+    tile.lastBuiltLap = me.lap;
+    playSfx("plaza");
+    addLog(`🏙️ ${me.name}, ${tile.name} karesine görkemli bir PLAZA dikti! (${effPlaza} ₺)`, -effPlaza);
+    afterUserOwnPinAction(tile.id);
+  }
+
+  function mortgageProperty(tile) {
     const me = getMySeat();
     if (tile.owner !== me.id || tile.mortgaged) return;
-    const totH = (tile.houseOwners || []).length;
-    const baseVal = getPlayerPrice(tile) + (totH * getPlayerHouseCost(tile));
-    sub.innerHTML = `
-      <label>🏷️ <b>${tile.name}</b> Sabit Satış Fiyatı (₺):</label>
-      <input type="number" class="inp-fixed-price" value="${baseVal}" step="100">
-      <div style="display:flex; gap:4px;">
-        <button class="mini-act-btn bg-green btn-confirm">📢 Satışa Koy</button>
-        <button class="mini-act-btn bg-slate btn-cancel">İptal</button>
-      </div>
-    `;
-    sub.classList.add("open");
-    sub.querySelector(".btn-cancel").onclick = () => sub.classList.remove("open");
-    sub.querySelector(".btn-confirm").onclick = () => {
-      const askPrice = parseInt(sub.querySelector(".inp-fixed-price").value) || 0;
-      const buyers = players.filter(b => b.id !== me.id && !b.bankrupt && b.money >= askPrice);
-      if (buyers.length > 0 && askPrice <= Math.round(baseVal * 1.35)) {
-        const buyer = buyers[Math.floor(Math.random() * buyers.length)];
-        changeMoney(buyer.id, -askPrice, `${tile.name} Alımı`);
-        const distLog = distributeSaleProceedsByShare(tile, askPrice, `${tile.name} Satışı`);
-        tile.owner = buyer.id;
-        tile.houseOwners = (tile.houseOwners || []).map(() => buyer.id);
-        addLog(`🏷️ ${buyer.name}, ${askPrice} ₺ ödeyerek ${tile.name} mülkünü satın aldı! [${distLog}]`);
-        afterUserOwnPinAction(tile.id);
-      } else {
-        playSfx("bad");
-        addLog(`❌ ${askPrice} ₺ fiyata alıcı çıkmadı.`);
-      }
-    };
-  }
-
-  function openSubformStartAuction(tile, sub) {
-    const me = getMySeat();
-    if (tile.owner !== me.id || tile.mortgaged) return;
-    const totH = (tile.houseOwners || []).length;
-    const baseVal = Math.round((getPlayerPrice(tile) + totH * getPlayerHouseCost(tile)) * 0.8);
-    sub.innerHTML = `
-      <label>🔨 <b>${tile.name}</b> Başlangıç Fiyatı (₺):</label>
-      <input type="number" class="inp-auc-start" value="${baseVal}" step="100">
-      <div style="display:flex; gap:4px;">
-        <button class="mini-act-btn bg-gold btn-confirm">🔨 Başlat</button>
-        <button class="mini-act-btn bg-slate btn-cancel">İptal</button>
-      </div>
-    `;
-    sub.classList.add("open");
-    sub.querySelector(".btn-cancel").onclick = () => sub.classList.remove("open");
-    sub.querySelector(".btn-confirm").onclick = () => {
-      const startBid = parseInt(sub.querySelector(".inp-auc-start").value) || 500;
-      sub.classList.remove("open");
-      runLivePropertyAuction(tile, startBid);
-    };
-  }
-
-  function runLivePropertyAuction(tile, startBid) {
-    isAuctionActive = true;
-    const overlay = document.getElementById("auctionOverlay");
-    const bidEl = document.getElementById("aucHighestBid");
-    const bidderEl = document.getElementById("aucHighestBidder");
-    const btnsEl = document.getElementById("aucActionBtns");
-    const timerBadge = document.getElementById("aucTimerBadge");
-    const me = getMySeat();
-
-    const totH = (tile.houseOwners || []).length;
-    const realValue = getPlayerPrice(tile) + totH * getPlayerHouseCost(tile);
-    let currentBid = startBid;
-    let highestBidder = null;
-    let aucTimeLeft = 20;
-
-    overlay.style.display = "flex";
-    document.getElementById("aucTileTitle").textContent = `${tile.flag} ${tile.name}`;
-    bidEl.textContent = `${currentBid.toLocaleString("tr-TR")} ₺`;
-    bidderEl.textContent = "Başlangıç Fiyatı";
-
-    let auctionClock = null;
-    const closeAuction = () => { clearInterval(auctionClock); isAuctionActive = false; overlay.style.display = "none"; };
-    const finalizeSale = () => {
-      if (!highestBidder) return closeAuction();
-      changeMoney(highestBidder.id, -currentBid, `${tile.name} Açık Arttırma`);
-      const distLog = distributeSaleProceedsByShare(tile, currentBid, `${tile.name} Açık Arttırma`);
-      tile.owner = highestBidder.id;
-      tile.houseOwners = (tile.houseOwners || []).map(() => highestBidder.id);
-      closeAuction();
-      addLog(`🔨 ${tile.name}, ${highestBidder.name}'a ${currentBid} ₺'ye satıldı! [${distLog}]`);
-      afterUserOwnPinAction(tile.id);
-    };
-
-    const renderBtns = () => {
-      btnsEl.innerHTML = "";
-      if (highestBidder) {
-        const b = document.createElement("button");
-        b.className = "act-btn bg-green";
-        b.textContent = `✅ ${currentBid} ₺'ye Sat`;
-        b.onclick = finalizeSale;
-        btnsEl.appendChild(b);
-      }
-      const c = document.createElement("button");
-      c.className = "act-btn bg-crimson";
-      c.textContent = "✖ İptal";
-      c.onclick = closeAuction;
-      btnsEl.appendChild(c);
-    };
-    renderBtns();
-
-    const maxWillPay = Math.round(realValue * 1.35);
-    auctionClock = setInterval(() => {
-      if (isGamePaused) return;
-      aucTimeLeft--;
-      timerBadge.textContent = `⏱️ ${aucTimeLeft} sn`;
-      if (aucTimeLeft % 3 === 0 && aucTimeLeft > 2) {
-        const otherPlayers = players.filter(b => b.id !== me.id && !b.bankrupt && b.money >= currentBid + 200);
-        if (otherPlayers.length > 0 && currentBid + 200 <= maxWillPay) {
-          const b = otherPlayers[Math.floor(Math.random() * otherPlayers.length)];
-          currentBid += 250;
-          highestBidder = b;
-          playSfx("offer");
-          bidEl.textContent = `${currentBid.toLocaleString("tr-TR")} ₺`;
-          bidderEl.textContent = `🔥 En Yüksek: ${b.name}`;
-          renderBtns();
-        }
-      }
-      if (aucTimeLeft <= 0) finalizeSale();
-    }, 1000);
-  }
-
-  function openSubformOfferDeed(tile, targetP, sub) {
-    const me = getMySeat();
     const effPrice = getPlayerPrice(tile);
-    const suggested = Math.round(effPrice * 1.15);
-    sub.innerHTML = `
-      <label>💵 ${targetP.name}'a <b>${tile.name}</b> teklifin (₺):</label>
-      <input type="number" class="inp-val" value="${suggested}" step="100">
-      <div style="display:flex; gap:4px;">
-        <button class="mini-act-btn bg-green btn-send">📨 Gönder</button>
-        <button class="mini-act-btn bg-slate btn-cancel">İptal</button>
-      </div>
-    `;
-    sub.classList.add("open");
-    sub.querySelector(".btn-cancel").onclick = () => sub.classList.remove("open");
-    sub.querySelector(".btn-send").onclick = () => {
-      const offer = parseInt(sub.querySelector(".inp-val").value) || 0;
-      if (offer <= 0 || offer > me.money) return alert("Nakit yetersiz!");
-      if (targetP.isBot) {
-        if (offer >= Math.round((effPrice + tile.houseOwners.length * getPlayerHouseCost(tile)) * 1.1)) {
-          changeMoney(me.id, -offer, `${tile.name} Alımı`);
-          distributeSaleProceedsByShare(tile, offer, `${tile.name} Satışı`);
-          tile.owner = me.id;
-          addLog(`🤝 ${targetP.name}, ${offer} ₺ teklifini kabul etti ve ${tile.name} tapusunu devretti!`, -offer);
-          afterUserOwnPinAction(tile.id);
-        } else {
-          playSfx("bad");
-          addLog(`❌ ${targetP.name} teklifi reddetti.`);
-        }
-      } else {
-        const offObj = { senderId: me.id, targetId: targetP.id, tileId: tile.id, kind: "buyDeed", cash: offer };
-        broadcastNetworkPayload({ type: "OFFER_PROPOSAL", offer: offObj });
-        addLog(`📨 ${targetP.name}'a ${tile.name} için ${offer} ₺ tapu teklifi gönderildi.`);
-        sub.classList.remove("open");
-      }
-    };
+    const gain = Math.round(effPrice * 0.5);
+    changeMoney(me.id, gain, `${tile.name} İpotek`);
+    tile.mortgaged = true;
+    tile.mortgageTurnsLeft = 3;
+    playSfx("bad");
+    addLog(`🔴 ${me.name}, ${tile.name} tapusunu ipotek etti (+${gain} ₺). Kira geliri durdu. 3 tur içinde kaldırılmazsa bankaya geçer!`, gain);
+    afterUserOwnPinAction(tile.id);
   }
 
-  function openSubformOfferPartnership(tile, targetP, sub) {
+  function liftMortgage(tile) {
     const me = getMySeat();
-    const effHouse = getPlayerHouseCost(tile);
-    sub.innerHTML = `
-      <label>🤝 <b>${tile.name}</b> 1 Ev Hissesi Teklifin (₺):</label>
-      <input type="number" class="inp-val" value="${effHouse}" step="50">
-      <div style="display:flex; gap:4px;">
-        <button class="mini-act-btn bg-purple btn-send">📨 Gönder</button>
-        <button class="mini-act-btn bg-slate btn-cancel">İptal</button>
-      </div>
-    `;
-    sub.classList.add("open");
-    sub.querySelector(".btn-cancel").onclick = () => sub.classList.remove("open");
-    sub.querySelector(".btn-send").onclick = () => {
-      const offer = parseInt(sub.querySelector(".inp-val").value) || 0;
-      if (offer <= 0 || offer > me.money) return alert("Nakit yetersiz!");
-      if (targetP.isBot) {
-        if (offer >= Math.round(effHouse * 0.95)) {
-          changeMoney(me.id, -offer, "Ortaklık");
-          changeMoney(targetP.id, offer, "Ortaklık");
-          if (tile.houseOwners.length < 5) tile.houseOwners.push(me.id);
-          addLog(`🏠 Artık ${tile.name} mülkünün hissedarısın (-${offer} ₺).`, -offer);
-          afterUserOwnPinAction(tile.id);
-        } else {
-          playSfx("bad");
-          addLog(`❌ ${targetP.name} ortaklığı reddetti.`);
-        }
-      } else {
-        const offObj = { senderId: me.id, targetId: targetP.id, tileId: tile.id, kind: "partner", cash: offer };
-        broadcastNetworkPayload({ type: "OFFER_PROPOSAL", offer: offObj });
-        addLog(`📨 ${targetP.name}'a ${tile.name} için ${offer} ₺ ortaklık teklifi gönderildi.`);
-        sub.classList.remove("open");
-      }
-    };
-  }
-
-  function openSubformSwapOffer(tile, targetP, sub) {
-    const me = getMySeat();
-    const myProps = TILES.filter(t => t.type === "property" && t.owner === me.id && !t.mortgaged);
-    if (myProps.length === 0) return alert("Takas edilecek ipoteksiz ülken yok!");
-    const opts = myProps.map(t => `<option value="${t.id}">${t.flag} ${t.name}</option>`).join("");
-    sub.innerHTML = `
-      <label>🔄 Vereceğin Ülke & Nakit Farkı:</label>
-      <select class="sel-prop">${opts}</select>
-      <input type="number" class="inp-cash" value="0" step="100" placeholder="Üste Nakit (₺)">
-      <div style="display:flex; gap:4px;">
-        <button class="mini-act-btn bg-blue btn-send">📨 Gönder</button>
-        <button class="mini-act-btn bg-slate btn-cancel">İptal</button>
-      </div>
-    `;
-    sub.classList.add("open");
-    sub.querySelector(".btn-cancel").onclick = () => sub.classList.remove("open");
-    sub.querySelector(".btn-send").onclick = () => {
-      const myTile = TILES[parseInt(sub.querySelector(".sel-prop").value)];
-      const cash = parseInt(sub.querySelector(".inp-cash").value) || 0;
-      if (me.money < cash) return alert("Nakit yetersiz!");
-      if (targetP.isBot) {
-        if (getPlayerPrice(myTile) + cash >= getPlayerPrice(tile) * 0.92) {
-          changeMoney(me.id, -cash, "Takas");
-          changeMoney(targetP.id, cash, "Takas");
-          myTile.owner = targetP.id;
-          tile.owner = me.id;
-          addLog(`🔄 TAKAS! ${myTile.name} verip ${tile.name} ülkesini aldın!`, -cash);
-          afterUserOwnPinAction(tile.id);
-        } else {
-          playSfx("bad");
-          addLog(`❌ ${targetP.name} takası reddetti.`);
-        }
-      }
-    };
-  }
-
-  function sellHousesCount(tile, countToSell) {
-    const me = getMySeat();
-    const effHouse = getPlayerHouseCost(tile);
-    let sold = 0;
-    while (sold < countToSell) {
-      const idx = tile.houseOwners.indexOf(me.id);
-      if (idx === -1) break;
-      tile.houseOwners.splice(idx, 1);
-      sold++;
-    }
-    if (sold === 0) return;
-    const gain = sold * effHouse;
-    changeMoney(me.id, gain, "Ev Satışı");
-    addLog(`🏘️ ${tile.name} ülkesindeki ${sold} evi sattın (+${gain} ₺).`, gain);
+    if (tile.owner !== me.id || !tile.mortgaged) return;
+    const effPrice = getPlayerPrice(tile);
+    const cost = Math.round(effPrice * 0.6);
+    if (me.money < cost) return alert("İpoteği kaldırmak için yeterli nakit yok!");
+    changeMoney(me.id, -cost, `${tile.name} İpotek Kaldırma`);
+    tile.mortgaged = false;
+    delete tile.mortgageTurnsLeft;
+    playSfx("cash");
+    addLog(`🟢 ${me.name}, ${tile.name} ipoteğini kaldırıp mülkü tekrar aktif hale getirdi!`, -cost);
     afterUserOwnPinAction(tile.id);
   }
 
   function sellFullBundleToBank(tile) {
     const me = getMySeat();
-    if (tile.owner !== me.id || tile.mortgaged) return;
-    const totH = (tile.houseOwners || []).length;
-    const totalGain = getPlayerPrice(tile) + (totH * getPlayerHouseCost(tile));
-    const distLog = distributeSaleProceedsByShare(tile, totalGain, "Kasa Satışı");
+    if (tile.owner !== me.id) return;
+    const effPrice = getPlayerPrice(tile);
+    const effHouse = getPlayerHouseCost(tile);
+    const totalValue = effPrice + (tile.houseOwners || []).length * effHouse;
+    const payout = Math.round(totalValue * 0.7);
+
+    const distLog = distributeSaleProceedsByShare(tile, payout, "Bankaya Satış");
     delete tile.owner;
     tile.houseOwners = [];
     tile.mortgaged = false;
     delete tile.mortgageTurnsLeft;
-    addLog(`🏦 ${tile.name} Kasaya satıldı (${totalGain} ₺). [${distLog}]`);
+    delete tile.lastBuiltLap;
+
+    playSfx("cash");
+    addLog(`🏦 ${tile.name} mülkü ve binaları bankaya satıldı (${payout} ₺). [${distLog}]`);
     afterUserOwnPinAction(tile.id);
   }
 
-  function changeMoney(playerId, delta) {
-    if (!players[playerId]) return;
-    players[playerId].money += delta;
+  function sellMyHousesFromTile(tile) {
     const me = getMySeat();
-    if (playerId === me.id) {
-      if (delta > 0) playSfx("cash");
-      else if (delta < 0) playSfx("bad");
-      if (me.money >= 0 && isDebtTimerMode) isDebtTimerMode = false;
-    }
+    const myHouses = tile.houseOwners.filter(id => id === me.id).length;
+    if (myHouses <= 0) return;
+    const effHouse = getPlayerHouseCost(tile);
+    const payout = Math.round(myHouses * effHouse * 0.7);
+    changeMoney(me.id, payout, `${tile.name} Ev Hissesi Satışı`);
+    tile.houseOwners = tile.houseOwners.filter(id => id !== me.id);
+    playSfx("cash");
+    addLog(`🏠 ${me.name}, ${tile.name} üzerindeki ${myHouses} ev hissesini satarak +${payout} ₺ aldı.`, payout);
+    afterUserOwnPinAction(tile.id);
+  }
+
+  function openSubformOfferBank(tile, sub) {
+    const me = getMySeat();
+    const effPrice = getPlayerPrice(tile);
+    sub.innerHTML = `
+      <label>🏛️ Bankaya Teklifin (Normal: ${effPrice} ₺):</label>
+      <input type="number" class="inp-val" value="${effPrice}" step="100">
+      <div style="display:flex; gap:4px;">
+        <button class="mini-act-btn bg-green btn-send">Teklif Ver</button>
+        <button class="mini-act-btn bg-slate btn-cancel">İptal</button>
+      </div>
+    `;
+    sub.classList.add("open");
+    sub.querySelector(".btn-cancel").onclick = () => sub.classList.remove("open");
+    sub.querySelector(".btn-send").onclick = () => {
+      const askPrice = parseInt(sub.querySelector(".inp-val").value) || 0;
+      if (askPrice <= 0 || askPrice > me.money) return alert("Geçersiz veya yetersiz nakit!");
+      sub.classList.remove("open");
+      resolveBankTileOffer(tile, askPrice, me);
+    };
+  }
+
+  function resolveBankTileOffer(tile, askPrice, buyer) {
+    const effPrice = getPlayerPrice(tile);
+    const acceptRatio = askPrice / effPrice;
+    const overlay = document.getElementById("pauseVoteOverlay");
+    overlay.style.display = "flex";
+    document.getElementById("pauseModalTag").textContent = "🏛️ BANKA MÜZAYEDE MASASI";
+    document.getElementById("pauseModalTitle").textContent = "Banka Teklifi Değerlendiriyor...";
+    document.getElementById("pauseModalDesc").textContent = `${tile.flag} ${tile.name} için verilen ${askPrice.toLocaleString("tr-TR")} ₺ teklif...`;
+    document.getElementById("pauseVotesList").innerHTML = `<div style="text-align:center; padding:15px; color:#fde68a;">⏳ Piyasa koşulları hesaplanıyor...</div>`;
+    document.getElementById("pauseModalBtns").innerHTML = "";
+
+    setTimeout(() => {
+      overlay.style.display = "none";
+      let willAccept = false;
+      if (acceptRatio >= 1.0) willAccept = true;
+      else if (acceptRatio >= 0.85 && Math.random() < 0.65) willAccept = true;
+      else if (acceptRatio >= 0.70 && Math.random() < 0.25) willAccept = true;
+
+      if (willAccept) {
+        changeMoney(buyer.id, -askPrice, `${tile.name} Banka Alımı`);
+        tile.owner = buyer.id;
+        tile.houseOwners = [];
+        playSfx("buy");
+        addLog(`🏛️ Banka, ${buyer.name}'ın ${askPrice} ₺ teklifini kabul etti ve tapuyu verdi!`, -askPrice);
+        afterUserOwnPinAction(tile.id);
+      } else {
+        playSfx("bad");
+        addLog(`❌ Banka, ${tile.name} için yapılan ${askPrice} ₺ teklifi yetersiz bularak reddetti.`);
+      }
+    }, 1100);
   }
 
   function afterUserOwnPinAction(tileId) {
     renderBoard();
     renderRightPlayersList();
     refreshCenterLiveFlowUI();
-    selectPinnedCardByUser(tileId);
+    refreshPinnedStatsOnly();
+    renderTradeDock();
     renderInitialsRail();
-    if (document.getElementById("mobileCenterHub").classList.contains("open")) {
-      openMobileCenterHub(currentMobileHubTab);
-    }
-    if (document.getElementById("cardView").style.display === "flex") {
-      showLiveLandingScreen(activeCenterTileId);
-    }
     saveRoomSnapshot();
   }
 
-  function buyUnownedTile(tile) {
-    const me = getMySeat();
-    const effPrice = getPlayerPrice(tile);
-    if (tile.owner !== undefined || me.money < effPrice) return;
-    me.missedTurns = 0;
-    changeMoney(me.id, -effPrice);
-    tile.owner = me.id;
-    tile.houseOwners = [];
-    tile.mortgaged = false;
-    playSfx("buy");
-    addLog(`✅ ${tile.name} ülkesini ${effPrice} ₺'ye satın aldın!`, -effPrice);
-    afterUserOwnPinAction(tile.id);
-  }
-
-  function buildHouseOnTile(tile) {
-    const me = getMySeat();
-    if (tile.owner !== me.id || tile.mortgaged || tile.lastBuiltLap === me.lap) return;
-    const hCount = tile.houseOwners.length;
-    const cost = hCount < 4 ? getPlayerHouseCost(tile) : getPlayerPlazaCost(tile);
-    if (me.money < cost) return;
-    changeMoney(me.id, -cost);
-    tile.houseOwners.push(me.id);
-    tile.lastBuiltLap = me.lap;
-    playSfx(hCount === 4 ? "plaza" : "build");
-    addLog(`🏠 ${tile.name} üzerine yeni yapı inşa edildi (-${cost} ₺).`, -cost);
-    afterUserOwnPinAction(tile.id);
-  }
-
-  function toggleMortgageTile(tile) {
-    const me = getMySeat();
-    if (tile.owner !== me.id) return;
-    const fullAmount = getPlayerPrice(tile);
-    if (!tile.mortgaged && tile.houseOwners.length === 0) {
-      tile.mortgaged = true;
-      tile.mortgageTurnsLeft = 3;
-      changeMoney(me.id, fullAmount);
-      addLog(`🏦 ${tile.name} ipotek edildi (+${fullAmount} ₺).`, fullAmount);
-    } else if (tile.mortgaged && me.money >= fullAmount) {
-      tile.mortgaged = false;
-      delete tile.mortgageTurnsLeft;
-      changeMoney(me.id, -fullAmount);
-      addLog(`🔓 ${tile.name} ipoteği kaldırıldı (-${fullAmount} ₺).`, -fullAmount);
-    }
-    afterUserOwnPinAction(tile.id);
-  }
-
-  function processMortgageExpirationsForPlayer(player) {
-    TILES.forEach(tile => {
-      if (tile.type === "property" && tile.owner === player.id && tile.mortgaged) {
-        tile.mortgageTurnsLeft = (tile.mortgageTurnsLeft ?? 3) - 1;
-        if (tile.mortgageTurnsLeft <= 0) {
-          delete tile.owner;
-          tile.mortgaged = false;
-          delete tile.mortgageTurnsLeft;
-          tile.houseOwners = [];
-          addLog(`🚨 HACİZ! ${player.name}, ${tile.name} ipoteğini kaldırmadığı için mülk boşa çıktı!`);
-        }
-      }
-    });
-  }
-
-  function toggleIncomingOffers() {
-    incomingOffersEnabled = !incomingOffersEnabled;
-    const btn = document.getElementById("btnToggleOffers");
-    if (btn) btn.textContent = incomingOffersEnabled ? "🔔 Açık" : "🔕 Kapalı";
-    if (!incomingOffersEnabled) activeOffersQueue = [];
+  function prevOffer() {
+    if (activeOffersQueue.length === 0) return;
+    currentOfferIdx = (currentOfferIdx - 1 + activeOffersQueue.length) % activeOffersQueue.length;
     renderTradeDock();
   }
 
-  function navigateOffers(dir) {
-    if (activeOffersQueue.length <= 1) return;
-    currentOfferIdx = (currentOfferIdx + dir + activeOffersQueue.length) % activeOffersQueue.length;
+  function nextOffer() {
+    if (activeOffersQueue.length === 0) return;
+    currentOfferIdx = (currentOfferIdx + 1) % activeOffersQueue.length;
     renderTradeDock();
   }
 
@@ -2729,6 +2707,69 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
     activeOffersQueue.splice(idx, 1);
     if (currentOfferIdx >= activeOffersQueue.length) currentOfferIdx = Math.max(0, activeOffersQueue.length - 1);
     renderTradeDock();
+    saveRoomSnapshot();
+  }
+
+  function showMobileIncomingOfferToast(offer) {
+    const toast = document.getElementById("mobileOfferToast");
+    const txt = document.getElementById("mobOfferText");
+    const countBadge = document.getElementById("mobOfferCountdownBadge");
+    const prog = document.getElementById("mobOfferProgressBar");
+    const btnAccept = document.getElementById("mobOfferAcceptBtn");
+    const btnReject = document.getElementById("mobOfferRejectBtn");
+
+    const sender = players[offer.botId !== undefined ? offer.botId : offer.senderId];
+    const tile = TILES[offer.tileId];
+    const me = getMySeat();
+
+    txt.innerHTML = `<b>${sender.name}</b>, <span style="color:#fde68a;">${tile.flag} ${tile.name}</span> için <b>${offer.cash.toLocaleString("tr-TR")} ₺</b> teklif etti!`;
+
+    clearInterval(mobileOfferTimer);
+    mobileOfferCountdown = 10;
+    prog.style.width = "100%";
+    toast.classList.add("show");
+    playSfx("offer");
+
+    const closeToast = () => {
+      clearInterval(mobileOfferTimer);
+      toast.classList.remove("show");
+    };
+
+    btnAccept.onclick = () => {
+      closeToast();
+      executeOfferAcceptance(offer, sender, tile, me);
+    };
+
+    btnReject.onclick = () => {
+      closeToast();
+      playSfx("bad");
+      addLog(`❌ ${sender.name}'ın ${tile.name} teklifini reddettin.`);
+    };
+
+    mobileOfferTimer = setInterval(() => {
+      mobileOfferCountdown--;
+      countBadge.textContent = `⏱️ ${mobileOfferCountdown}sn`;
+      prog.style.width = `${(mobileOfferCountdown / 10) * 100}%`;
+      if (mobileOfferCountdown <= 0) {
+        closeToast();
+      }
+    }, 1000);
+  }
+
+  function executeOfferAcceptance(offer, sender, tile, me) {
+    if (offer.kind === "buyDeed") {
+      changeMoney(sender.id, -offer.cash);
+      distributeSaleProceedsByShare(tile, offer.cash, "Teklif Satışı");
+      tile.owner = sender.id;
+      tile.houseOwners = (tile.houseOwners || []).map(() => sender.id);
+      addLog(`🤝 ${sender.name}'a ${tile.name} tapusunu ${offer.cash} ₺ karşılığı devrettin!`);
+    } else {
+      changeMoney(me.id, offer.cash);
+      changeMoney(sender.id, -offer.cash);
+      if (tile.houseOwners.length < 5) tile.houseOwners.push(sender.id);
+      addLog(`🤝 ${sender.name}, ${tile.name} karesinde 1 ev ortaklığı karşılığı sana +${offer.cash} ₺ ödedi!`, offer.cash);
+    }
+    afterUserOwnPinAction(tile.id);
   }
 
   function onReceiveTradeOffer(offer) {
@@ -2744,109 +2785,47 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
     }
   }
 
-  function showMobileIncomingOfferToast(offer) {
-    const toast = document.getElementById("mobileOfferToast");
-    const txt = document.getElementById("mobileOfferToastText");
-    const bar = document.getElementById("mobileToastBar");
-    const btnAcc = document.getElementById("btnMobOfferAccept");
-    const btnRej = document.getElementById("btnMobOfferReject");
-
-    const sender = players[offer.senderId || offer.botId] || { name: "Oyuncu" };
-    const tile = TILES[offer.tileId];
-    if (!tile) return;
-
-    playSfx("offer");
-    toast.classList.add("show");
-    txt.innerHTML = `<b>${sender.name}</b>, senin <b>${tile.flag} ${tile.name}</b> mülkün için <b>+${offer.cash.toLocaleString("tr-TR")} ₺</b> (${offer.kind === "partner" ? "Ortaklık" : "Tapu Satışı"}) teklif ediyor!`;
-
-    clearInterval(mobileOfferTimer);
-    mobileOfferCountdown = 10;
-    bar.style.width = "100%";
-
-    mobileOfferTimer = setInterval(() => {
-      mobileOfferCountdown -= 0.1;
-      const pct = Math.max(0, (mobileOfferCountdown / 10) * 100);
-      bar.style.width = `${pct}%`;
-      if (mobileOfferCountdown <= 0) {
-        clearInterval(mobileOfferTimer);
-        dismissMobileOfferToast();
-      }
-    }, 100);
-
-    btnAcc.onclick = () => {
-      clearInterval(mobileOfferTimer);
-      dismissMobileOfferToast();
-      if (offer.kind === "buyDeed") {
-        changeMoney(sender.id, -offer.cash);
-        distributeSaleProceedsByShare(tile, offer.cash, "Teklif Satışı");
-        tile.owner = sender.id;
-        tile.houseOwners = (tile.houseOwners || []).map(() => sender.id);
-      } else {
-        const me = getMySeat();
-        changeMoney(me.id, offer.cash);
-        changeMoney(sender.id, -offer.cash);
-        if (tile.houseOwners.length < 5) tile.houseOwners.push(sender.id);
-      }
-      afterUserOwnPinAction(tile.id);
-    };
-
-    btnRej.onclick = () => {
-      clearInterval(mobileOfferTimer);
-      dismissMobileOfferToast();
-      addLog(`❌ ${sender.name}'ın ${tile.name} teklifini reddettin.`);
-    };
-  }
-
-  function dismissMobileOfferToast() {
-    clearInterval(mobileOfferTimer);
-    document.getElementById("mobileOfferToast").classList.remove("show");
-  }
-
   function renderTradeDock() {
-    if (isMobileView) return;
-    const me = getMySeat();
-    activeOffersQueue = activeOffersQueue.filter(of => {
-      const t = TILES[of.tileId];
-      const bot = players[of.botId ?? of.senderId];
-      return t && t.owner === me.id && !t.mortgaged && bot && !bot.bankrupt;
-    });
-    const total = activeOffersQueue.length;
-    document.getElementById("offerCounterText").textContent = total > 0 ? `Teklif: ${currentOfferIdx + 1} / ${total}` : `Teklif: 0 / 0`;
-    document.getElementById("btnPrevOffer").disabled = (total <= 1);
-    document.getElementById("btnNextOffer").disabled = (total <= 1);
+    const body = document.getElementById("tradeDockBody");
+    const countEl = document.getElementById("dockCounter");
+    if (!body || !countEl) return;
 
-    const dock = document.getElementById("tradeDockBody");
-    if (!incomingOffersEnabled || total === 0) {
-      dock.innerHTML = `<div style="color:#94a3b8; font-size:11px; margin:auto; text-align:center;">Şu an bekleyen bir teklif yok.</div>`;
+    if (activeOffersQueue.length === 0) {
+      countEl.textContent = "0/0";
+      body.innerHTML = `
+        <div style="text-align:center; color:#94a3b8; font-size:11px; margin:auto;">
+          📭 Bekleyen teklif yok.<br><span style="font-size:10px; color:#64748b;">Botlar veya oyuncular teklif sunduğunda burada görünür.</span>
+        </div>
+      `;
       return;
     }
 
+    countEl.textContent = `${currentOfferIdx + 1}/${activeOffersQueue.length}`;
     const offer = activeOffersQueue[currentOfferIdx];
-    const bot = players[offer.botId ?? offer.senderId];
+    const bot = players[offer.botId !== undefined ? offer.botId : offer.senderId];
     const tile = TILES[offer.tileId];
-    const link = `<span class="offer-country-link" onclick="highlightAndFocusTile(${tile.id})">${tile.flag} ${tile.name} 🔍</span>`;
+    const me = getMySeat();
 
-    dock.innerHTML = `
-      <div><b>${bot.name}:</b> Senin ${link} mülkün için <b>+${offer.cash.toLocaleString("tr-TR")} ₺</b> (${offer.kind === "partner" ? "Ortaklık" : "Tapu"}) teklif ediyor!</div>
+    const titleText = offer.kind === "buyDeed" ? "📜 Tüm Tapuyu Satın Alma Teklifi" : "🤝 1 Ev Hissesiyle Ortaklık Teklifi";
+
+    body.innerHTML = `
+      <div>
+        <div style="font-size:10px; font-weight:900; color:#38bdf8;">${titleText}</div>
+        <div style="margin-top:4px; font-size:11.5px;">
+          <b style="color:${bot.color};">${bot.name}</b>, 
+          <span class="offer-country-link" onclick="selectPinnedCardByUser(${tile.id})">${tile.flag} ${tile.name}</span> mülkün için 
+          <b style="color:#10b981; font-size:13px;">${offer.cash.toLocaleString("tr-TR")} ₺</b> teklif ediyor.
+        </div>
+      </div>
       <div style="display:flex; gap:6px; margin-top:6px;">
-        <button class="mini-act-btn bg-green" id="dockAcceptBtn">✅ Kabul Et</button>
-        <button class="mini-act-btn bg-crimson" id="dockRejectBtn">✖ Reddet</button>
+        <button class="act-btn bg-green" style="flex:1; justify-content:center; padding:5px 8px;" id="dockAcceptBtn">✅ Kabul Et</button>
+        <button class="act-btn bg-crimson" style="flex:1; justify-content:center; padding:5px 8px;" id="dockRejectBtn">❌ Reddet</button>
       </div>
     `;
 
     document.getElementById("dockAcceptBtn").onclick = () => {
-      if (offer.kind === "buyDeed") {
-        changeMoney(bot.id, -offer.cash);
-        distributeSaleProceedsByShare(tile, offer.cash, "Teklif Satışı");
-        tile.owner = bot.id;
-        tile.houseOwners = (tile.houseOwners || []).map(() => bot.id);
-      } else {
-        changeMoney(me.id, offer.cash);
-        changeMoney(bot.id, -offer.cash);
-        if (tile.houseOwners.length < 5) tile.houseOwners.push(bot.id);
-      }
+      executeOfferAcceptance(offer, bot, tile, me);
       removeOfferAtIndex(currentOfferIdx);
-      afterUserOwnPinAction(tile.id);
     };
     document.getElementById("dockRejectBtn").onclick = () => removeOfferAtIndex(currentOfferIdx);
   }
@@ -2885,7 +2864,7 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
     const indicator = document.getElementById("diceTurnIndicatorText");
     const btnEnd = document.getElementById("btnEndTurnDirect");
 
-    const isMyTurn = (p.id === me.id && !p.bankrupt);
+    const isMyTurn = (p && p.id === me.id && !p.bankrupt);
 
     if (isMyTurn && p.jailWaitTurns > 0) {
       const bailCost = getPlayerBailCost();
@@ -2922,7 +2901,7 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
       btnRoll.style.display = "inline-block";
       btnRoll.disabled = true;
       btnRoll.textContent = "🎲 ZAR AT";
-      indicator.innerHTML = `<b>${p.name}</b> hamlesini yapıyor...`;
+      indicator.innerHTML = `<b>${p ? p.name : ''}</b> hamlesini yapıyor...`;
       btnEnd.style.display = "none";
     }
   }
@@ -3049,7 +3028,8 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
     timeLeft = 30;
     updateTimerUI();
 
-    document.getElementById("turnStatusText").textContent = `SIRA: ${p.name.toUpperCase()}`;
+    const turnTxt = document.getElementById("turnStatusText");
+    if (turnTxt) turnTxt.textContent = `SIRA: ${p.name.toUpperCase()}`;
     renderBoard();
     renderRightPlayersList();
     refreshCenterLiveFlowUI();
@@ -3436,6 +3416,58 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
     selectPinnedCardByUser(5);
     renderInitialsRail();
     updateMicButtonsUI();
+  }
+
+  function getTileGridPos(id) {
+    if (id >= 0 && id <= 11) return { row: 8, col: 12 - id };
+    if (id >= 12 && id <= 17) return { row: 8 - (id - 11), col: 1 };
+    if (id >= 18 && id <= 29) return { row: 1, col: id - 17 };
+    return { row: id - 28, col: 12 };
+  }
+
+  function changeMoney(playerId, amount, reason = "") {
+    if (!players[playerId]) return;
+    players[playerId].money += amount;
+    renderRightPlayersList();
+    renderInitialsRail();
+    saveRoomSnapshot();
+  }
+
+  function processMortgageExpirationsForPlayer(player) {
+    TILES.filter(t => t.owner === player.id && t.mortgaged).forEach(t => {
+      t.mortgageTurnsLeft = (t.mortgageTurnsLeft !== undefined ? t.mortgageTurnsLeft : 3) - 1;
+      if (t.mortgageTurnsLeft <= 0) {
+        delete t.owner;
+        t.houseOwners = [];
+        t.mortgaged = false;
+        delete t.mortgageTurnsLeft;
+        delete t.lastBuiltLap;
+        addLog(`🔴 SÜRE DOLDU! ${player.name} ipoteği kaldırmadığı için ${t.name} tapusu bankaya geçti!`);
+      }
+    });
+  }
+
+  function buyUnownedTile(tile) {
+    const me = getMySeat();
+    const effPrice = getPlayerPrice(tile);
+    if (me.money < effPrice) return alert("Nakit yetersiz!");
+    changeMoney(me.id, -effPrice, `${tile.name} Satın Alımı`);
+    tile.owner = me.id;
+    tile.houseOwners = [];
+    playSfx("buy");
+    addLog(`✅ ${me.name}, ${tile.name} mülkünü satın aldı (${effPrice} ₺).`, -effPrice);
+    afterUserOwnPinAction(tile.id);
+    showLiveLandingScreen(tile.id);
+  }
+
+  function rollTrueRandomDie() {
+    return Math.floor(Math.random() * 6) + 1;
+  }
+
+  function formatMMSS(sec) {
+    const m = Math.floor(sec / 60);
+    const s = sec % 60;
+    return `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
   }
 
   window.onload = initGame;
