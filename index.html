@@ -2,7 +2,7 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>Emlak Taciri - Online & Mobil</title>
 <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
 <style>
@@ -37,11 +37,8 @@ body.bw-mode { filter: grayscale(100%) contrast(1.08); }
 .lobby-box { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.12); border-radius: 14px; padding: 12px; display: flex; flex-direction: column; gap: 10px; }
 .lobby-input-row { display: flex; gap: 8px; flex-wrap: wrap; }
 .lobby-input { flex: 1; min-width: 130px; background: #090d18; border: 1.5px solid rgba(56, 189, 248, 0.45); color: #fff; padding: 9px 12px; border-radius: 10px; font-size: 13px; font-weight: 800; user-select: text; }
-.lobby-seat { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; background: rgba(15, 23, 42, 0.9); border: 1.5px solid rgba(255,255,255,0.12); border-radius: 10px; padding: 8px 11px; font-size: 12.5px; font-weight: 800; }
+.lobby-seat { display: flex; align-items: center; justify-content: space-between; background: rgba(15, 23, 42, 0.9); border: 1.5px solid rgba(255,255,255,0.12); border-radius: 10px; padding: 8px 11px; font-size: 12.5px; font-weight: 800; }
 .lobby-seat.ready { border-color: #10b981; box-shadow: inset 0 0 12px rgba(16, 185, 129, 0.2); }
-.lobby-team-select { background: #0f172a; border: 1.5px solid rgba(245, 158, 11, 0.55); color: #fde68a; padding: 4px 8px; border-radius: 8px; font-size: 11px; font-weight: 900; cursor: pointer; outline: none; }
-.lobby-team-select:focus { border-color: #38bdf8; }
-.team-pill-badge { display: inline-flex; align-items: center; gap: 3px; padding: 1px 6px; border-radius: 99px; font-size: 9.5px; font-weight: 900; border: 1px solid rgba(255,255,255,0.3); color: #fff; }
 .lobby-room-code-banner { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; background: rgba(56, 189, 248, 0.08); border: 1.5px dashed rgba(56, 189, 248, 0.4); border-radius: 12px; padding: 8px 12px; }
 .lobby-room-code-tag { font-family: monospace, monospace; font-size: 15px; font-weight: 900; color: #f59e0b; background: rgba(0, 0, 0, 0.55); border: 1px solid rgba(245, 158, 11, 0.5); padding: 3px 10px; border-radius: 8px; letter-spacing: 1px; user-select: all; }
 
@@ -107,27 +104,15 @@ body.bw-mode { filter: grayscale(100%) contrast(1.08); }
 .tile-center { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 1px 2px; text-align: center; min-height: 0; }
 .tile-flag { font-size: clamp(9px, 1.1vw, 14px); line-height: 1; }
 .tile-country-name { font-size: clamp(7px, 0.78vw, 10px); font-weight: 900; color: #ffffff; line-height: 1.05; text-shadow: 0 2px 4px rgba(0,0,0,0.85); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100%; }
-.tile-tokens-row { display: flex; justify-content: center; align-items: center; gap: 3px; min-height: 18px; padding: 1px 0; }
-.board-pawn { width: clamp(16px, 1.85vw, 23px); height: clamp(16px, 1.85vw, 23px); border-radius: 50%; border: 2px solid #ffffff; font-size: clamp(8.5px, 1vw, 11.5px); font-weight: 900; color: #fff; display: flex; align-items: center; justify-content: center; animation: pawnNeonPulse 0.85s infinite alternate ease-in-out; z-index: 18; box-shadow: 0 0 12px currentColor, 0 2px 6px rgba(0,0,0,0.85); }
-@keyframes pawnNeonPulse { 0% { transform: scale(0.96); filter: brightness(1); } 100% { transform: scale(1.16); filter: brightness(1.3); } }
-.tile.my-current-pos-tile { border: 2.5px solid var(--my-pos-neon, #f59e0b) !important; animation: myPosFastNeonBlink 0.38s infinite alternate ease-in-out !important; z-index: 28 !important; }
-@keyframes myPosFastNeonBlink {
-  0% { box-shadow: 0 0 6px var(--my-pos-neon, #f59e0b), inset 0 0 6px var(--my-pos-neon, #f59e0b); filter: brightness(1); }
-  100% { box-shadow: 0 0 26px var(--my-pos-neon, #f59e0b), 0 0 44px var(--my-pos-neon, #f59e0b), inset 0 0 18px var(--my-pos-neon, #f59e0b); filter: brightness(1.28); transform: scale(1.03); }
-}
-.tile.monopoly-ready-blink { border: 2.5px solid var(--monopoly-neon, #fde047) !important; animation: monopolyGroupNeonBlink 0.48s infinite alternate ease-in-out !important; z-index: 24; }
-@keyframes monopolyGroupNeonBlink {
-  0% { box-shadow: 0 0 5px var(--monopoly-neon, #fde047), inset 0 0 5px var(--monopoly-neon, #fde047); filter: brightness(1); }
-  100% { box-shadow: 0 0 24px var(--monopoly-neon, #fde047), 0 0 42px var(--monopoly-neon, #fde047), inset 0 0 16px var(--monopoly-neon, #fde047); filter: brightness(1.25); transform: scale(1.025); }
-}
+.tile-tokens-row { display: flex; justify-content: center; align-items: center; gap: 2px; min-height: 12px; }
+.board-pawn { width: clamp(12px, 1.3vw, 16px); height: clamp(12px, 1.3vw, 16px); border-radius: 50%; border: 1.5px solid #ffffff; font-size: clamp(7px, 0.75vw, 9px); font-weight: 900; color: #fff; display: flex; align-items: center; justify-content: center; animation: pawnNeonPulse 0.9s infinite alternate ease-in-out; z-index: 15; box-shadow: 0 0 8px currentColor; }
+@keyframes pawnNeonPulse { 0% { transform: scale(0.95); filter: brightness(1); } 100% { transform: scale(1.14); filter: brightness(1.25); } }
 .tile-footer { background: rgba(0,0,0,0.75); padding: 1px 4px; display: flex; align-items: center; justify-content: space-between; font-size: clamp(6.5px, 0.75vw, 10px); font-weight: 900; color: #fde047; }
 
 .single-center-screen { grid-column: 2 / 12; grid-row: 2 / 8; border-radius: 14px; overflow: hidden; position: relative; border: 1.5px solid rgba(255,255,255,0.18); box-shadow: inset 0 0 60px rgba(0,0,0,0.85); background: #080d19; display: flex; flex-direction: column; justify-content: space-between; z-index: 5; }
 .center-top-liveflow-bar { background: rgba(15, 23, 42, 0.94); border-bottom: 1.5px solid rgba(56, 189, 248, 0.35); padding: 4px 10px; display: flex; align-items: center; justify-content: space-between; z-index: 20; flex-shrink: 0; }
 .center-top-liveflow-bar .live-left { display: flex; align-items: center; gap: 6px; }
 .center-top-liveflow-bar .live-right { display: flex; align-items: center; gap: 6px; font-size: 10.5px; font-weight: 800; color: #fde68a; }
-.center-latest-log-ticker { background: rgba(6, 12, 26, 0.92); border-bottom: 1px solid rgba(245, 158, 11, 0.35); padding: 3px 10px; font-size: 10.5px; font-weight: 800; color: #f8fafc; display: flex; align-items: center; justify-content: space-between; gap: 8px; z-index: 20; flex-shrink: 0; cursor: pointer; }
-.center-latest-log-ticker span.ticker-msg { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; color: #fde68a; }
 
 .center-initials-rail { position: absolute; top: 38px; right: 6px; bottom: 6px; width: 50px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 9px; z-index: 35; pointer-events: none; }
 .player-initial-node { position: relative; width: 40px; height: 40px; pointer-events: auto; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: transform 0.18s ease; }
@@ -193,27 +178,16 @@ body.mobile-mode .mobile-fab-trigger { display: flex; }
 .toast-countdown-track { width: 100%; height: 4px; background: rgba(255,255,255,0.15); border-radius: 99px; overflow: hidden; }
 .toast-countdown-fill { height: 100%; width: 100%; background: #f59e0b; transition: width 0.1s linear; }
 
-.floating-chat-launcher { position: fixed; bottom: 10px; right: 10px; z-index: 9500; display: flex; align-items: center; touch-action: none; cursor: grab; background: transparent; padding: 0; border: none; box-shadow: none; }
-.floating-chat-launcher:active { cursor: grabbing; }
-.chat-bubble-btn { width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #2563eb, #1d4ed8); border: 2px solid rgba(255,255,255,0.9); color: #fff; font-size: 17px; cursor: grab; box-shadow: 0 5px 16px rgba(0, 0, 0, 0.75), 0 0 12px rgba(37, 99, 235, 0.55); position: relative; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: transform 0.15s ease; }
-.chat-bubble-btn:hover { transform: scale(1.06); }
-body.mobile-mode .chat-bubble-btn { width: 36px; height: 36px; font-size: 15px; }
-.comm-status-dot { position: absolute; bottom: -2px; left: -2px; width: 11px; height: 11px; border-radius: 50%; border: 1.5px solid #0f172a; background: #10b981; pointer-events: none; }
-.comm-status-dot.muted { background: #ef4444; }
-.comm-icon-btn { width: 32px; height: 32px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; border: 1.5px solid rgba(255,255,255,0.25); background: rgba(15, 23, 42, 0.9); color: #fff; padding: 0; transition: all 0.15s ease; flex-shrink: 0; }
-.comm-icon-btn svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; pointer-events: none; }
-.comm-icon-btn.mic-active { background: rgba(16, 185, 129, 0.22); border-color: #10b981; color: #34d399; box-shadow: 0 0 10px rgba(16, 185, 129, 0.3); }
-.comm-icon-btn.mic-muted { background: rgba(239, 68, 68, 0.25); border-color: #ef4444; color: #fca5a5; box-shadow: 0 0 10px rgba(239, 68, 68, 0.25); }
-.chat-unread-badge { position: absolute; top: -4px; right: -4px; background: #ef4444; color: #fff; border: 1.5px solid #fff; border-radius: 99px; min-width: 18px; height: 18px; padding: 0 4px; font-size: 10px; font-weight: 900; display: none; align-items: center; justify-content: center; }
-.chat-drawer-window { position: fixed; bottom: 58px; right: 10px; width: 276px; max-width: calc(100vw - 16px); height: 290px; max-height: 56dvh; background: rgba(11, 18, 34, 0.98); border: 1.5px solid rgba(56, 189, 248, 0.65); border-radius: 14px; z-index: 9499; display: none; flex-direction: column; overflow: hidden; box-shadow: 0 14px 40px rgba(0,0,0,0.92); backdrop-filter: blur(10px); }
+.floating-chat-launcher { position: fixed; bottom: 12px; right: 12px; z-index: 9500; display: flex; align-items: center; gap: 8px; }
+.chat-bubble-btn { width: 46px; height: 46px; border-radius: 50%; background: linear-gradient(135deg, #3b82f6, #1d4ed8); border: 2px solid #fff; color: #fff; font-size: 20px; cursor: pointer; box-shadow: 0 10px 28px rgba(37, 99, 235, 0.65); position: relative; display: flex; align-items: center; justify-content: center; }
+.chat-unread-badge { position: absolute; top: -5px; right: -5px; background: #ef4444; color: #fff; border: 2px solid #fff; border-radius: 99px; min-width: 20px; height: 20px; padding: 0 5px; font-size: 10.5px; font-weight: 900; display: none; align-items: center; justify-content: center; }
+.chat-drawer-window { position: fixed; bottom: 68px; right: 12px; width: 330px; max-width: calc(100vw - 24px); height: 350px; max-height: 65dvh; background: rgba(15, 23, 42, 0.98); border: 2px solid rgba(56, 189, 248, 0.6); border-radius: 16px; z-index: 9499; display: none; flex-direction: column; overflow: hidden; box-shadow: 0 20px 55px rgba(0,0,0,0.88); }
 .chat-drawer-window.open { display: flex; }
-body.mobile-mode .chat-drawer-window { width: 248px; height: 255px; max-height: 52dvh; }
-.chat-popup-header { display: flex; align-items: center; justify-content: space-between; gap: 6px; padding: 6px 8px; background: rgba(0,0,0,0.45); border-bottom: 1px solid rgba(255,255,255,0.1); }
-.chat-popup-tools { display: flex; align-items: center; gap: 5px; }
-.chat-messages-list { flex: 1; overflow-y: auto; padding: 6px 8px; display: flex; flex-direction: column; gap: 5px; font-size: 11px; }
-.chat-msg-bubble { background: rgba(255,255,255,0.06); border-left: 3px solid #38bdf8; padding: 4px 7px; border-radius: 6px; word-break: break-word; }
-.chat-input-bar { display: flex; gap: 4px; padding: 6px; background: rgba(0,0,0,0.45); border-top: 1px solid rgba(255,255,255,0.1); }
-.chat-input-bar input { flex: 1; min-width: 0; background: #1e293b; border: 1px solid rgba(255,255,255,0.22); color: #fff; padding: 5px 8px; border-radius: 7px; font-size: 11.5px; user-select: text; }
+body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top: 50%; transform: translate(-50%, -50%); width: 88vw; height: 58dvh; }
+.chat-messages-list { flex: 1; overflow-y: auto; padding: 8px 10px; display: flex; flex-direction: column; gap: 6px; font-size: 11.5px; }
+.chat-msg-bubble { background: rgba(255,255,255,0.06); border-left: 3px solid #38bdf8; padding: 5px 8px; border-radius: 7px; word-break: break-word; }
+.chat-input-bar { display: flex; gap: 5px; padding: 7px; background: rgba(0,0,0,0.4); border-top: 1px solid rgba(255,255,255,0.1); }
+.chat-input-bar input { flex: 1; background: #1e293b; border: 1px solid rgba(255,255,255,0.22); color: #fff; padding: 6px 9px; border-radius: 7px; font-size: 12px; user-select: text; }
 
 .auction-overlay { position: absolute; inset: 0; background: rgba(5, 8, 17, 0.94); z-index: 50; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 14px; gap: 12px; text-align: center; }
 .auction-box { background: linear-gradient(145deg, #1e293b, #0f172a); border: 2.5px solid var(--gold); border-radius: 18px; padding: 18px 22px; max-width: 470px; width: 100%; display: flex; flex-direction: column; gap: 10px; }
@@ -272,6 +246,100 @@ body.mobile-mode .chat-drawer-window { width: 248px; height: 255px; max-height: 
 
 @keyframes shakeDie { 0% { transform: rotate(0deg) scale(1); } 50% { transform: rotate(14deg) scale(1.06); } 100% { transform: rotate(-14deg) scale(1); } }
 @keyframes neonPulse { from { opacity: 1; } to { opacity: 0.4; } }
+
+/* ===================== v2.6 EKLERİ ===================== */
+:root { --pawn: clamp(20px, min(2.3vw, 3.9vh), 34px); }
+
+/* 9 - Büyük piyonlar */
+.tile-tokens-row { position: absolute; left: 0; right: 0; bottom: clamp(12px, 1.9vh, 18px); min-height: 0; height: 0; display: flex; justify-content: center; align-items: flex-end; gap: 0; z-index: 16; pointer-events: none; }
+.board-pawn { width: var(--pawn); height: var(--pawn); font-size: calc(var(--pawn) * 0.52); border-width: 2px; box-shadow: 0 3px 8px rgba(0,0,0,0.75), 0 0 10px rgba(255,255,255,0.35); }
+.board-pawn + .board-pawn { margin-left: calc(var(--pawn) * -0.3); }
+.board-pawn.me-pawn { border-color: #fde047; box-shadow: 0 0 0 2px rgba(255,255,255,0.9), 0 0 16px #fff; z-index: 17; }
+
+/* 10 - Bulunduğumuz kart: kendi rengimizde seri yanıp sönen neon */
+.tile.my-here { z-index: 22; animation: myTileBlink 0.5s infinite; }
+.tile.my-here.other-player-owned { opacity: 1; }
+.tile.my-here::after { content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none; z-index: 30; border: 3px solid var(--pc, #fde047); animation: myTileInner 0.5s infinite; }
+@keyframes myTileBlink {
+  0%, 49% { filter: drop-shadow(0 0 7px var(--pc)) drop-shadow(0 0 18px var(--pc)); }
+  50%, 100% { filter: drop-shadow(0 0 1px var(--pc)); }
+}
+@keyframes myTileInner {
+  0%, 49% { box-shadow: inset 0 0 16px var(--pc), inset 0 0 34px var(--pc); opacity: 1; }
+  50%, 100% { box-shadow: inset 0 0 3px var(--pc); opacity: 0.3; }
+}
+body.neon-off .tile.my-here, body.neon-off .tile.my-here::after { animation: none; }
+
+.econ-cycle-banner { border-radius: 12px; text-align: center; line-height: 1.35; }
+
+/* 5 - Garantili zar butonu */
+.float-roll-btn { display: none; position: fixed; left: 50%; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); z-index: 9400; padding: 14px 30px; border: 2px solid #fff; border-radius: 99px; font-size: 16px; font-weight: 900; color: #fff; background: linear-gradient(135deg, #f59e0b, #d97706); box-shadow: 0 10px 30px rgba(245, 158, 11, 0.6); cursor: pointer; align-items: center; gap: 8px; animation: floatRollPulse 0.9s infinite alternate; }
+@keyframes floatRollPulse { from { transform: translateX(-50%) scale(1); } to { transform: translateX(-50%) scale(1.07); } }
+
+/* 2 - İflas / Oyun sonu penceresi */
+.end-modal-backdrop { display: none; position: fixed; inset: 0; z-index: 9800; background: rgba(2, 6, 14, 0.84); backdrop-filter: blur(6px); align-items: center; justify-content: center; padding: calc(12px + env(safe-area-inset-top, 0px)) 12px calc(12px + env(safe-area-inset-bottom, 0px)); }
+.end-modal-backdrop.show { display: flex; }
+.end-modal-box { width: min(440px, 94vw); max-height: 92dvh; overflow-y: auto; background: linear-gradient(160deg, #1e293b, #0b1120); border: 2px solid var(--gold); border-radius: 20px; padding: 22px 20px; text-align: center; display: flex; flex-direction: column; gap: 12px; box-shadow: 0 30px 80px rgba(0,0,0,0.9); animation: endPop 0.25s ease-out; }
+.end-modal-box.lose { border-color: #ef4444; }
+.end-modal-box.win { border-color: #10b981; }
+.end-modal-icon { font-size: 46px; line-height: 1; }
+.end-modal-box h2 { font-size: 22px; font-weight: 900; }
+.end-modal-box p { font-size: 13px; color: #cbd5e1; line-height: 1.45; }
+.end-score-list { display: flex; flex-direction: column; gap: 5px; text-align: left; }
+.end-score-row { display: flex; justify-content: space-between; align-items: center; gap: 8px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 9px; padding: 6px 10px; font-size: 12px; font-weight: 800; }
+.end-score-row.out { opacity: 0.5; text-decoration: line-through; }
+.end-modal-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+.end-modal-btns .act-btn { flex: 1 1 140px; justify-content: center; padding: 11px 14px; font-size: 13px; }
+@keyframes endPop { from { transform: scale(0.92); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+/* Şans kartı bilgi kutusu */
+.event-card-pill { display: flex; flex-direction: column; gap: 2px; padding: 8px 14px; border-radius: 12px; font-size: 12px; font-weight: 900; color: #fff; border: 1.5px solid #fff; text-align: center; }
+.event-card-pill.good { background: rgba(16, 185, 129, 0.85); }
+.event-card-pill.bad { background: rgba(239, 68, 68, 0.88); }
+.event-card-pill span { font-size: 15px; }
+
+/* 4 - Sürüklenebilir sohbet balonu */
+.floating-chat-launcher { touch-action: none; }
+.floating-chat-launcher .icon-ctrl-btn { height: 44px; padding: 0 12px; border-radius: 99px; font-size: 12px; white-space: nowrap; }
+.floating-chat-launcher .btn-label { margin-left: 5px; }
+.chat-bubble-btn { touch-action: none; cursor: grab; }
+.chat-bubble-btn:active { cursor: grabbing; }
+.chat-drawer-window > .sidebar-header { cursor: move; touch-action: none; }
+.chat-messages-list { overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
+.chat-msg-bubble { overflow-wrap: anywhere; }
+
+/* 1 - Oda (sunucu) seçici */
+.room-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+.room-btn { display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 8px 4px; border-radius: 10px; border: 1.5px solid rgba(255,255,255,0.16); background: rgba(255,255,255,0.05); color: #fff; cursor: pointer; transition: all 0.15s; }
+.room-btn:hover { background: rgba(56, 189, 248, 0.18); }
+.room-btn.solo { border-color: rgba(16, 185, 129, 0.6); }
+.room-btn.selected { background: rgba(245, 158, 11, 0.25); border-color: #f59e0b; box-shadow: 0 0 14px rgba(245, 158, 11, 0.45); }
+.room-no { font-size: 12px; font-weight: 900; }
+.room-sub { font-size: 9.5px; color: #cbd5e1; font-weight: 700; text-align: center; }
+
+/* Dönüş ipucu */
+.rotate-hint { display: none; position: fixed; left: 8px; top: calc(8px + env(safe-area-inset-top, 0px)); max-width: calc(100vw - 150px); z-index: 9100; background: rgba(15, 23, 42, 0.96); border: 1.5px solid var(--gold); color: #fde68a; padding: 6px 10px; border-radius: 14px; font-size: 10.5px; font-weight: 800; align-items: center; gap: 8px; box-shadow: 0 8px 24px rgba(0,0,0,0.7); }
+@media (orientation: portrait) and (max-width: 900px) { body.mobile-mode .rotate-hint.show { display: flex; } }
+
+/* 8 - Mobil iyileştirmeler */
+body.mobile-mode { padding: calc(2px + env(safe-area-inset-top, 0px)) calc(2px + env(safe-area-inset-right, 0px)) calc(2px + env(safe-area-inset-bottom, 0px)) calc(2px + env(safe-area-inset-left, 0px)); }
+body.mobile-mode .board-wrapper { height: calc(100dvh - 4px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)); border-radius: 12px; gap: 2px; padding: 2px; }
+body.mobile-mode .mobile-fab-trigger { top: calc(8px + env(safe-area-inset-top, 0px)); right: calc(8px + env(safe-area-inset-right, 0px)); padding: 8px 14px; }
+body.mobile-mode .floating-chat-launcher { bottom: calc(10px + env(safe-area-inset-bottom, 0px)); right: calc(10px + env(safe-area-inset-right, 0px)); gap: 6px; }
+body.mobile-mode .floating-chat-launcher .btn-label { display: none; }
+body.mobile-mode .floating-chat-launcher .icon-ctrl-btn { width: 44px; padding: 0; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+body.mobile-mode .chat-drawer-window { width: 90vw; height: 56dvh; border-radius: 18px; }
+body.mobile-mode input[type="text"], body.mobile-mode .lobby-input, body.mobile-mode .chat-input-bar input { font-size: 16px; }
+body.mobile-mode .mini-act-btn { min-height: 40px; font-size: 12px; }
+body.mobile-mode .act-btn { min-height: 40px; }
+body.mobile-mode .center-floating-hub { border-radius: 16px; }
+body.mobile-mode .float-roll-btn { bottom: calc(66px + env(safe-area-inset-bottom, 0px)); padding: 12px 26px; font-size: 15px; }
+@media (max-width: 720px) {
+  .lobby-card { padding: 14px; gap: 10px; border-radius: 16px; }
+  .lobby-card h2 { font-size: 17px !important; }
+  .room-grid { grid-template-columns: repeat(2, 1fr); }
+  .end-modal-box { padding: 18px 14px; }
+}
 </style>
 </head>
 <body>
@@ -283,11 +351,20 @@ body.mobile-mode .chat-drawer-window { width: 248px; height: 255px; max-height: 
           <h2 style="font-size:22px; font-weight:900; color:#f59e0b;">🌍 EMLAK TACİRİ — ONLINE LOBİ</h2>
           <p style="font-size:11.5px; color:#94a3b8;">Min. 2 — Maks. 4 Oyuncu • Herkes hazır verdikten sonra Kurucu oyunu başlatır.</p>
         </div>
-        <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
-          <button class="comm-icon-btn mic-active" id="btnLobbyMic" onclick="toggleVoiceMic()" title="Mikrofon Aç / Kapat" aria-label="Mikrofon"></button>
-          <button class="comm-icon-btn mic-active" id="btnLobbyRemoteAudio" onclick="toggleRemoteAudioMute()" title="Diyafon / Karşı Sesi Aç / Sustur" aria-label="Diyafon"></button>
+        <div style="display:flex; gap:6px; align-items:center;">
+          <button class="icon-ctrl-btn mic-active" id="btnLobbyRemote" onclick="toggleRemoteMute()">🎧 Karşı Taraf: Açık</button>
+          <button class="icon-ctrl-btn mic-active" id="btnLobbyMic" onclick="toggleVoiceMic()">🎙️ Mikrofon Açık</button>
           <button class="icon-ctrl-btn" onclick="toggleViewModeManual()">📱/🖥️ Görünüm</button>
         </div>
+      </div>
+
+      <div class="lobby-box" style="padding:10px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:6px;">
+          <span style="font-size:11px; font-weight:900; color:#38bdf8;">🏠 SUNUCULAR (ODALAR)</span>
+          <span id="roomRulesText" style="font-size:10.5px; font-weight:800; color:#fde68a;"></span>
+        </div>
+        <div class="room-grid" id="roomGrid"></div>
+        <div style="font-size:10px; color:#94a3b8;">Sunucu 1: herkes tek başına oynayabilir (bot eklenir). Sunucu 2-10: sadece 2 kişilik (eşli) oyun. Arkadaşlarınla oynamak için aşağıdaki alana kendi davet kodunu da yazabilirsin.</div>
       </div>
 
       <div class="lobby-room-code-banner">
@@ -313,15 +390,12 @@ body.mobile-mode .chat-drawer-window { width: 248px; height: 255px; max-height: 
           </div>
 
           <div style="display:flex; justify-content:space-between; align-items:center; margin-top:4px; flex-wrap:wrap; gap:5px;">
-            <span style="font-size:11px; font-weight:900; color:#f59e0b;">2. ODADAKİ OYUNCULAR & EŞ / TAKIM SEÇİMİ (1-2, 2-2 veya Bireysel)</span>
+            <span style="font-size:11px; font-weight:900; color:#f59e0b;">2. ODADAKİ OYUNCULAR (MAKS 4 KİŞİ)</span>
             <div style="display:flex; gap:5px; flex-wrap:wrap;" id="hostBotControls">
               <button class="icon-ctrl-btn" onclick="hostAddBot()">+ 🤖 Bot Ekle</button>
               <button class="icon-ctrl-btn" onclick="hostRemoveBot()">- 1 Bot Çıkar</button>
               <button class="icon-ctrl-btn" onclick="hostRemoveAllBots()" style="border-color:rgba(239,68,68,0.5); color:#fca5a5;">🗑️ Tüm Botları Çıkar</button>
             </div>
-          </div>
-          <div style="font-size:10px; color:#94a3b8; background:rgba(245,158,11,0.08); border:1px solid rgba(245,158,11,0.28); padding:5px 8px; border-radius:8px;">
-            🤝 <b>Eşli Oynama:</b> Aynı takımı (Örn: <b>🅰️ A Takımı</b> veya <b>🅱️ B Takımı</b>) seçen oyuncular birbirine kira ödemez, 3'lü renk grubunu birlikte tamamlayıp ev dikebilir. <b>2-2 şartı yoktur; 1-2 veya istediğiniz düzende eş olabilirsiniz!</b>
           </div>
 
           <div id="lobbySeatsContainer" style="display:flex; flex-direction:column; gap:7px;"></div>
@@ -443,7 +517,7 @@ body.mobile-mode .chat-drawer-window { width: 248px; height: 255px; max-height: 
 
     <div class="log-panel" id="leftLogPanel">
       <div class="sidebar-header">
-        <h3>📜 Ortak Bildirimler (Canlı)</h3>
+        <h3>📜 Son Bildirimler</h3>
         <div style="display:flex; align-items:center; gap:5px;">
           <button class="icon-ctrl-btn" id="btnSound" onclick="toggleSound()">🔊 Ses</button>
           <button class="panel-close-x" onclick="setPanelVisibility('leftLogPanel', false)">✖</button>
@@ -469,21 +543,14 @@ body.mobile-mode .chat-drawer-window { width: 248px; height: 255px; max-height: 
         </div>
       </div>
 
-      <div class="center-latest-log-ticker" id="centerLatestLogBanner" onclick="openMobileCenterHub('logs')" title="Tüm ortak bildirim geçmişini görmek için tıklayın">
-        <span style="color:#38bdf8; font-weight:900; flex-shrink:0;">📢 ORTAK BİLDİRİM:</span>
-        <span class="ticker-msg" id="centerLatestLogText">Oyun bildirimleri burada tüm oyuncular için ortak görünür...</span>
-        <span style="font-size:9px; color:#94a3b8; flex-shrink:0;">📜 Tümü</span>
-      </div>
-
       <div class="center-initials-rail" id="centerInitialsRail"></div>
 
       <div class="center-floating-hub" id="mobileCenterHub" onclick="event.stopPropagation()">
         <div class="sidebar-header">
           <h3 id="mobHubTitle">📌 Merkez Kontrol Paneli</h3>
-          <div style="display:flex; gap:5px; flex-wrap:wrap;">
+          <div style="display:flex; gap:5px;">
             <button class="icon-ctrl-btn" onclick="openMobileCenterHub('players')">👥 Oyuncular</button>
             <button class="icon-ctrl-btn" onclick="openMobileCenterHub('card')">🏠 Mülk İşlemi</button>
-            <button class="icon-ctrl-btn" onclick="openMobileCenterHub('logs')">📜 Bildirimler</button>
             <button class="panel-close-x" onclick="closeMobileCenterHub()">✖</button>
           </div>
         </div>
@@ -514,18 +581,6 @@ body.mobile-mode .chat-drawer-window { width: 248px; height: 255px; max-height: 
             <div id="aucHighestBidder" style="font-size:12px; color:#fde68a; font-weight:800;">Henüz teklif yok</div>
           </div>
           <div style="display:flex; gap:8px; justify-content:center;" id="aucActionBtns"></div>
-        </div>
-      </div>
-
-      <div class="auction-overlay" id="bankruptcyEndOverlay" style="z-index: 65;">
-        <div class="auction-box" style="border-color:#ef4444; box-shadow:0 0 50px rgba(239,68,68,0.5);">
-          <div style="font-size:12px; font-weight:900; color:#f87171;" id="bankruptcyModalTag">💥 İFLAS & OYUN SONU BİLDİRİMİ</div>
-          <h2 id="bankruptcyModalTitle" style="font-size:21px; font-weight:900; color:#fff;">Bir Oyuncu İflas Etti!</h2>
-          <p id="bankruptcyModalDesc" style="font-size:12.5px; color:#e2e8f0; line-height:1.45;"></p>
-          <div style="display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:8px;">
-            <button class="act-btn bg-green" onclick="restartMatchFromBankruptcyModal()">🔄 Tekrar Oyna</button>
-            <button class="act-btn bg-crimson" onclick="completelyExitAndReset()">🚪 Tamamen Çıkış</button>
-          </div>
         </div>
       </div>
 
@@ -640,21 +695,17 @@ body.mobile-mode .chat-drawer-window { width: 248px; height: 255px; max-height: 
       <button class="panel-close-x" onclick="closeMobileSlideDrawer()">✖</button>
     </div>
     <div style="display:flex; flex-direction:column; gap:8px;">
-      <div style="display:flex; align-items:center; justify-content:center; gap:10px; background:rgba(255,255,255,0.04); padding:6px; border-radius:10px; border:1px solid rgba(255,255,255,0.08);">
-        <button class="comm-icon-btn mic-active" id="btnDrawerMic" onclick="toggleVoiceMic()" title="Mikrofon Aç / Kapat" aria-label="Mikrofon"></button>
-        <button class="comm-icon-btn mic-active" id="btnDrawerRemoteAudio" onclick="toggleRemoteAudioMute()" title="Diyafon / Karşı Sesi Sustur / Aç" aria-label="Diyafon"></button>
-        <button class="comm-icon-btn" onclick="closeMobileSlideDrawer(); toggleChatDrawer();" title="Sohbet Penceresini Aç" style="border-color:#38bdf8; color:#38bdf8;">💬</button>
-      </div>
+      <button class="act-btn bg-green" id="btnDrawerMic" onclick="toggleVoiceMic()">🎙️ Mikrofon: Açık</button>
+      <button class="act-btn bg-green" id="btnDrawerRemote" onclick="toggleRemoteMute()">🎧 Karşı Taraf: Açık</button>
       <button class="act-btn bg-blue" onclick="closeMobileSlideDrawer(); requestPauseOrResumeVote();">⏸️/▶️ Oyunu Durdur / Başlat</button>
       <button class="act-btn bg-purple" onclick="closeMobileSlideDrawer(); openMobileCenterHub('players');">👥 Oyuncular & Merkez İşlem</button>
-      <button class="act-btn bg-gold" onclick="closeMobileSlideDrawer(); openMobileCenterHub('logs');">📜 Ortak Bildirim Ekranı</button>
       <button class="act-btn bg-green" onclick="closeMobileSlideDrawer(); openMobileCenterHub('card');">🏠 Seçili Mülkü Yönet</button>
       <button class="act-btn bg-slate" onclick="closeMobileSlideDrawer(); toggleFullscreenOkeyMode();">⛶ Tam Ekran Okey Modu</button>
       <button class="act-btn bg-slate" onclick="closeMobileSlideDrawer(); openSettingsModal();">⚙️ Görünüm & Ayarlar</button>
       <button class="act-btn bg-crimson" onclick="closeMobileSlideDrawer(); completelyExitAndReset();">🚪 Tamamen Ayrıl (Sıfırla)</button>
     </div>
     <div style="margin-top:auto; font-size:10.5px; color:#94a3b8; text-align:center;">
-      Emlak Taciri v2.6 Online
+      Emlak Taciri v2.5 Online
     </div>
   </div>
 
@@ -673,30 +724,42 @@ body.mobile-mode .chat-drawer-window { width: 248px; height: 255px; max-height: 
     </div>
   </div>
 
-  <div class="floating-chat-launcher" id="floatingChatLauncher" title="Sohbet, Mikrofon ve Diyafon Penceresi (Sürüklenebilir)">
-    <button class="chat-bubble-btn" id="btnChatBubble" title="İletişim & Sohbet Penceresini Aç / Kapat">
+  <div class="floating-chat-launcher" id="chatLauncher">
+    <button class="icon-ctrl-btn mic-active" id="btnFloatingRemote" onclick="toggleRemoteMute()" title="Karşı tarafın sesini sustur / aç">
+      <span class="ico">🎧</span><span class="btn-label">Karşı Taraf Açık</span>
+    </button>
+    <button class="icon-ctrl-btn mic-active" id="btnFloatingMic" onclick="toggleVoiceMic()" title="Mikrofonu aç / kapat">
+      <span class="ico">🎙️</span><span class="btn-label">Ses Açık</span>
+    </button>
+    <button class="chat-bubble-btn" id="chatBubbleBtn" title="Sohbet (sürükleyerek istediğin yere taşıyabilirsin)">
       💬
-      <span class="comm-status-dot" id="commLauncherStatusDot"></span>
       <span class="chat-unread-badge" id="chatUnreadBadge">0</span>
     </button>
   </div>
 
+  <button class="float-roll-btn" id="floatRollBtn" onclick="closeMobileCenterHub(); triggerRoll();">🎲 ZAR AT</button>
+
+  <div class="rotate-hint show" id="rotateHint">📱 En iyi görünüm için telefonu yatay çevir <button class="panel-close-x" onclick="this.parentElement.classList.remove('show')">✖</button></div>
+
+  <div class="end-modal-backdrop" id="endModal">
+    <div class="end-modal-box" id="endModalBox">
+      <div class="end-modal-icon" id="endModalIcon">💥</div>
+      <h2 id="endModalTitle">İFLAS!</h2>
+      <p id="endModalText"></p>
+      <div class="end-score-list" id="endModalStats"></div>
+      <div class="end-modal-btns" id="endModalBtns"></div>
+    </div>
+  </div>
+
   <div class="chat-drawer-window" id="gameChatDrawer">
-    <div class="chat-popup-header">
-      <div style="display:flex; align-items:center; gap:5px; font-size:11.5px; font-weight:900; color:#38bdf8;">
-        <span>💬</span>
-        <span>Sohbet</span>
-      </div>
-      <div class="chat-popup-tools">
-        <button class="comm-icon-btn mic-active" id="btnFloatingMic" onclick="toggleVoiceMic()" title="Mikrofon Aç / Kapat" aria-label="Mikrofon"></button>
-        <button class="comm-icon-btn mic-active" id="btnFloatingRemoteAudio" onclick="toggleRemoteAudioMute()" title="Diyafon (Karşı Ses) Aç / Sustur" aria-label="Diyafon"></button>
-        <button class="panel-close-x" onclick="toggleChatDrawer()" title="Pencereyi Kapat">✖</button>
-      </div>
+    <div class="sidebar-header" id="chatDrawerHeader" title="Sürükleyerek taşıyabilirsin">
+      <h3>💬 Canlı Oyun Sohbeti</h3>
+      <button class="panel-close-x" onclick="toggleChatDrawer()">✖</button>
     </div>
     <div class="chat-messages-list" id="gameChatList"></div>
     <div class="chat-input-bar">
-      <input type="text" id="inpGameChat" placeholder="Mesaj yaz..." onkeydown="if(event.key==='Enter') sendChatMessage('game')">
-      <button class="act-btn bg-blue" style="padding:5px 10px; font-size:12px;" onclick="sendChatMessage('game')" title="Gönder">➤</button>
+      <input type="text" id="inpGameChat" placeholder="Mesajınızı yazın..." onkeydown="if(event.key==='Enter') sendChatMessage('game')">
+      <button class="act-btn bg-blue" onclick="sendChatMessage('game')">Gönder</button>
     </div>
   </div>
   <div id="remoteAudioContainer" style="display:none;"></div>
@@ -820,6 +883,7 @@ body.mobile-mode .chat-drawer-window { width: 248px; height: 255px; max-height: 
     neonDisabled = document.getElementById("chkDisableNeon").checked;
     const rawSlider = parseInt(document.getElementById("rngNeonIntensity").value) || 0;
     neonIntensity = neonDisabled ? 0 : (rawSlider / 100);
+    document.body.classList.toggle("neon-off", neonDisabled);
     document.getElementById("lblNeonVal").textContent = neonDisabled ? "Kapalı" : `${rawSlider}%`;
     document.body.classList.toggle("bw-mode", document.getElementById("chkBwMode").checked);
     document.documentElement.style.setProperty("--bg-main", document.getElementById("colBgMain").value);
@@ -874,7 +938,6 @@ body.mobile-mode .chat-drawer-window { width: 248px; height: 255px; max-height: 
   let audioCtx = null;
   let localAudioStream = null;
   let isMicMuted = false;
-  let isRemoteAudioMuted = false;
 
   async function initAlwaysOnVoice() {
     if (isMicMuted) {
@@ -887,18 +950,6 @@ body.mobile-mode .chat-drawer-window { width: 248px; height: 255px; max-height: 
         localAudioStream.getAudioTracks().forEach(tr => { tr.enabled = !isMicMuted; });
       } catch (e) {}
     }
-    updateMicButtonsUI();
-  }
-
-  function toggleRemoteAudioMute() {
-    isRemoteAudioMuted = !isRemoteAudioMuted;
-    const holder = document.getElementById("remoteAudioContainer");
-    if (holder) {
-      holder.querySelectorAll("audio").forEach(aud => {
-        aud.muted = isRemoteAudioMuted;
-      });
-    }
-    addLog(isRemoteAudioMuted ? "🔇 Karşı tarafın sesi susturuldu." : "🔊 Karşı tarafın sesi açıldı.");
     updateMicButtonsUI();
   }
 
@@ -950,37 +1001,28 @@ body.mobile-mode .chat-drawer-window { width: 248px; height: 255px; max-height: 
   }
 
   function updateMicButtonsUI() {
-    const svgMicOn = `<svg viewBox="0 0 24 24"><rect x="9" y="2" width="6" height="11" rx="3"></rect><path d="M5 10a7 7 0 0 0 14 0"></path><line x1="12" y1="17" x2="12" y2="21"></line><line x1="8" y1="21" x2="16" y2="21"></line></svg>`;
-    const svgMicOff = `<svg viewBox="0 0 24 24"><line x1="2" y1="2" x2="22" y2="22"></line><path d="M18.89 13.23A7.12 7.12 0 0 0 19 10"></path><path d="M5 10a7 7 0 0 0 12 5"></path><path d="M15 9.34V5a3 3 0 0 0-5.68-1.33"></path><path d="M9 9v1a3 3 0 0 0 5.12 2.12"></path><line x1="12" y1="17" x2="12" y2="21"></line><line x1="8" y1="21" x2="16" y2="21"></line></svg>`;
-
-    const svgIntercomOn = `<svg viewBox="0 0 24 24"><rect x="3" y="3" width="12" height="18" rx="2.5"></rect><line x1="6.5" y1="7" x2="11.5" y2="7"></line><line x1="6.5" y1="10" x2="11.5" y2="10"></line><circle cx="9" cy="15.5" r="2"></circle><path d="M18 8.5a4.5 4.5 0 0 1 0 7"></path><path d="M20.5 6a8 8 0 0 1 0 12"></path></svg>`;
-    const svgIntercomOff = `<svg viewBox="0 0 24 24"><rect x="3" y="3" width="12" height="18" rx="2.5"></rect><line x1="6.5" y1="7" x2="11.5" y2="7"></line><line x1="6.5" y1="10" x2="11.5" y2="10"></line><circle cx="9" cy="15.5" r="2"></circle><line x1="17" y1="9.5" x2="22" y2="14.5"></line><line x1="22" y1="9.5" x2="17" y2="14.5"></line></svg>`;
-
-    ["btnLobbyMic", "btnFloatingMic", "btnDrawerMic"].forEach(id => {
-      const btn = document.getElementById(id);
-      if (btn) {
-        btn.className = `comm-icon-btn ${isMicMuted ? "mic-muted" : "mic-active"}`;
-        btn.innerHTML = isMicMuted ? svgMicOff : svgMicOn;
-        btn.title = isMicMuted ? "Mikrofon Kapalı (Açmak için dokun)" : "Mikrofon Açık (Kapatmak için dokun)";
-      }
-    });
-
-    ["btnLobbyRemoteAudio", "btnFloatingRemoteAudio", "btnDrawerRemoteAudio"].forEach(id => {
-      const btn = document.getElementById(id);
-      if (btn) {
-        btn.className = `comm-icon-btn ${isRemoteAudioMuted ? "mic-muted" : "mic-active"}`;
-        btn.innerHTML = isRemoteAudioMuted ? svgIntercomOff : svgIntercomOn;
-        btn.title = isRemoteAudioMuted ? "Diyafon / Karşı Ses Susturuldu (Açmak için dokun)" : "Diyafon / Karşı Ses Açık (Susturmak için dokun)";
-      }
-    });
-
-    const dot = document.getElementById("commLauncherStatusDot");
-    if (dot) {
-      dot.className = `comm-status-dot ${(isMicMuted || isRemoteAudioMuted) ? "muted" : ""}`;
+    const lobbyBtn = document.getElementById("btnLobbyMic");
+    const floatBtn = document.getElementById("btnFloatingMic");
+    const drawerBtn = document.getElementById("btnDrawerMic");
+    if (lobbyBtn) {
+      lobbyBtn.className = `icon-ctrl-btn ${isMicMuted ? "mic-muted" : "mic-active"}`;
+      lobbyBtn.textContent = isMicMuted ? "🔇 Mikrofon Kapalı" : "🎙️ Mikrofon Açık";
     }
+    if (floatBtn) {
+      floatBtn.className = `icon-ctrl-btn ${isMicMuted ? "mic-muted" : "mic-active"}`;
+      floatBtn.innerHTML = `<span class="ico">${isMicMuted ? "🔇" : "🎙️"}</span><span class="btn-label">${isMicMuted ? "Ses Kapalı" : "Ses Açık"}</span>`;
+    }
+    if (drawerBtn) {
+      drawerBtn.className = `act-btn ${isMicMuted ? "bg-crimson" : "bg-green"}`;
+      drawerBtn.textContent = isMicMuted ? "🔇 Mikrofon: Kapalı" : "🎙️ Mikrofon: Açık";
+    }
+    updateRemoteMuteUI();
   }
 
-  function ensureAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); }
+  function ensureAudio() {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === "suspended") { try { audioCtx.resume(); } catch (e) {} }
+  }
   function toggleSound() { soundOn = !soundOn; document.getElementById("btnSound").textContent = soundOn ? "🔊 Ses" : "🔇 Sessiz"; }
 
   function playTone(freq, type, dur, delay = 0, vol = 0.11) {
@@ -1000,28 +1042,45 @@ body.mobile-mode .chat-drawer-window { width: 248px; height: 255px; max-height: 
     } catch (e) {}
   }
 
+  function playNoise(dur, delay = 0, vol = 0.15, freq = 3000) {
+    if (!soundOn) return;
+    try {
+      ensureAudio();
+      const n = Math.max(1, Math.floor(audioCtx.sampleRate * dur));
+      const buf = audioCtx.createBuffer(1, n, audioCtx.sampleRate);
+      const data = buf.getChannelData(0);
+      for (let i = 0; i < n; i++) data[i] = (Math.random() * 2 - 1) * (1 - i / n);
+      const srcNode = audioCtx.createBufferSource();
+      srcNode.buffer = buf;
+      const flt = audioCtx.createBiquadFilter();
+      flt.type = "bandpass";
+      flt.frequency.value = freq;
+      const g = audioCtx.createGain();
+      g.gain.value = vol;
+      srcNode.connect(flt); flt.connect(g); g.connect(audioCtx.destination);
+      srcNode.start(audioCtx.currentTime + delay);
+    } catch (e) {}
+  }
+
   function playSfx(kind) {
     if (!soundOn) return;
     if (kind === "dice") { playTone(280, "triangle", 0.06, 0); playTone(360, "triangle", 0.06, 0.07); playTone(480, "triangle", 0.08, 0.14); }
     else if (kind === "step") { playTone(540, "sine", 0.04, 0, 0.05); }
-    else if (kind === "cash" || kind === "buy") {
-      playTone(1174.66, "sine", 0.07, 0, 0.15);
-      playTone(1567.98, "sine", 0.08, 0.05, 0.16);
-      playTone(2093.00, "triangle", 0.12, 0.11, 0.17);
-      playTone(2637.02, "sine", 0.28, 0.18, 0.18);
-    }
-    else if (kind === "tick") {
-      playTone(980, "triangle", 0.035, 0, 0.09);
-      playTone(1420, "sine", 0.025, 0.02, 0.07);
-    }
-    else if (kind === "chat") {
-      playTone(740, "sine", 0.07, 0, 0.12);
-      playTone(1046.5, "sine", 0.12, 0.06, 0.13);
+    else if (kind === "cash") { playTone(1046.5, "sine", 0.08, 0, 0.14); playTone(1318.5, "sine", 0.08, 0.06, 0.14); playTone(1567.98, "triangle", 0.11, 0.12, 0.15); playTone(2093.0, "sine", 0.30, 0.19, 0.16); }
+    else if (kind === "buy") {
+      // Kasa sesi: mekanik "ka" + çan "çıng" + madeni para şıngırtısı
+      playNoise(0.06, 0, 0.45, 1800); playTone(170, "square", 0.05, 0, 0.10);
+      playTone(2349, "sine", 0.75, 0.07, 0.16); playTone(3136, "sine", 0.6, 0.07, 0.10); playTone(4698, "sine", 0.4, 0.07, 0.06);
+      playNoise(0.03, 0.30, 0.25, 6000); playTone(3951, "triangle", 0.09, 0.30, 0.10);
+      playTone(5274, "triangle", 0.09, 0.36, 0.09); playTone(4699, "triangle", 0.09, 0.42, 0.09); playTone(5588, "triangle", 0.14, 0.48, 0.08);
     }
     else if (kind === "build") { playTone(440, "square", 0.08, 0, 0.08); playTone(587, "square", 0.14, 0.09, 0.09); }
     else if (kind === "plaza") { playTone(523, "triangle", 0.09, 0, 0.14); playTone(659, "triangle", 0.09, 0.09, 0.14); playTone(784, "triangle", 0.09, 0.18, 0.14); playTone(1046, "triangle", 0.25, 0.27, 0.15); }
     else if (kind === "bad") { playTone(260, "sawtooth", 0.16, 0, 0.12); playTone(185, "sawtooth", 0.24, 0.15, 0.12); }
     else if (kind === "offer") { playTone(659, "sine", 0.10, 0, 0.11); playTone(880, "sine", 0.18, 0.10, 0.11); }
+    else if (kind === "tick") { playNoise(0.025, 0, 0.5, 2600); playTone(1800, "square", 0.03, 0, 0.16); playTone(1300, "square", 0.03, 0.13, 0.14); playNoise(0.025, 0.13, 0.4, 2200); }
+    else if (kind === "msgRecv") { playTone(880, "sine", 0.12, 0, 0.16); playTone(1175, "sine", 0.22, 0.11, 0.16); }
+    else if (kind === "msgSend") { playTone(520, "sine", 0.06, 0, 0.12); playTone(780, "sine", 0.10, 0.06, 0.12); }
   }
 
   let worldBankPool = 2500;
@@ -1032,22 +1091,24 @@ body.mobile-mode .chat-drawer-window { width: 248px; height: 255px; max-height: 
   let globalTaxMultiplier = 1.0;
   let globalGeneralMultiplier = 1.0;
   let inflationWaveCount = 0;
+  let globalPenaltyMultiplier = 1.0;
+  let silentMoney = false;
 
   const TILES = [
     { id: 0, name: "BAŞLANGIÇ", sub: "Her Geçişte Maaş & Yeni Ev Hakkı", type: "start", flag: "🏁", color: "#10b981", region: "Başlangıç", photo: "https://images.unsplash.com/photo-1518684079-3c830dcef090?auto=format&fit=crop&w=1000&q=80" },
     { id: 1, name: "Lübnan", sub: "Beyrut Limanı & Akdeniz Kıyısı", type: "property", price: 1000, rent: 240, houseCost: 500, flag: "🇱🇧", color: "#a16207", region: "Doğu Akdeniz", houseOwners: [], photo: "https://images.unsplash.com/photo-1578895101408-1a36b834405b?auto=format&fit=crop&w=1000&q=80" },
     { id: 2, name: "HAZİNE", sub: "Devlet Hazinesi Kararı", type: "treasury", flag: "👑", color: "#eab308", region: "Hazine Dairesi", photo: "https://images.unsplash.com/photo-1610375461246-83df859d849d?auto=format&fit=crop&w=1000&q=80" },
     { id: 3, name: "Filistin", sub: "Kudüs Tarihi Taş Mimarisi", type: "property", price: 1100, rent: 260, houseCost: 550, flag: "🇵🇸", color: "#a16207", region: "Doğu Akdeniz", houseOwners: [], photo: "https://images.unsplash.com/photo-1544967082-d9d25d867d66?auto=format&fit=crop&w=1000&q=80" },
-    { id: 4, name: "Ürdün", sub: "Wadi Rum Çölü & Petra Antik Kenti", type: "property", price: 1200, rent: 290, houseCost: 600, flag: "🇯🇴", color: "#a16207", region: "Doğu Akdeniz", houseOwners: [], photo: "https://images.unsplash.com/photo-1548786811-dd6e453ccca7?auto=format&fit=crop&w=1000&q=80" },
-    { id: 5, name: "Kuzey Kıbrıs", sub: "Girne Limanı & Doğu Akdeniz", type: "property", price: 1500, rent: 360, houseCost: 750, flag: "🇨🇾", color: "#dc2626", region: "Anadolu & Levant", houseOwners: [], photo: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1000&q=80" },
-    { id: 6, name: "TÜRKİYE", sub: "Boğaziçi Köprüsü & Avrasya Ticaret Merkezi", type: "property", price: 3200, rent: 820, houseCost: 1500, flag: "🇹🇷", color: "#dc2626", region: "Anadolu & Levant", houseOwners: [], photo: "https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?auto=format&fit=crop&w=1000&q=80" },
-    { id: 7, name: "Suriye", sub: "Şam & Tarihi İpek Yolu Kervanı", type: "property", price: 1350, rent: 320, houseCost: 650, flag: "🇸🇾", color: "#dc2626", region: "Anadolu & Levant", houseOwners: [], photo: "https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?auto=format&fit=crop&w=1000&q=80" },
+    { id: 4, name: "Ürdün", sub: "Wadi Rum Çölü & Petra Antik Kenti", type: "property", price: 1200, rent: 290, houseCost: 600, flag: "🇯🇴", color: "#a16207", region: "Levant", houseOwners: [], photo: "https://images.unsplash.com/photo-1548786811-dd6e453ccca7?auto=format&fit=crop&w=1000&q=80" },
+    { id: 5, name: "TÜRKİYE", sub: "Boğaziçi Köprüsü & Avrasya Ticaret Merkezi", type: "property", price: 3200, rent: 820, houseCost: 1500, flag: "🇹🇷", color: "#dc2626", region: "Avrasya Lideri", houseOwners: [], photo: "https://images.unsplash.com/photo-1524231757912-21f4fe3a7200?auto=format&fit=crop&w=1000&q=80" },
+    { id: 6, name: "Suriye", sub: "Şam & Tarihi İpek Yolu Kervanı", type: "property", price: 1350, rent: 320, houseCost: 650, flag: "🇸🇾", color: "#0284c7", region: "Bereketli Hilal", houseOwners: [], photo: "https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?auto=format&fit=crop&w=1000&q=80" },
+    { id: 7, name: "Kuzey Kıbrıs", sub: "Girne Limanı & Doğu Akdeniz", type: "property", price: 1500, rent: 360, houseCost: 750, flag: "🇨🇾", color: "#0284c7", region: "Doğu Akdeniz", houseOwners: [], photo: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1000&q=80" },
     { id: 8, name: "ŞANS KARTI", sub: "Kervan Talihi & Sürpriz Olaylar", type: "chance", flag: "🔮", color: "#a855f7", region: "Şans Meydanı", photo: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1000&q=80" },
-    { id: 9, name: "Irak", sub: "Bağdat & Basra Petrol Yolu", type: "property", price: 1650, rent: 400, houseCost: 800, flag: "🇮🇶", color: "#0284c7", region: "Mezopotamya & Nil", houseOwners: [], photo: "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=1000&q=80" },
-    { id: 10, name: "Erbil", sub: "Kuzey Irak Ticaret & Enerji Hattı", type: "property", price: 1750, rent: 430, houseCost: 850, flag: "🏔️", color: "#0284c7", region: "Mezopotamya & Nil", houseOwners: [], photo: "https://images.unsplash.com/photo-1518684079-3c830dcef090?auto=format&fit=crop&w=1000&q=80" },
+    { id: 9, name: "Irak", sub: "Bağdat & Basra Petrol Yolu", type: "property", price: 1650, rent: 400, houseCost: 800, flag: "🇮🇶", color: "#0284c7", region: "Mezopotamya", houseOwners: [], photo: "https://images.unsplash.com/photo-1542401886-65d6c61db217?auto=format&fit=crop&w=1000&q=80" },
+    { id: 10, name: "Erbil", sub: "Kuzey Irak Ticaret & Enerji Hattı", type: "property", price: 1750, rent: 430, houseCost: 850, flag: "🏔️", color: "#0284c7", region: "Mezopotamya", houseOwners: [], photo: "https://images.unsplash.com/photo-1518684079-3c830dcef090?auto=format&fit=crop&w=1000&q=80" },
     { id: 11, name: "NEZARETHANE", sub: "1 Tur Oyun Cezası veya Kefaletle Çıkış", type: "jail", flag: "🚓", color: "#64748b", region: "Güvenlik Noktası", photo: "https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=1000&q=80" },
-    { id: 12, name: "Mısır", sub: "Gize Piramitleri & Kahire", type: "property", price: 1950, rent: 470, houseCost: 950, flag: "🇪🇬", color: "#0284c7", region: "Mezopotamya & Nil", houseOwners: [], photo: "https://images.unsplash.com/photo-1503177119275-0aa32b3a9368?auto=format&fit=crop&w=1000&q=80" },
-    { id: 13, name: "Sudan", sub: "Hartum & Nil Nehri Kavşağı", type: "property", price: 2050, rent: 500, houseCost: 1000, flag: "🇸🇩", color: "#db2777", region: "Kuzey Afrika", houseOwners: [], photo: "https://images.unsplash.com/photo-1473580044384-7ba9967e16a0?auto=format&fit=crop&w=1000&q=80" },
+    { id: 12, name: "Mısır", sub: "Gize Piramitleri & Kahire", type: "property", price: 1950, rent: 470, houseCost: 950, flag: "🇪🇬", color: "#db2777", region: "Nil Vadisi", houseOwners: [], photo: "https://images.unsplash.com/photo-1503177119275-0aa32b3a9368?auto=format&fit=crop&w=1000&q=80" },
+    { id: 13, name: "Sudan", sub: "Hartum & Nil Nehri Kavşağı", type: "property", price: 2050, rent: 500, houseCost: 1000, flag: "🇸🇩", color: "#db2777", region: "Nil Vadisi", houseOwners: [], photo: "https://images.unsplash.com/photo-1473580044384-7ba9967e16a0?auto=format&fit=crop&w=1000&q=80" },
     { id: 14, name: "Libya", sub: "Trablus & Akdeniz Petrol Sahası", type: "property", price: 2200, rent: 540, houseCost: 1050, flag: "🇱🇾", color: "#db2777", region: "Kuzey Afrika", houseOwners: [], photo: "https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?auto=format&fit=crop&w=1000&q=80" },
     { id: 15, name: "SÜVEYŞ VERGİSİ", sub: "Kanal Geçiş Vergisi (Dünya Bankasına Gider)", type: "tax", taxAmount: 1500, flag: "🚢💸", color: "#ef4444", region: "Vergi Noktası", photo: "https://images.unsplash.com/photo-1494412574643-ff11b0a5c1c3?auto=format&fit=crop&w=1000&q=80" },
     { id: 16, name: "Tunus", sub: "Kartaca Limanı & Akdeniz Ticareti", type: "property", price: 2350, rent: 580, houseCost: 1150, flag: "🇹🇳", color: "#db2777", region: "Kuzey Afrika", houseOwners: [], photo: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=1000&q=80" },
@@ -1056,59 +1117,76 @@ body.mobile-mode .chat-drawer-window { width: 248px; height: 255px; max-height: 
     { id: 19, name: "Fas", sub: "Kazablanka & Marakeş Meydanı", type: "property", price: 2650, rent: 650, houseCost: 1250, flag: "🇲🇦", color: "#ea580c", region: "Mağrip", houseOwners: [], photo: "https://images.unsplash.com/photo-1539020140153-e479b8c22e70?auto=format&fit=crop&w=1000&q=80" },
     { id: 20, name: "Moritanya", sub: "Atlantik Kıyısı & Demir Cevheri", type: "property", price: 2750, rent: 670, houseCost: 1300, flag: "🇲🇷", color: "#ea580c", region: "Mağrip", houseOwners: [], photo: "https://images.unsplash.com/photo-1509316975850-ff9c5deb0cd9?auto=format&fit=crop&w=1000&q=80" },
     { id: 21, name: "PETROL VERGİSİ", sub: "OPEC İhracat Vergisi (Dünya Bankasına Gider)", type: "tax", taxAmount: 1800, flag: "🛢️💸", color: "#ef4444", region: "Vergi Noktası", photo: "https://images.unsplash.com/photo-1518684079-3c830dcef090?auto=format&fit=crop&w=1000&q=80" },
-    { id: 22, name: "Somali", sub: "Mogadişu & Hint Okyanusu Limanı", type: "property", price: 2850, rent: 700, houseCost: 1350, flag: "🇸🇴", color: "#14b8a6", region: "Kızıldeniz & Afrika", houseOwners: [], photo: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1000&q=80" },
-    { id: 23, name: "Cibuti", sub: "Babü'l Mendep Boğazı Üssü", type: "property", price: 2950, rent: 730, houseCost: 1400, flag: "🇩🇯", color: "#14b8a6", region: "Kızıldeniz & Afrika", houseOwners: [], photo: "https://images.unsplash.com/photo-1494412574643-ff11b0a5c1c3?auto=format&fit=crop&w=1000&q=80" },
-    { id: 24, name: "Yemen", sub: "Aden Körfezi & Tarihi Kule Evler", type: "property", price: 3100, rent: 760, houseCost: 1450, flag: "🇾🇪", color: "#14b8a6", region: "Kızıldeniz & Afrika", houseOwners: [], photo: "https://images.unsplash.com/photo-1518684079-3c830dcef090?auto=format&fit=crop&w=1000&q=80" },
-    { id: 25, name: "Umman", sub: "Maskat Limanı & Hürmüz Geçidi", type: "property", price: 3250, rent: 800, houseCost: 1500, flag: "🇴🇲", color: "#eab308", region: "Hazar & Umman", houseOwners: [], photo: "https://images.unsplash.com/photo-1578895101408-1a36b834405b?auto=format&fit=crop&w=1000&q=80" },
+    { id: 22, name: "Somali", sub: "Mogadişu & Hint Okyanusu Limanı", type: "property", price: 2850, rent: 700, houseCost: 1350, flag: "🇸🇴", color: "#14b8a6", region: "Afrika Boynuzu", houseOwners: [], photo: "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1000&q=80" },
+    { id: 23, name: "Cibuti", sub: "Babü'l Mendep Boğazı Üssü", type: "property", price: 2950, rent: 730, houseCost: 1400, flag: "🇩🇯", color: "#14b8a6", region: "Kızıldeniz", houseOwners: [], photo: "https://images.unsplash.com/photo-1494412574643-ff11b0a5c1c3?auto=format&fit=crop&w=1000&q=80" },
+    { id: 24, name: "Yemen", sub: "Aden Körfezi & Tarihi Kule Evler", type: "property", price: 3100, rent: 760, houseCost: 1450, flag: "🇾🇪", color: "#14b8a6", region: "Güney Arabistan", houseOwners: [], photo: "https://images.unsplash.com/photo-1518684079-3c830dcef090?auto=format&fit=crop&w=1000&q=80" },
+    { id: 25, name: "Umman", sub: "Maskat Limanı & Hürmüz Geçidi", type: "property", price: 3250, rent: 800, houseCost: 1500, flag: "🇴🇲", color: "#eab308", region: "Umman Denizi", houseOwners: [], photo: "https://images.unsplash.com/photo-1578895101408-1a36b834405b?auto=format&fit=crop&w=1000&q=80" },
     { id: 26, name: "ŞANS KARTI", sub: "Ortadoğu Ticaret Şansı", type: "chance", flag: "🔮", color: "#a855f7", region: "Şans Meydanı", photo: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&w=1000&q=80" },
-    { id: 27, name: "Azerbaycan", sub: "Bakü Alev Kuleleri & Hazar Enerji", type: "property", price: 3400, rent: 850, houseCost: 1600, flag: "🇦🇿", color: "#eab308", region: "Hazar & Umman", houseOwners: [], photo: "https://images.unsplash.com/photo-1596306499317-8490232098fa?auto=format&fit=crop&w=1000&q=80" },
-    { id: 28, name: "İran", sub: "Tahran Metropolü & İsfahan", type: "property", price: 3600, rent: 900, houseCost: 1700, flag: "🇮🇷", color: "#eab308", region: "Hazar & Umman", houseOwners: [], photo: "https://images.unsplash.com/photo-1565008576549-57569a49371d?auto=format&fit=crop&w=1000&q=80" },
+    { id: 27, name: "Azerbaycan", sub: "Bakü Alev Kuleleri & Hazar Enerji", type: "property", price: 3400, rent: 850, houseCost: 1600, flag: "🇦🇿", color: "#eab308", region: "Hazar", houseOwners: [], photo: "https://images.unsplash.com/photo-1596306499317-8490232098fa?auto=format&fit=crop&w=1000&q=80" },
+    { id: 28, name: "İran", sub: "Tahran Metropolü & İsfahan", type: "property", price: 3600, rent: 900, houseCost: 1700, flag: "🇮🇷", color: "#eab308", region: "İran Platosu", houseOwners: [], photo: "https://images.unsplash.com/photo-1565008576549-57569a49371d?auto=format&fit=crop&w=1000&q=80" },
     { id: 29, name: "İNTERPOL", sub: "Doğrudan Nezarethaneye Git!", type: "gotojail", flag: "🚨", color: "#ef4444", region: "Sınır Polisi", photo: "https://images.unsplash.com/photo-1453873531674-2151bcd01707?auto=format&fit=crop&w=1000&q=80" },
     { id: 30, name: "Bahreyn", sub: "Manama Finans Merkezi", type: "property", price: 3800, rent: 950, houseCost: 1800, flag: "🇧🇭", color: "#10b981", region: "Körfez", houseOwners: [], photo: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1000&q=80" },
     { id: 31, name: "Kuveyt", sub: "Kuveyt Kuleleri & Petrol Fonu", type: "property", price: 4050, rent: 1020, houseCost: 1900, flag: "🇰🇼", color: "#10b981", region: "Körfez", houseOwners: [], photo: "https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?auto=format&fit=crop&w=1000&q=80" },
-    { id: 32, name: "Hicaz", sub: "Cidde Limanı & Kızıldeniz Ticareti", type: "property", price: 4250, rent: 1080, houseCost: 2000, flag: "🕋", color: "#10b981", region: "Körfez", houseOwners: [], photo: "https://images.unsplash.com/photo-1586724237569-f3d0c1dee8c6?auto=format&fit=crop&w=1000&q=80" },
+    { id: 32, name: "Hicaz", sub: "Cidde Limanı & Kızıldeniz Ticareti", type: "property", price: 4250, rent: 1080, houseCost: 2000, flag: "🕋", color: "#3b82f6", region: "Arap Yarımadası", houseOwners: [], photo: "https://images.unsplash.com/photo-1586724237569-f3d0c1dee8c6?auto=format&fit=crop&w=1000&q=80" },
     { id: 33, name: "Suudi Arabistan", sub: "Riyad Kingdom Tower & Aramco", type: "property", price: 4500, rent: 1160, houseCost: 2150, flag: "🇸🇦", color: "#3b82f6", region: "Körfez Devleri", houseOwners: [], photo: "https://images.unsplash.com/photo-1586724237569-f3d0c1dee8c6?auto=format&fit=crop&w=1000&q=80" },
     { id: 34, name: "Katar", sub: "Doha Gökdelenleri & LNG Merkezi", type: "property", price: 4750, rent: 1240, houseCost: 2300, flag: "🇶🇦", color: "#3b82f6", region: "Körfez Devleri", houseOwners: [], photo: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=1000&q=80" },
     { id: 35, name: "B.A.E (Dubai)", sub: "Burj Khalifa & Küresel Ticaret Üssü", type: "property", price: 5000, rent: 1350, houseCost: 2500, flag: "🇦🇪", color: "#3b82f6", region: "Körfez Devleri", houseOwners: [], photo: "https://images.unsplash.com/photo-1512453979798-5ea266f8880c?auto=format&fit=crop&w=1000&q=80" }
   ];
 
+  const PROPERTY_SETS = [
+    { color: "#a16207", ids: [1, 3, 4] },
+    { color: "#dc2626", ids: [5, 6, 7] },
+    { color: "#0284c7", ids: [9, 10, 12] },
+    { color: "#db2777", ids: [13, 14, 16] },
+    { color: "#ea580c", ids: [17, 19, 20] },
+    { color: "#14b8a6", ids: [22, 23, 24] },
+    { color: "#eab308", ids: [25, 27, 28] },
+    { color: "#10b981", ids: [30, 31, 32] },
+    { color: "#3b82f6", ids: [33, 34, 35] }
+  ];
+  PROPERTY_SETS.forEach((s, i) => s.ids.forEach(id => { TILES[id].color = s.color; TILES[id].setIndex = i; }));
+  function getSetTiles(tile) { return (tile && tile.setIndex !== undefined) ? PROPERTY_SETS[tile.setIndex].ids.map(i => TILES[i]) : []; }
+  function setOwnedCount(pid, tile) { return getSetTiles(tile).filter(t => t.owner === pid).length; }
+  function ownsFullSet(pid, tile) { const s = getSetTiles(tile); return s.length === 3 && s.every(t => t.owner === pid); }
+  function canBuildInSet(pid, tile) { return ownsFullSet(pid, tile) && getSetTiles(tile).every(t => !t.mortgaged); }
+
   const CHANCE_CARDS = [
-    { good: true, title: "DOĞALGAZ REZERVİ BULUNDU!", desc: "Doğu Akdeniz sondajından yüksek temettü payı aldın.", amount: 2000 },
-    { good: false, title: "ÇÖL FIRTINASI HASARI!", desc: "Lojistik kurtarma fonu Dünya Bankasına aktarıldı.", amount: -1000 },
-    { good: true, title: "KÖRFEZ YATIRIM FONU!", desc: "Bölgesel kalkınma fonundan karşılıksız hibe çıktı.", amount: 1500 },
-    { good: false, title: "BOĞAZ GEÇİŞ CEZASI!", desc: "Tanker sigorta gecikme cezası Dünya Bankasına ödendi.", amount: -1200 },
-    { good: true, title: "İPEK YOLU TİCARET REKORU!", desc: "Transit kervan anlaşmasından net kâr payı kazandın.", amount: 2400 },
-    { good: false, title: "LİMAN KARANTİNA KESİNTİSİ!", desc: "Acil sağlık denetimi gideri Dünya Bankasına ödendi.", amount: -1500 },
-    { good: true, title: "TURİZM PATLAMASI!", desc: "Sahil tesislerin doldu taştı, ekstra döviz geliri elde ettin.", amount: 1800 },
-    { good: false, title: "ENERJİ HATTI BAKIM MASRAFI!", desc: "Boru hattı yenileme bedeli Dünya Bankasına yatırıldı.", amount: -1600 },
-    { good: true, title: "ALTIN MADENİ KEŞFİ!", desc: "Yeni arama sahasında zengin altın damarı bulundu.", amount: 2600 },
-    { good: false, title: "GÜMRÜK TARİFE EK VERGİSİ!", desc: "Uluslararası ticaret komisyonu Dünya Bankasına kesildi.", amount: -1900 },
-    { good: true, title: "TEKNOLOJİ ÜSSÜ TEŞVİKİ!", desc: "Serbest bölge ihracat ödülü hesabına geçti.", amount: 1700 },
-    { good: false, title: "DENİZ KORSANLARI SİGORTASI!", desc: "Kızıldeniz güvenlik primi Dünya Bankasına ödendi.", amount: -1400 },
-    { good: true, title: "HAVAYOLU KARGO ANLAŞMASI!", desc: "Kıtalararası lojistik filosundan büyük prim kazandın.", amount: 2100 },
-    { good: false, title: "KURAKLIK DESTEK VERGİSİ!", desc: "Su arıtma tesisi katkı payı Dünya Bankasına aktarıldı.", amount: -1300 },
-    { good: true, title: "YABANCI YATIRIMCI ORTAKLIĞI!", desc: "Gayrimenkul fonu projelerine nakit sermaye sağladı.", amount: 2300 },
-    { good: false, title: "SİBER GÜVENLİK DENETİM CEZASI!", desc: "Bankacılık altyapı güncelleme bedeli Dünya Bankasına ödendi.", amount: -1750 }
+    { good: true, title: "DOĞALGAZ REZERVİ BULUNDU!", desc: "Doğu Akdeniz sondajından pay aldın.", amount: 2000 },
+    { good: true, title: "KÖRFEZ YATIRIM FONU!", desc: "Bölgesel kalkınma fonundan hibe çıktı.", amount: 1500 },
+    { good: true, title: "PETROL İHRACAT BONUSU!", desc: "Rafineri sözleşmen uzun vadeli yenilendi.", amount: 1800 },
+    { good: true, title: "TURİZM SEZONU REKORU!", desc: "Otellerin bu yıl kapasitenin üstünde doldu.", amount: 1200 },
+    { good: true, title: "UZAK AKRABADAN MİRAS!", desc: "Çöl kervanından büyük bir miras kaldı.", amount: 2500 },
+    { good: true, title: "LİMAN KİRALAMA GELİRİ!", desc: "Limanını yabancı bir şirkete kiraladın.", amount: 1000 },
+    { good: true, title: "İHRACAT TEŞVİĞİ!", desc: "Devlet ihracatçılara nakit destek verdi.", amount: 1600 },
+    { good: true, title: "ALTIN MADENİ HİSSESİ!", desc: "Sahra'daki altın madeninden temettü aldın.", amount: 2200 },
+    { good: true, title: "ŞANSLI TİCARET ANLAŞMASI!", desc: "Baharat ticaretinde beklenmedik kâr ettin.", amount: 900 },
+    { good: true, title: "KERVAN VERGİ İADESİ!", desc: "Fazla ödenen geçiş vergileri iade edildi.", amount: 1400 },
+    { good: false, title: "ÇÖL FIRTINASI VERGİSİ!", desc: "Kurtarma fonu Dünya Bankasına aktarıldı.", amount: -1300 },
+    { good: false, title: "BOĞAZ GEÇİŞ CEZASI!", desc: "Tanker sigorta cezası Dünya Bankasına ödendi.", amount: -1500 },
+    { good: false, title: "PETROL BORU HATTI ARIZASI!", desc: "Onarım masrafları Dünya Bankasına ödendi.", amount: -2200 },
+    { good: false, title: "TANKER KAZASI TAZMİNATI!", desc: "Körfez'deki kaza için tazminat ödedin.", amount: -1800 },
+    { good: false, title: "KERVAN SOYGUNU!", desc: "Eşkıyalar kervanındaki malları yağmaladı.", amount: -2600 },
+    { good: false, title: "DEPREM ONARIM MASRAFI!", desc: "Binaların güçlendirilmesi için harcama yaptın.", amount: -1900 },
+    { good: false, title: "KAÇAKÇILIK CEZASI!", desc: "Gümrükte kaçak mal bulundu, ceza kesildi.", amount: -1300 },
+    { good: false, title: "LİMAN GREVİ ZARARI!", desc: "Grev yüzünden yüklerin günlerce bekledi.", amount: -900 },
+    { good: false, title: "KURAK MEVSİM ZARARI!", desc: "Kuraklık ürünlerini kuruttu, zarar ettin.", amount: -1100 },
+    { good: false, title: "SİGORTA PRİMİ ARTIŞI!", desc: "Bölgesel risk nedeniyle primler yükseldi.", amount: -1500 }
   ];
 
   const TREASURY_CARDS = [
     { good: true, title: "DEVLET HAZİNESİ İKRAMİYESİ!", desc: "Merkez Bankası altın fonundan temettü kazandın.", amount: 2200 },
     { good: false, title: "BELEDİYE ALTYAPI VERGİSİ!", desc: "Çevre düzenleme vergisi Dünya Bankasına aktarıldı.", amount: -1100 },
     { good: true, title: "GÜMRÜK VERGİ İADESİ!", desc: "Geçmiş dönem ticaret ödemelerinden iade aldın.", amount: 1400 },
-    { good: false, title: "MERKEZ BANKASI FAİZ KESİNTİSİ!", desc: "Faiz kesintisi Dünya Bankasına yatırıldı.", amount: -1300 },
-    { good: true, title: "STRATEJİK YATIRIM DESTEĞİ!", desc: "Devlet planlama teşkilatından nakit teşvik aldın.", amount: 2000 },
-    { good: false, title: "VARLIK BARIŞI EK HARCI!", desc: "Tapu tescil harç farkı Dünya Bankasına yatırıldı.", amount: -1450 },
-    { good: true, title: "KALKINMA TAHVİLİ VADESİ DOLDU!", desc: "Hazine bonosu faiz getirisi hesabına aktarıldı.", amount: 1850 },
-    { good: false, title: "KAMU DENETİM HARCI!", desc: "Ticaret sicil ve denetim harcı Dünya Bankasına ödendi.", amount: -1250 }
+    { good: false, title: "MERKEZ BANKASI FAİZ KESİNTİSİ!", desc: "Faiz kesintisi Dünya Bankasına yatırıldı.", amount: -1300 }
   ];
 
   const NEON_PALETTE = ["#f59e0b", "#00f5d4", "#ff2a85", "#a855f7", "#22c55e", "#38bdf8", "#f97316"];
 
   let players = [
-    { id: 0, name: "Sen", teamId: 0, isBot: false, isReady: false, isHost: true, disconnected: false, disconnectSec: 60, money: 15000, pos: 0, lap: 1, turnsPlayed: 0, jailWaitTurns: 0, missedTurns: 0, color: "#f59e0b", code: "S", bankrupt: false },
-    { id: 1, name: "El-Tacir", teamId: 0, isBot: true, isReady: true, isHost: false, disconnected: false, disconnectSec: 60, money: 15000, pos: 0, lap: 1, turnsPlayed: 0, jailWaitTurns: 0, missedTurns: 0, color: "#10b981", code: "T", bankrupt: false },
-    { id: 2, name: "Şahin Bey", teamId: 0, isBot: true, isReady: true, isHost: false, disconnected: false, disconnectSec: 60, money: 15000, pos: 0, lap: 1, turnsPlayed: 0, jailWaitTurns: 0, missedTurns: 0, color: "#38bdf8", code: "Ş", bankrupt: false },
-    { id: 3, name: "Kleopatra", teamId: 0, isBot: true, isReady: true, isHost: false, disconnected: false, disconnectSec: 60, money: 15000, pos: 0, lap: 1, turnsPlayed: 0, jailWaitTurns: 0, missedTurns: 0, color: "#ff2a85", code: "K", bankrupt: false }
+    { id: 0, name: "Sen", isBot: false, isReady: false, isHost: true, disconnected: false, disconnectSec: 60, money: 15000, pos: 0, lap: 1, turnsPlayed: 0, jailWaitTurns: 0, missedTurns: 0, color: "#f59e0b", code: "S", bankrupt: false },
+    { id: 1, name: "El-Tacir", isBot: true, isReady: true, isHost: false, disconnected: false, disconnectSec: 60, money: 15000, pos: 0, lap: 1, turnsPlayed: 0, jailWaitTurns: 0, missedTurns: 0, color: "#10b981", code: "T", bankrupt: false },
+    { id: 2, name: "Şahin Bey", isBot: true, isReady: true, isHost: false, disconnected: false, disconnectSec: 60, money: 15000, pos: 0, lap: 1, turnsPlayed: 0, jailWaitTurns: 0, missedTurns: 0, color: "#38bdf8", code: "Ş", bankrupt: false },
+    { id: 3, name: "Kleopatra", isBot: true, isReady: true, isHost: false, disconnected: false, disconnectSec: 60, money: 15000, pos: 0, lap: 1, turnsPlayed: 0, jailWaitTurns: 0, missedTurns: 0, color: "#ff2a85", code: "K", bankrupt: false }
   ];
 
   let myLocalPlayerName = "";
@@ -1142,7 +1220,6 @@ body.mobile-mode .chat-drawer-window { width: 248px; height: 255px; max-height: 
   let mobileOfferTimer = null;
   let mobileOfferCountdown = 10;
   let chatMessages = [];
-  let gameLogs = [];
   let unreadChatCount = 0;
   let currentMobileHubTab = "players";
 
@@ -1151,31 +1228,6 @@ body.mobile-mode .chat-drawer-window { width: 248px; height: 255px; max-height: 
   let hasJoinedRoomAsClient = false;
   let joinRetryInterval = null;
   let stepMoveTimer = null;
-
-  function areTeammates(pid1, pid2) {
-    if (typeof pid1 !== "number" || typeof pid2 !== "number") return false;
-    if (pid1 === pid2) return true;
-    const p1 = players[pid1];
-    const p2 = players[pid2];
-    if (!p1 || !p2) return false;
-    const t1 = typeof p1.teamId === "number" ? p1.teamId : 0;
-    const t2 = typeof p2.teamId === "number" ? p2.teamId : 0;
-    return t1 > 0 && t1 === t2;
-  }
-
-  function getTeamShortLabel(teamId) {
-    if (teamId === 1) return "🅰️ A Takımı";
-    if (teamId === 2) return "🅱️ B Takımı";
-    if (teamId === 3) return "🆎 C Takımı";
-    return "👤 Bireysel";
-  }
-
-  function getTeamBadgeHTML(teamId) {
-    if (teamId === 1) return `<span class="team-pill-badge" style="background:rgba(245,158,11,0.3); border-color:#f59e0b; color:#fde68a;">🅰️ Takım A</span>`;
-    if (teamId === 2) return `<span class="team-pill-badge" style="background:rgba(16,185,129,0.3); border-color:#10b981; color:#6ee7b7;">🅱️ Takım B</span>`;
-    if (teamId === 3) return `<span class="team-pill-badge" style="background:rgba(56,189,248,0.3); border-color:#38bdf8; color:#7dd3fc;">🆎 Takım C</span>`;
-    return "";
-  }
 
   const myClientUid = (() => {
     try {
@@ -1265,6 +1317,8 @@ body.mobile-mode .chat-drawer-window { width: 248px; height: 255px; max-height: 
       inflationSecondsLeft: typeof inflationSecondsLeft === "number" ? inflationSecondsLeft : 600,
       globalTaxMultiplier: typeof globalTaxMultiplier === "number" ? globalTaxMultiplier : 1.0,
       globalGeneralMultiplier: typeof globalGeneralMultiplier === "number" ? globalGeneralMultiplier : 1.0,
+      globalPenaltyMultiplier: typeof globalPenaltyMultiplier === "number" ? globalPenaltyMultiplier : 1.0,
+      inflationWaveCount: typeof inflationWaveCount === "number" ? inflationWaveCount : 0,
       currentTurn: typeof currentTurn === "number" ? currentTurn : 0,
       isGamePaused: Boolean(isGamePaused),
       hasRolled: Boolean(hasRolled),
@@ -1274,7 +1328,6 @@ body.mobile-mode .chat-drawer-window { width: 248px; height: 255px; max-height: 
       players: players.map(p => ({
         id: p.id,
         name: p.name || "Oyuncu",
-        teamId: typeof p.teamId === "number" ? p.teamId : 0,
         clientUid: p.clientUid || "",
         isBot: Boolean(p.isBot),
         isReady: Boolean(p.isReady),
@@ -1299,8 +1352,7 @@ body.mobile-mode .chat-drawer-window { width: 248px; height: 255px; max-height: 
         mortgageTurnsLeft: typeof t.mortgageTurnsLeft === "number" ? t.mortgageTurnsLeft : 0,
         lastBuiltLap: typeof t.lastBuiltLap === "number" ? t.lastBuiltLap : 0
       })),
-      chatMessages: chatMessages.slice(-50),
-      gameLogs: gameLogs.slice(0, 40)
+      chatMessages: chatMessages.slice(-50)
     };
   }
 
@@ -1322,6 +1374,8 @@ body.mobile-mode .chat-drawer-window { width: 248px; height: 255px; max-height: 
     inflationSecondsLeft = snap.inflationSecondsLeft ?? inflationSecondsLeft;
     globalTaxMultiplier = snap.globalTaxMultiplier ?? globalTaxMultiplier;
     globalGeneralMultiplier = snap.globalGeneralMultiplier ?? globalGeneralMultiplier;
+    globalPenaltyMultiplier = snap.globalPenaltyMultiplier ?? globalPenaltyMultiplier;
+    inflationWaveCount = snap.inflationWaveCount ?? inflationWaveCount;
 
     if (typeof snap.currentTurn === "number") currentTurn = snap.currentTurn;
 
@@ -1376,35 +1430,34 @@ body.mobile-mode .chat-drawer-window { width: 248px; height: 255px; max-height: 
     }
 
     if (Array.isArray(snap.chatMessages)) {
-      if (snap.chatMessages.length > chatMessages.length) {
-        const diff = snap.chatMessages.length - chatMessages.length;
-        playSfx("chat");
+      let fresh = 0, fromOthers = 0;
+      const merged = new Map();
+      chatMessages.forEach(m => merged.set(chatKey(m), m));
+      snap.chatMessages.forEach(m => {
+        const k = chatKey(m);
+        if (!seenChatIds.has(k)) {
+          seenChatIds.add(k);
+          fresh++;
+          if (m.uid !== myClientUid && m.sender !== "SİSTEM") fromOthers++;
+        }
+        merged.set(k, m);
+      });
+      if (fresh > 0) {
+        chatMessages = Array.from(merged.values()).sort((a, b) => (a.ts || 0) - (b.ts || 0)).slice(-80);
         const drawerOpen = document.getElementById("gameChatDrawer").classList.contains("open");
         const lobbyOpen = document.getElementById("lobbyBackdrop").style.display !== "none";
-        if (!drawerOpen && !lobbyOpen) {
-          unreadChatCount += diff;
-          updateUnreadBadgeUI();
+        if (fromOthers > 0) {
+          playSfx("msgRecv");
+          if (!drawerOpen && !lobbyOpen) {
+            unreadChatCount += fromOthers;
+            updateUnreadBadgeUI();
+          }
         }
+        renderChatLists();
       }
-      chatMessages = snap.chatMessages;
-      renderChatLists();
     }
 
-    if (Array.isArray(snap.gameLogs)) {
-      const existingIds = new Set(gameLogs.map(g => g.id));
-      let changed = false;
-      snap.gameLogs.forEach(item => {
-        if (item && item.id && !existingIds.has(item.id)) {
-          gameLogs.push(item);
-          existingIds.add(item.id);
-          changed = true;
-        }
-      });
-      if (changed || gameLogs.length === 0) {
-        gameLogs = snap.gameLogs.slice(0, 45);
-        renderGameLogs();
-      }
-    }
+    checkBankruptcyAnnouncements();
 
     renderLobbySeats();
 
@@ -1491,12 +1544,11 @@ body.mobile-mode .chat-drawer-window { width: 248px; height: 255px; max-height: 
         targetPlayer.disconnected = false;
         delete targetPlayer.disconnectSec;
         targetPlayer.clientUid = reqUid;
-      } else if (players.length < 4) {
+      } else if (players.length < getRoomRules(myRoomCode).max) {
         const newId = players.length;
         targetPlayer = {
           id: newId,
           name: finalName,
-          teamId: 0,
           clientUid: reqUid,
           isBot: false,
           isReady: false,
@@ -1546,6 +1598,12 @@ body.mobile-mode .chat-drawer-window { width: 248px; height: 255px; max-height: 
       const reqUid = data.clientUid || ("anon_" + reqName);
       const alreadyExisted = players.some(p => p.clientUid === reqUid);
       const targetPlayer = assignOrUpdatePlayerInRoom(reqName, reqUid, false);
+      if (!targetPlayer) {
+        const rej = { type: "JOIN_ROOM_REJECTED", clientUid: reqUid, reason: "full" };
+        if (conn && conn.open) { try { conn.send(rej); } catch (e) {} }
+        broadcastNetworkPayload(rej);
+        return;
+      }
 
       if (targetPlayer && !alreadyExisted) {
         pushSystemChat(`👋 ${targetPlayer.name} odaya katıldı.`);
@@ -1599,6 +1657,25 @@ body.mobile-mode .chat-drawer-window { width: 248px; height: 255px; max-height: 
         document.getElementById("lobbyConnStatus").innerHTML = `✅ <b>${mySeat.name}</b> (Oyuncu #${mySeat.id + 1}) olarak odaya bağlandınız!`;
       }
       renderLobbySeats();
+    } else if (data.type === "JOIN_ROOM_REJECTED") {
+      if (data.clientUid && data.clientUid !== myClientUid) return;
+      if (joinRetryInterval) { clearInterval(joinRetryInterval); joinRetryInterval = null; }
+      const stR = document.getElementById("lobbyConnStatus");
+      if (stR) stR.innerHTML = `⛔ <b>${myRoomCode}</b> odası dolu! Başka bir sunucu seç veya farklı bir davet kodu kullan.`;
+    } else if (data.type === "REPLAY_REQUEST") {
+      if (isRoomHost) hostRestartMatch();
+    } else if (data.type === "MATCH_RESTART") {
+      if (isRoomHost) return;
+      resetMatchStateForReplay();
+      applyRoomSnapshot(data.snap);
+      hasRolled = false;
+      isMoving = false;
+      showDiceScreen();
+      startCountdownInterval();
+      renderBoard();
+      renderRightPlayersList();
+      renderInitialsRail();
+      updateEconBanner();
     } else if (data.type === "PLAYER_READY_CHANGE") {
       const pl = players.find(p => p.clientUid === data.clientUid) || players[data.playerId];
       if (pl) {
@@ -1643,29 +1720,6 @@ body.mobile-mode .chat-drawer-window { width: 248px; height: 255px; max-height: 
         renderInitialsRail();
         renderRightPlayersList();
       }
-      if (isRoomHost && conn) broadcastNetworkPayload(data, conn);
-    } else if (data.type === "LOBBY_TEAM_CHANGE") {
-      const pl = (data.clientUid && players.find(p => p.clientUid === data.clientUid)) || players[data.playerId];
-      if (pl) {
-        pl.teamId = typeof data.teamId === "number" ? data.teamId : 0;
-        pushSystemChat(`🤝 ${pl.name} ➔ ${getTeamShortLabel(pl.teamId)} olarak ayarlandı.`);
-        renderLobbySeats();
-        if (isRoomHost) saveRoomSnapshot();
-      }
-    } else if (data.type === "GAME_LOG_EVENT") {
-      if (data.entry && data.entry.id) {
-        const exists = gameLogs.some(g => g.id === data.entry.id);
-        if (!exists) {
-          gameLogs.unshift(data.entry);
-          if (gameLogs.length > 45) gameLogs = gameLogs.slice(0, 45);
-          renderGameLogs();
-        }
-        if (isRoomHost && conn) {
-          broadcastNetworkPayload(data, conn);
-        }
-      }
-    } else if (data.type === "BANKRUPTCY_RESTART_MATCH") {
-      applyRestartMatchInRoom();
       if (isRoomHost && conn) broadcastNetworkPayload(data, conn);
     }
   }
@@ -1836,13 +1890,46 @@ body.mobile-mode .chat-drawer-window { width: 248px; height: 255px; max-height: 
     } catch (e) {}
   }
 
+  let isRemoteMuted = false;
+  let remoteAudioEls = [];
+
   function attachRemoteAudio(stream) {
     const holder = document.getElementById("remoteAudioContainer");
     const aud = document.createElement("audio");
     aud.autoplay = true;
-    aud.muted = isRemoteAudioMuted;
+    aud.playsInline = true;
+    aud.muted = isRemoteMuted;
     aud.srcObject = stream;
     holder.appendChild(aud);
+    remoteAudioEls.push(aud);
+    try { const pr = aud.play(); if (pr && pr.catch) pr.catch(() => {}); } catch (e) {}
+  }
+
+  function toggleRemoteMute() {
+    isRemoteMuted = !isRemoteMuted;
+    remoteAudioEls = remoteAudioEls.filter(a => a.isConnected);
+    remoteAudioEls.forEach(a => { a.muted = isRemoteMuted; });
+    addLog(isRemoteMuted ? "🔕 Karşı tarafın sesi susturuldu (sadece senin tarafında)." : "🎧 Karşı tarafın sesi tekrar açıldı.");
+    updateRemoteMuteUI();
+  }
+
+  function updateRemoteMuteUI() {
+    const m = isRemoteMuted;
+    const fb = document.getElementById("btnFloatingRemote");
+    if (fb) {
+      fb.className = `icon-ctrl-btn ${m ? "mic-muted" : "mic-active"}`;
+      fb.innerHTML = `<span class="ico">${m ? "🔕" : "🎧"}</span><span class="btn-label">${m ? "Karşı Taraf Susturuldu" : "Karşı Taraf Açık"}</span>`;
+    }
+    const lb = document.getElementById("btnLobbyRemote");
+    if (lb) {
+      lb.className = `icon-ctrl-btn ${m ? "mic-muted" : "mic-active"}`;
+      lb.textContent = m ? "🔕 Karşı Taraf: Susturuldu" : "🎧 Karşı Taraf: Açık";
+    }
+    const db = document.getElementById("btnDrawerRemote");
+    if (db) {
+      db.className = `act-btn ${m ? "bg-crimson" : "bg-green"}`;
+      db.textContent = m ? "🔕 Karşı Taraf: Susturuldu" : "🎧 Karşı Taraf: Açık";
+    }
   }
 
   function updateRoomCodeDisplay() {
@@ -1851,6 +1938,7 @@ body.mobile-mode .chat-drawer-window { width: 248px; height: 255px; max-height: 
     myRoomCode = code;
     const tag = document.getElementById("displayRoomCodeTag");
     if (tag) tag.textContent = code;
+    updateRoomRulesUI();
   }
 
   function copyRoomCodeToClipboard() {
@@ -1892,6 +1980,7 @@ body.mobile-mode .chat-drawer-window { width: 248px; height: 255px; max-height: 
 
     setupRoomNetworking((amIHost) => {
       if (amIHost) {
+        enforceRoomRulesForHost();
         const seat = assignOrUpdatePlayerInRoom(myLocalPlayerName, myClientUid, true);
         if (seat) {
           myLocalPlayerId = seat.id;
@@ -1942,17 +2031,18 @@ body.mobile-mode .chat-drawer-window { width: 248px; height: 255px; max-height: 
   }
 
   function hostAddBot(fromRemote = false) {
+    if (!getRoomRules(myRoomCode).bots) return alert("Eşli odalarda bot bulunmaz; burada sadece 2 gerçek oyuncu oynar.");
     if (!fromRemote && !isRoomHost && peerConnections.length > 0) {
       broadcastNetworkPayload({ type: "LOBBY_BOT_ACTION", action: "add" });
       return;
     }
-    if (players.length >= 4) return alert("Oda maksimum 4 kişilik olabilir!");
+    if (players.length >= getRoomRules(myRoomCode).max) return alert(`Bu oda maksimum ${getRoomRules(myRoomCode).max} kişilik!`);
     const botNames = ["El-Tacir", "Şahin Bey", "Kleopatra", "Körfez Emiri"];
     const usedNames = new Set(players.map(p => p.name));
     const bName = botNames.find(n => !usedNames.has(n)) || `Bot-${players.length + 1}`;
     const id = players.length;
     players.push({
-      id, name: bName, teamId: 0, isBot: true, isReady: true, isHost: false,
+      id, name: bName, isBot: true, isReady: true, isHost: false,
       disconnected: false, money: 15000, pos: 0, lap: 1,
       turnsPlayed: 0, jailWaitTurns: 0, missedTurns: 0,
       color: NEON_PALETTE[id % NEON_PALETTE.length], code: bName.charAt(0).toUpperCase(), bankrupt: false
@@ -1978,7 +2068,7 @@ body.mobile-mode .chat-drawer-window { width: 248px; height: 255px; max-height: 
     players.splice(lastBotIdx, 1);
     if (players.length === 0) {
       players.push({
-        id: 0, name: myLocalPlayerName || "Sen", teamId: 0, clientUid: myClientUid, isBot: false, isReady: false, isHost: true,
+        id: 0, name: myLocalPlayerName || "Sen", clientUid: myClientUid, isBot: false, isReady: false, isHost: true,
         disconnected: false, money: 15000, pos: 0, lap: 1, turnsPlayed: 0, jailWaitTurns: 0, missedTurns: 0,
         color: "#f59e0b", code: (myLocalPlayerName || "S").charAt(0).toUpperCase(), bankrupt: false
       });
@@ -2002,7 +2092,7 @@ body.mobile-mode .chat-drawer-window { width: 248px; height: 255px; max-height: 
     players = players.filter(p => !p.isBot);
     if (players.length === 0) {
       players.push({
-        id: 0, name: myLocalPlayerName || "Sen", teamId: 0, clientUid: myClientUid, isBot: false, isReady: false, isHost: true,
+        id: 0, name: myLocalPlayerName || "Sen", clientUid: myClientUid, isBot: false, isReady: false, isHost: true,
         disconnected: false, money: 15000, pos: 0, lap: 1, turnsPlayed: 0, jailWaitTurns: 0, missedTurns: 0,
         color: "#f59e0b", code: (myLocalPlayerName || "S").charAt(0).toUpperCase(), bankrupt: false
       });
@@ -2018,28 +2108,6 @@ body.mobile-mode .chat-drawer-window { width: 248px; height: 255px; max-height: 
     saveRoomSnapshot();
   }
 
-  function setPlayerTeamInLobby(playerId, newTeamVal) {
-    const tId = parseInt(newTeamVal, 10) || 0;
-    const pl = players[playerId];
-    if (!pl) return;
-    pl.teamId = tId;
-    if (isRoomHost || !peerNode || peerConnections.length === 0) {
-      pushSystemChat(`🤝 ${pl.name} ➔ ${getTeamShortLabel(pl.teamId)} olarak ayarlandı.`);
-      renderLobbySeats();
-      renderRightPlayersList();
-      renderInitialsRail();
-      saveRoomSnapshot();
-    } else {
-      renderLobbySeats();
-      broadcastNetworkPayload({
-        type: "LOBBY_TEAM_CHANGE",
-        playerId: pl.id,
-        clientUid: pl.clientUid || "",
-        teamId: tId
-      });
-    }
-  }
-
   function renderLobbySeats() {
     const box = document.getElementById("lobbySeatsContainer");
     if (!box) return;
@@ -2048,7 +2116,6 @@ body.mobile-mode .chat-drawer-window { width: 248px; height: 255px; max-height: 
     box.innerHTML = players.map((p, idx) => {
       const isMe = (p.clientUid && p.clientUid === myClientUid) || (me && p.id === me.id && myLocalPlayerName);
       const roleTag = idx === 0 ? "👑 Kurucu" : (p.isBot ? "🤖 Bot" : "👤 Oyuncu");
-      const curTeam = typeof p.teamId === "number" ? p.teamId : 0;
       const readyBadge = p.isReady
         ? `<span style="background:rgba(16,185,129,0.22); color:#34d399; border:1px solid #10b981; padding:2px 8px; border-radius:99px; font-size:10.5px;">✅ HAZIR</span>`
         : `<span style="background:rgba(245,158,11,0.2); color:#fde68a; border:1px solid #f59e0b; padding:2px 8px; border-radius:99px; font-size:10.5px;">⏳ Bekleniyor</span>`;
@@ -2062,37 +2129,33 @@ body.mobile-mode .chat-drawer-window { width: 248px; height: 255px; max-height: 
               <div style="color:#94a3b8; font-size:10px;">${roleTag}</div>
             </div>
           </div>
-          <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
-            <select class="lobby-team-select" onchange="setPlayerTeamInLobby(${p.id}, this.value)" title="Eş / Takım Seçimi">
-              <option value="0" ${curTeam === 0 ? "selected" : ""}>👤 Bireysel (Tek)</option>
-              <option value="1" ${curTeam === 1 ? "selected" : ""}>🅰️ A Takımı (Eşli)</option>
-              <option value="2" ${curTeam === 2 ? "selected" : ""}>🅱️ B Takımı (Eşli)</option>
-              <option value="3" ${curTeam === 3 ? "selected" : ""}>🆎 C Takımı (Eşli)</option>
-            </select>
-            ${readyBadge}
-          </div>
+          ${readyBadge}
         </div>
       `;
     }).join("");
 
-    const validCount = players.length >= 2 && players.length <= 4;
+    const rules = getRoomRules(myRoomCode);
+    const validCount = players.length >= rules.min && players.length <= rules.max;
     const allHumansReady = players.every(p => p.isBot || p.isReady);
     const startBtn = document.getElementById("btnHostStartGame");
     if (startBtn) {
       startBtn.disabled = !(validCount && allHumansReady);
       if (!validCount) {
-        startBtn.textContent = `🚀 En Az 2 Oyuncu Gerekli (${players.length}/4)`;
+        startBtn.textContent = rules.kind === "pair" ? `🚀 Eşli Oda: 2 Oyuncu Gerekli (${players.length}/2)` : `🚀 En Az ${rules.min} Oyuncu Gerekli (${players.length}/${rules.max})`;
       } else if (!allHumansReady) {
         startBtn.textContent = `⏳ Herkesin Hazır Vermesi Bekleniyor...`;
       } else {
-        startBtn.textContent = `🚀 Oyunu Başlat (${players.length} Oyuncu)`;
+        startBtn.textContent = (players.length < 2) ? `🚀 Tek Başına Başla (Bot Eklenir)` : `🚀 Oyunu Başlat (${players.length} Oyuncu)`;
       }
     }
   }
 
   function hostStartMatch() {
-    if (players.length < 2 || players.length > 4) {
-      return alert("Oyunu başlatmak için odada en az 2, en fazla 4 oyuncu olmalıdır!");
+    const startRules = getRoomRules(myRoomCode);
+    if (players.length < startRules.min || players.length > startRules.max) {
+      return alert(startRules.kind === "pair"
+        ? "Eşli odalarda oyunu başlatmak için tam 2 oyuncu gerekir!"
+        : `Oyunu başlatmak için odada en az ${startRules.min}, en fazla ${startRules.max} oyuncu olmalıdır!`);
     }
     const allReady = players.every(p => p.isBot || p.isReady);
     if (!allReady) {
@@ -2103,6 +2166,9 @@ body.mobile-mode .chat-drawer-window { width: 248px; height: 255px; max-height: 
       return;
     }
 
+    if (players.length < 2) hostAddBot(true);
+    bankruptAnnounced.clear();
+    gameOverAnnounced = false;
     isMatchStarted = true;
     currentTurn = 0;
     hasRolled = false;
@@ -2157,6 +2223,12 @@ body.mobile-mode .chat-drawer-window { width: 248px; height: 255px; max-height: 
     inflationSecondsLeft = 600;
     globalTaxMultiplier = 1.0;
     globalGeneralMultiplier = 1.0;
+    globalPenaltyMultiplier = 1.0;
+    inflationWaveCount = 0;
+    seenChatIds.clear();
+    bankruptAnnounced.clear();
+    gameOverAnnounced = false;
+    hideEndModal();
     activeOffersQueue = [];
     chatMessages = [];
     unreadChatCount = 0;
@@ -2207,24 +2279,6 @@ body.mobile-mode .chat-drawer-window { width: 248px; height: 255px; max-height: 
     }
   });
 
-  function positionChatDrawerNearLauncher() {
-    const launcher = document.getElementById("floatingChatLauncher");
-    const drw = document.getElementById("gameChatDrawer");
-    if (!launcher || !drw || !drw.classList.contains("open")) return;
-    const rect = launcher.getBoundingClientRect();
-    const dw = drw.offsetWidth || (isMobileView ? 248 : 276);
-    const dh = drw.offsetHeight || (isMobileView ? 255 : 290);
-    let left = rect.right - dw;
-    if (left < 8) left = Math.min(window.innerWidth - dw - 8, Math.max(8, rect.left));
-    if (left + dw > window.innerWidth - 8) left = window.innerWidth - dw - 8;
-    let top = rect.top - dh - 8;
-    if (top < 8) top = Math.min(window.innerHeight - dh - 8, rect.bottom + 8);
-    drw.style.right = "auto";
-    drw.style.bottom = "auto";
-    drw.style.left = `${Math.max(8, left)}px`;
-    drw.style.top = `${Math.max(8, top)}px`;
-  }
-
   function toggleChatDrawer() {
     const drw = document.getElementById("gameChatDrawer");
     const isOpen = drw.classList.toggle("open");
@@ -2232,7 +2286,9 @@ body.mobile-mode .chat-drawer-window { width: 248px; height: 255px; max-height: 
       unreadChatCount = 0;
       updateUnreadBadgeUI();
       renderChatLists();
-      positionChatDrawerNearLauncher();
+      positionChatDrawer();
+      const lst = document.getElementById("gameChatList");
+      if (lst) lst.scrollTop = lst.scrollHeight;
     }
   }
 
@@ -2247,6 +2303,12 @@ body.mobile-mode .chat-drawer-window { width: 248px; height: 255px; max-height: 
     }
   }
 
+  const seenChatIds = new Set();
+  function chatKey(m) { return m.id || `${m.sender}|${m.time}|${m.text}`; }
+  function escapeHtml(s) {
+    return String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  }
+
   function sendChatMessage(source) {
     const inpId = source === "lobby" ? "inpLobbyChat" : "inpGameChat";
     const inp = document.getElementById(inpId);
@@ -2255,25 +2317,37 @@ body.mobile-mode .chat-drawer-window { width: 248px; height: 255px; max-height: 
     if (!txt) return;
     const me = getMySeat();
     const sender = me ? me.name : "Oyuncu";
-    chatMessages.push({
+    const msg = {
+      id: `${myClientUid}_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
+      uid: myClientUid,
+      ts: Date.now(),
       sender,
       color: me ? me.color : "#38bdf8",
       text: txt,
       time: new Date().toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" })
-    });
+    };
+    seenChatIds.add(chatKey(msg));
+    chatMessages.push(msg);
+    if (chatMessages.length > 80) chatMessages = chatMessages.slice(-80);
     inp.value = "";
-    playSfx("chat");
+    playSfx("msgSend");
     renderChatLists();
     saveRoomSnapshot();
   }
 
   function pushSystemChat(text) {
-    chatMessages.push({
+    const msg = {
+      id: `sys_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
+      uid: myClientUid,
+      ts: Date.now(),
       sender: "SİSTEM",
       color: "#f59e0b",
       text,
       time: new Date().toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" })
-    });
+    };
+    seenChatIds.add(chatKey(msg));
+    chatMessages.push(msg);
+    if (chatMessages.length > 80) chatMessages = chatMessages.slice(-80);
     const drawerOpen = document.getElementById("gameChatDrawer").classList.contains("open");
     const lobbyOpen = document.getElementById("lobbyBackdrop").style.display !== "none";
     if (!drawerOpen && !lobbyOpen) {
@@ -2284,20 +2358,22 @@ body.mobile-mode .chat-drawer-window { width: 248px; height: 255px; max-height: 
   }
 
   function renderChatLists() {
-    const html = chatMessages.slice(-40).map(m => `
-      <div class="chat-msg-bubble" style="border-left-color:${m.color};">
-        <div style="display:flex; justify-content:space-between; font-size:9.5px; color:#94a3b8;">
-          <b style="color:${m.color};">${m.sender}</b>
-          <span>${m.time}</span>
+    const html = chatMessages.slice(-50).map(m => `
+      <div class="chat-msg-bubble" style="border-left-color:${escapeHtml(m.color)};">
+        <div style="display:flex; justify-content:space-between; gap:8px; font-size:9.5px; color:#94a3b8;">
+          <b style="color:${escapeHtml(m.color)};">${escapeHtml(m.sender)}</b>
+          <span>${escapeHtml(m.time)}</span>
         </div>
-        <div style="color:#f8fafc; margin-top:2px;">${m.text}</div>
+        <div style="color:#f8fafc; margin-top:2px;">${escapeHtml(m.text)}</div>
       </div>
     `).join("");
     ["lobbyChatList", "gameChatList"].forEach(id => {
       const el = document.getElementById(id);
       if (el) {
+        const nearBottom = !el.dataset.init || (el.scrollHeight - el.scrollTop - el.clientHeight < 70);
         el.innerHTML = html || `<div style="color:#64748b; text-align:center; margin:auto;">Henüz mesaj yok. Sohbete başla!</div>`;
-        el.scrollTop = el.scrollHeight;
+        if (nearBottom) el.scrollTop = el.scrollHeight;
+        el.dataset.init = "1";
       }
     });
   }
@@ -2362,7 +2438,7 @@ body.mobile-mode .chat-drawer-window { width: 248px; height: 255px; max-height: 
             <div class="p-identity">
               <div class="p-badge" style="background:${p.color};">${p.code}</div>
               <div>
-                <div class="p-title">${p.name} ${getTeamBadgeHTML(p.teamId)} ${p.disconnected ? `(Ayrıldı)` : ""}</div>
+                <div class="p-title">${p.name} ${p.disconnected ? `(Ayrıldı)` : ""}</div>
                 <div class="p-sub">📍 ${TILES[p.pos].name} • ${owned.length} Mülk</div>
               </div>
             </div>
@@ -2406,13 +2482,6 @@ body.mobile-mode .chat-drawer-window { width: 248px; height: 255px; max-height: 
       body.appendChild(statInfo);
       body.appendChild(btnGrid);
       body.appendChild(subForm);
-    } else if (tab === "logs") {
-      title.textContent = "📜 Ortak Oyun Bildirimleri (Tüm Adımlar)";
-      const logWrap = document.createElement("div");
-      logWrap.id = "mobHubLogsList";
-      logWrap.style.cssText = "display:flex; flex-direction:column; gap:6px;";
-      body.appendChild(logWrap);
-      renderGameLogs();
     }
   }
 
@@ -2446,10 +2515,11 @@ body.mobile-mode .chat-drawer-window { width: 248px; height: 255px; max-height: 
 
   function trigger10MinInflationWave() {
     inflationWaveCount++;
-    globalTaxMultiplier = +(globalTaxMultiplier * 1.12).toFixed(4);
-    globalGeneralMultiplier = +(globalGeneralMultiplier * 1.08).toFixed(4);
+    globalTaxMultiplier = +(globalTaxMultiplier * 1.10).toFixed(4);
+    globalGeneralMultiplier = +(globalGeneralMultiplier * 1.06).toFixed(4);
+    globalPenaltyMultiplier = +(globalPenaltyMultiplier * 1.25).toFixed(4);
     playSfx("plaza");
-    addLog(`📈 10 DAKİKALIK ENFLASYON (${inflationWaveCount}. Dalga): Vergiler ve süre cezaları %20+, mülk değerleri ve maaşlar %8 arttı!`);
+    addLog(`📈 ENFLASYON (${inflationWaveCount}. Dalga): Vergiler %10, süre aşımı cezası %25, değerler ve maaşlar %6 arttı! Yeni ceza: ${getPlayerTimeoutPenalty().toLocaleString("tr-TR")} ₺`);
     renderBoard();
     refreshCenterLiveFlowUI();
     refreshPinnedStatsOnly();
@@ -2461,26 +2531,7 @@ body.mobile-mode .chat-drawer-window { width: 248px; height: 255px; max-height: 
   function getPlayerTaxAmount(tile) { return tile.taxAmount ? Math.round(tile.taxAmount * globalTaxMultiplier * globalGeneralMultiplier) : 0; }
   function getPlayerLapSalary() { return Math.round(BASE_LAP_SALARY * globalGeneralMultiplier); }
   function getPlayerBailCost() { return Math.round(BASE_BAIL_COST * globalGeneralMultiplier); }
-  function getPlayerTimeoutPenalty() { return Math.round(BASE_TIMEOUT_PENALTY * globalTaxMultiplier * globalGeneralMultiplier); }
-
-  function getColorGroupTiles(tile) {
-    if (!tile || tile.type !== "property" || !tile.color) return [];
-    return TILES.filter(t => t.type === "property" && t.color === tile.color);
-  }
-
-  function hasFullColorGroup(playerId, tile) {
-    const groupTiles = getColorGroupTiles(tile);
-    if (groupTiles.length < 3) return false;
-    return groupTiles.every(t => typeof t.owner === "number" && areTeammates(playerId, t.owner) && !t.mortgaged);
-  }
-
-  function isColorGroupReadyForFirstHouse(playerId, tile) {
-    if (typeof playerId !== "number" || !tile || tile.type !== "property") return false;
-    if (!hasFullColorGroup(playerId, tile)) return false;
-    const groupTiles = getColorGroupTiles(tile);
-    const anyHouseBuiltInGroup = groupTiles.some(t => Array.isArray(t.houseOwners) && t.houseOwners.length > 0);
-    return !anyHouseBuiltInGroup;
-  }
+  function getPlayerTimeoutPenalty() { return Math.round(BASE_TIMEOUT_PENALTY * globalPenaltyMultiplier * globalGeneralMultiplier); }
 
   function updateEconBanner() {
     const timeStr = formatMMSS(inflationSecondsLeft);
@@ -2489,8 +2540,7 @@ body.mobile-mode .chat-drawer-window { width: 248px; height: 255px; max-height: 
     const el = document.getElementById("econCycleBanner");
     if (el) {
       const genPct = Math.round((globalGeneralMultiplier - 1) * 100);
-      const taxPct = Math.round((globalTaxMultiplier * globalGeneralMultiplier - 1) * 100);
-      el.textContent = `📈 Enflasyon: ${timeStr} • Maaş: +${getPlayerLapSalary().toLocaleString("tr-TR")} ₺ • Vergi/Ceza: +%${taxPct} • Zam: +%${genPct}`;
+      el.textContent = `📈 Enflasyon: ${timeStr} • Maaş: +${getPlayerLapSalary().toLocaleString("tr-TR")} ₺ • Zam: +%${genPct} • Vergi: ×${globalTaxMultiplier.toFixed(2)} • Süre Cezası: ${getPlayerTimeoutPenalty().toLocaleString("tr-TR")} ₺`;
     }
     renderInitialsRail();
   }
@@ -2760,24 +2810,15 @@ body.mobile-mode .chat-drawer-window { width: 248px; height: 255px; max-height: 
       const hasOwner = typeof tile.owner === "number" && tile.owner >= 0 && Boolean(players[tile.owner]);
       const isPinned = (tile.id === pinnedTileId);
       const isSpotlight = (tile.id === spotlightTileId);
-      const isOwnedByMeOrPartner = (hasOwner && me && areTeammates(me.id, tile.owner));
-      const isOwnedByOther = (hasOwner && (!me || !areTeammates(me.id, tile.owner)));
+      const isOwnedByOther = (hasOwner && (!me || tile.owner !== me.id));
       const isOwnedByMe = (hasOwner && me && tile.owner === me.id);
-      const isMyCurrentPos = Boolean(me && !me.bankrupt && me.pos === tile.id);
-      const isMonopolyBlink = Boolean(me && !me.bankrupt && !neonDisabled && isColorGroupReadyForFirstHouse(me.id, tile));
 
-      el.className = "tile" + (isPinned ? " selected-tile" : "") + (isSpotlight ? " spotlight-tile" : "") + (isOwnedByOther ? " other-player-owned" : "") + (isMonopolyBlink ? " monopoly-ready-blink" : "") + (isMyCurrentPos ? " my-current-pos-tile" : "");
+      el.className = "tile" + (isPinned ? " selected-tile" : "") + (isSpotlight ? " spotlight-tile" : "") + (isOwnedByOther ? " other-player-owned" : "");
       el.id = `tile-${tile.id}`;
       el.style.gridRow = pos.row;
       el.style.gridColumn = pos.col;
-      if (isMonopolyBlink) {
-        el.style.setProperty("--monopoly-neon", tile.color || (me && me.color) || "#fde047");
-      }
-      if (isMyCurrentPos && me) {
-        el.style.setProperty("--my-pos-neon", me.color || "#f59e0b");
-      }
 
-      if (isOwnedByMeOrPartner && players[tile.owner]) {
+      if (isOwnedByMe && players[tile.owner]) {
         const ownCol = players[tile.owner].color;
         el.style.borderColor = ownCol;
         el.style.borderWidth = "2.5px";
@@ -2798,7 +2839,7 @@ body.mobile-mode .chat-drawer-window { width: 248px; height: 255px; max-height: 
         pipsHTML = `<span style="background:#ef4444; padding:0 2px; border-radius:2px; font-size:7px;">İPOTEK</span>`;
       } else if (tile.houseOwners && tile.houseOwners.length > 0) {
         if (tile.houseOwners.length >= 5) pipsHTML = `<span style="color:#fde047;">🏙️PLZ</span>`;
-        else pipsHTML = `<div class="house-indicators">` + tile.houseOwners.map(pid => `<span class="house-pip" style="background:${players[pid] ? (me && areTeammates(me.id, pid) ? players[pid].color : '#64748b') : '#fff'}"></span>`).join("") + `</div>`;
+        else pipsHTML = `<div class="house-indicators">` + tile.houseOwners.map(pid => `<span class="house-pip" style="background:${players[pid] ? (me && pid === me.id ? players[pid].color : '#64748b') : '#fff'}"></span>`).join("") + `</div>`;
       }
 
       let footerPrice = "Özel";
@@ -2808,7 +2849,7 @@ body.mobile-mode .chat-drawer-window { width: 248px; height: 255px; max-height: 
       else if (tile.price) footerPrice = hasOwner ? `K:${calculateRent(tile)}₺` : `${getPlayerPrice(tile)}₺`;
 
       const stripColor = isOwnedByOther ? "#475569" : tile.color;
-      const ownerDotColor = isOwnedByMeOrPartner ? players[tile.owner].color : (isOwnedByOther ? "#64748b" : "transparent");
+      const ownerDotColor = isOwnedByMe ? players[me.id].color : (isOwnedByOther ? "#64748b" : "transparent");
 
       el.innerHTML = `
         <div class="tile-color-strip" style="background:${stripColor}">
@@ -2837,17 +2878,24 @@ body.mobile-mode .chat-drawer-window { width: 248px; height: 255px; max-height: 
       const row = document.getElementById(`tokens-${t.id}`);
       if (row) row.innerHTML = "";
     });
+    const me = getMySeat();
     players.forEach(p => {
       if (p.bankrupt) return;
       const row = document.getElementById(`tokens-${p.pos}`);
       if (row) {
         const pawn = document.createElement("div");
-        pawn.className = "board-pawn";
+        pawn.className = "board-pawn" + (me && p.id === me.id ? " me-pawn" : "");
         pawn.style.background = p.color;
+        pawn.title = p.name;
         pawn.textContent = p.code;
         row.appendChild(pawn);
       }
     });
+    document.querySelectorAll(".tile.my-here").forEach(e => { e.classList.remove("my-here"); e.style.removeProperty("--pc"); });
+    if (me && !me.bankrupt) {
+      const el = document.getElementById(`tile-${me.pos}`);
+      if (el) { el.classList.add("my-here"); el.style.setProperty("--pc", me.color); }
+    }
   }
 
   function refreshCenterLiveFlowUI() {
@@ -2987,7 +3035,7 @@ body.mobile-mode .chat-drawer-window { width: 248px; height: 255px; max-height: 
           <div class="p-identity">
             <div class="p-badge" style="background:${p.color};">${p.code}</div>
             <div>
-              <div class="p-title">${p.name} ${getTeamBadgeHTML(p.teamId)} ${isTurn ? "⚡" : ""}</div>
+              <div class="p-title">${p.name} ${isTurn ? "⚡" : ""}</div>
               <div class="p-sub">${p.bankrupt ? "❌ ELENDİ" : `📍 ${TILES[p.pos].name} • ${ownedTiles.length} Mülk${discBadge}`}</div>
             </div>
           </div>
@@ -3068,32 +3116,26 @@ body.mobile-mode .chat-drawer-window { width: 248px; height: 255px; max-height: 
       actBox.appendChild(makeBtn(`🔄 Takas Yap`, "bg-blue full", () => openSubformSwapOffer(tile, ownerP, subform)));
     }
 
-    if (hasOwner && areTeammates(tile.owner, me.id)) {
-      if (!tile.mortgaged) {
-        const alreadyBuiltThisLap = (tile.lastBuiltLap === me.lap);
-        const ownsFullSet = hasFullColorGroup(me.id, tile);
-        const grpTiles = getColorGroupTiles(tile);
-        const myGrpCount = grpTiles.filter(t => typeof t.owner === "number" && areTeammates(me.id, t.owner) && !t.mortgaged).length;
-        if (hCount < 4) {
-          const btnLabel = !ownsFullSet
-            ? `🔒 3 Aynı Renk Gerekli (${myGrpCount}/3)`
-            : (alreadyBuiltThisLap ? `⏳ Bu Devir Dikildi` : `🏠 Ev Dik (${effHouse} ₺)`);
-          const bBuild = makeBtn(btnLabel, "bg-purple full", () => buildHouseOnTile(tile));
-          bBuild.disabled = (!ownsFullSet || alreadyBuiltThisLap || me.money < effHouse);
-          actBox.appendChild(bBuild);
-        } else if (hCount === 4) {
-          const btnLabel = !ownsFullSet
-            ? `🔒 3 Aynı Renk Gerekli (${myGrpCount}/3)`
-            : (alreadyBuiltThisLap ? `⏳ Bu Devir Dikildi` : `🏙️ Plaza Dik (${effPlaza} ₺)`);
-          const bPlaza = makeBtn(btnLabel, "bg-gold full", () => buildHouseOnTile(tile));
-          bPlaza.disabled = (!ownsFullSet || alreadyBuiltThisLap || me.money < effPlaza);
-          actBox.appendChild(bPlaza);
-        }
-      }
-    }
-
     if (tile.owner === me.id) {
       if (!tile.mortgaged) {
+        const alreadyBuiltThisLap = (tile.lastBuiltLap === me.lap);
+        const setReady = canBuildInSet(me.id, tile);
+        if (!setReady) {
+          const lockLabel = ownsFullSet(me.id, tile)
+            ? `🔒 Setteki İpotekli Ülkeyi Kaldır (3/3)`
+            : `🔒 Ev İçin Aynı Renkte 3 Ülke Gerekli (${setOwnedCount(me.id, tile)}/3)`;
+          const bLock = makeBtn(lockLabel, "bg-slate full", () => {});
+          bLock.disabled = true;
+          actBox.appendChild(bLock);
+        } else if (hCount < 4) {
+          const bBuild = makeBtn(alreadyBuiltThisLap ? `⏳ Bu Devir Dikildi` : `🏠 Ev Dik (${effHouse} ₺)`, "bg-purple", () => buildHouseOnTile(tile));
+          bBuild.disabled = (alreadyBuiltThisLap || me.money < effHouse);
+          actBox.appendChild(bBuild);
+        } else if (hCount === 4) {
+          const bPlaza = makeBtn(alreadyBuiltThisLap ? `⏳ Bu Devir Dikildi` : `🏙️ Plaza Dik (${effPlaza} ₺)`, "bg-gold", () => buildHouseOnTile(tile));
+          bPlaza.disabled = (alreadyBuiltThisLap || me.money < effPlaza);
+          actBox.appendChild(bPlaza);
+        }
         if (hCount === 0) {
           actBox.appendChild(makeBtn(`🏦 İpotek Et (+${effPrice} ₺)`, "bg-crimson", () => toggleMortgageTile(tile)));
         }
@@ -3342,11 +3384,11 @@ body.mobile-mode .chat-drawer-window { width: 248px; height: 255px; max-height: 
           changeMoney(targetP.id, cash, "Takas");
           myTile.owner = targetP.id;
           tile.owner = me.id;
-          addLog(`🔄 TAKAS! ${me.name}, ${myTile.name} verip ${targetP.name} oyuncusundan ${tile.name} ülkesini aldı!`, -cash);
+          addLog(`🔄 TAKAS! ${myTile.name} verip ${tile.name} ülkesini aldın!`, -cash);
           afterUserOwnPinAction(tile.id);
         } else {
           playSfx("bad");
-          addLog(`❌ ${targetP.name}, ${me.name} oyuncusunun takas teklifini reddetti.`);
+          addLog(`❌ ${targetP.name} takası reddetti.`);
         }
       }
     };
@@ -3365,7 +3407,7 @@ body.mobile-mode .chat-drawer-window { width: 248px; height: 255px; max-height: 
     if (sold === 0) return;
     const gain = sold * effHouse;
     changeMoney(me.id, gain, "Ev Satışı");
-    addLog(`🏘️ ${me.name}, ${tile.flag} ${tile.name} ülkesindeki ${sold} evi sattı (+${gain.toLocaleString("tr-TR")} ₺).`, gain);
+    addLog(`🏘️ ${tile.name} ülkesindeki ${sold} evi sattın (+${gain} ₺).`, gain);
     afterUserOwnPinAction(tile.id);
   }
 
@@ -3379,7 +3421,7 @@ body.mobile-mode .chat-drawer-window { width: 248px; height: 255px; max-height: 
     tile.houseOwners = [];
     tile.mortgaged = false;
     delete tile.mortgageTurnsLeft;
-    addLog(`🏦 ${me.name}, ${tile.flag} ${tile.name} mülkünü Kasaya sattı (+${totalGain.toLocaleString("tr-TR")} ₺). [${distLog}]`, totalGain);
+    addLog(`🏦 ${tile.name} Kasaya satıldı (${totalGain} ₺). [${distLog}]`);
     afterUserOwnPinAction(tile.id);
   }
 
@@ -3388,8 +3430,10 @@ body.mobile-mode .chat-drawer-window { width: 248px; height: 255px; max-height: 
     players[playerId].money += delta;
     const me = getMySeat();
     if (playerId === me.id) {
-      if (delta > 0) playSfx("cash");
-      else if (delta < 0) playSfx("bad");
+      if (!silentMoney) {
+        if (delta > 0) playSfx("cash");
+        else if (delta < 0) playSfx("bad");
+      }
       if (me.money >= 0 && isDebtTimerMode) isDebtTimerMode = false;
     }
   }
@@ -3416,36 +3460,31 @@ body.mobile-mode .chat-drawer-window { width: 248px; height: 255px; max-height: 
     if (!me || currentTurn !== me.id || !hasRolled || isMoving || me.pos !== tile.id) return;
     if (hasOwner || me.money < effPrice) return;
     me.missedTurns = 0;
+    silentMoney = true;
     changeMoney(me.id, -effPrice);
+    silentMoney = false;
     tile.owner = me.id;
     tile.houseOwners = [];
     tile.mortgaged = false;
     playSfx("buy");
-    addLog(`✅ ${me.name}, ${tile.flag} ${tile.name} ülkesini -${effPrice.toLocaleString("tr-TR")} ₺ ödeyerek satın aldı!`, -effPrice);
-    if (hasFullColorGroup(me.id, tile)) {
-      addLog(`🌟 ${me.name}, ${tile.region} grubundaki 3 ülkenin tamamını topladı! Artık bu grupta ev dikebilir!`);
-    }
+    addLog(`✅ ${tile.name} ülkesini ${effPrice} ₺'ye satın aldın!`, -effPrice);
     closeMobileCenterHub();
     afterUserOwnPinAction(tile.id);
   }
 
   function buildHouseOnTile(tile) {
     const me = getMySeat();
-    if (typeof tile.owner !== "number" || !areTeammates(tile.owner, me.id) || tile.mortgaged || tile.lastBuiltLap === me.lap) return;
-    if (!hasFullColorGroup(me.id, tile)) {
-      playSfx("bad");
-      addLog(`⚠️ Ev dikebilmek için bu renkteki (${tile.region}) 3 ülkenin tamamına sahip olmalısınız!`, 0, false);
-      return;
-    }
+    if (tile.owner !== me.id || tile.mortgaged || tile.lastBuiltLap === me.lap || !canBuildInSet(me.id, tile)) return;
     const hCount = tile.houseOwners.length;
     const cost = hCount < 4 ? getPlayerHouseCost(tile) : getPlayerPlazaCost(tile);
     if (me.money < cost) return;
+    silentMoney = true;
     changeMoney(me.id, -cost);
+    silentMoney = false;
     tile.houseOwners.push(me.id);
     tile.lastBuiltLap = me.lap;
     playSfx(hCount === 4 ? "plaza" : "build");
-    const structText = hCount === 4 ? "PLAZA 🏙️" : `${hCount + 1}. Ev 🏠`;
-    addLog(`🏗️ ${me.name}, ${tile.flag} ${tile.name} üzerine ${structText} inşa etti (-${cost.toLocaleString("tr-TR")} ₺).`, -cost);
+    addLog(`🏠 ${tile.name} üzerine yeni yapı inşa edildi (-${cost} ₺).`, -cost);
     afterUserOwnPinAction(tile.id);
   }
 
@@ -3457,12 +3496,12 @@ body.mobile-mode .chat-drawer-window { width: 248px; height: 255px; max-height: 
       tile.mortgaged = true;
       tile.mortgageTurnsLeft = 3;
       changeMoney(me.id, fullAmount);
-      addLog(`🏦 ${me.name}, ${tile.flag} ${tile.name} mülkünü ipotek etti (+${fullAmount.toLocaleString("tr-TR")} ₺).`, fullAmount);
+      addLog(`🏦 ${tile.name} ipotek edildi (+${fullAmount} ₺).`, fullAmount);
     } else if (tile.mortgaged && me.money >= fullAmount) {
       tile.mortgaged = false;
       delete tile.mortgageTurnsLeft;
       changeMoney(me.id, -fullAmount);
-      addLog(`🔓 ${me.name}, ${tile.flag} ${tile.name} ipoteğini kaldırdı (-${fullAmount.toLocaleString("tr-TR")} ₺).`, -fullAmount);
+      addLog(`🔓 ${tile.name} ipoteği kaldırıldı (-${fullAmount} ₺).`, -fullAmount);
     }
     afterUserOwnPinAction(tile.id);
   }
@@ -3705,8 +3744,6 @@ body.mobile-mode .chat-drawer-window { width: 248px; height: 255px; max-height: 
     changeMoney(me.id, -bailCost);
     worldBankPool += bailCost;
     me.jailWaitTurns = 0;
-    addLog(`🔓 ${me.name}, -${bailCost.toLocaleString("tr-TR")} ₺ kefalet ödeyerek Nezarethaneden çıktı!`, -bailCost);
-    saveRoomSnapshot();
     showDiceScreen();
     triggerRoll();
   }
@@ -3714,7 +3751,6 @@ body.mobile-mode .chat-drawer-window { width: 248px; height: 255px; max-height: 
   function skipTurnInJail() {
     const me = getMySeat();
     me.jailWaitTurns = 0;
-    addLog(`⏳ ${me.name} Nezarethanede 1 tur cezasını bekledi.`);
     nextTurn();
   }
 
@@ -3742,6 +3778,12 @@ body.mobile-mode .chat-drawer-window { width: 248px; height: 255px; max-height: 
 
     document.getElementById("fsCountryTitle").textContent = `${tile.flag} ${tile.name}`;
     document.getElementById("fsCountryDesc").textContent = customEventCard ? customEventCard.desc : tile.sub;
+    const spBox = document.getElementById("fsSpecialBox");
+    if (spBox) {
+      spBox.innerHTML = customEventCard
+        ? `<div class="event-card-pill ${customEventCard.good ? "good" : "bad"}"><b>${customEventCard.good ? "🍀" : "⚠️"} ${customEventCard.title}</b><span>${customEventCard.scaledAmount > 0 ? "+" : ""}${customEventCard.scaledAmount.toLocaleString("tr-TR")} ₺</span></div>`
+        : "";
+    }
 
     const effTax = getPlayerTaxAmount(tile);
     const effPrice = getPlayerPrice(tile);
@@ -3802,31 +3844,15 @@ body.mobile-mode .chat-drawer-window { width: 248px; height: 255px; max-height: 
     }
   }
 
-  function evaluateVictoryState() {
-    const alive = players.filter(p => !p.bankrupt);
-    if (alive.length === 0) return { ended: true, winners: [] };
-    if (alive.length === 1) return { ended: true, winners: alive };
-    const firstTeam = typeof alive[0].teamId === "number" ? alive[0].teamId : 0;
-    if (firstTeam > 0 && alive.every(p => p.teamId === firstTeam)) {
-      return { ended: true, winners: alive, winningTeamId: firstTeam };
-    }
-    return { ended: false, winners: [] };
-  }
-
   function startTurn() {
     if (!isMatchStarted) return;
     clearInterval(timerInterval);
     clearTimeout(botTimer);
 
-    const vic = evaluateVictoryState();
-    if (vic.ended) {
-      if (vic.winners.length > 0) {
-        const winNames = vic.winners.map(w => w.name).join(" & ");
-        const teamPrefix = vic.winningTeamId ? `${getTeamShortLabel(vic.winningTeamId)} (` : "";
-        const teamSuffix = vic.winningTeamId ? `)` : "";
-        addLog(`🏆 OYUN BİTTİ! Şampiyon: ${teamPrefix}${winNames}${teamSuffix}!`);
-        showBankruptcyOrVictoryModal(null, vic.winners[0], vic.winners);
-      }
+    const alive = players.filter(p => !p.bankrupt);
+    checkBankruptcyAnnouncements();
+    if (alive.length === 1) {
+      addLog(`🏆 OYUN BİTTİ! Şampiyon: ${alive[0].name}!`);
       return;
     }
 
@@ -3851,6 +3877,8 @@ body.mobile-mode .chat-drawer-window { width: 248px; height: 255px; max-height: 
 
     const me = getMySeat();
     const isHost = (me.id === 0 || me.isHost);
+    turnStartedAt = Date.now();
+    if (p.id === me.id) closeMobileCenterHub();
 
     if (p.isBot && !isGamePaused && isHost) {
       const bailCost = getPlayerBailCost();
@@ -3860,11 +3888,9 @@ body.mobile-mode .chat-drawer-window { width: 248px; height: 255px; max-height: 
             p.money -= bailCost;
             worldBankPool += bailCost;
             p.jailWaitTurns = 0;
-            addLog(`🔓 ${p.name}, -${bailCost.toLocaleString("tr-TR")} ₺ kefalet ödeyerek Nezarethaneden çıktı!`, -bailCost);
             triggerRoll();
           } else {
             p.jailWaitTurns = 0;
-            addLog(`⏳ ${p.name} Nezarethanede 1 tur cezasını bekledi.`);
             nextTurn();
           }
         }, 900);
@@ -3875,36 +3901,17 @@ body.mobile-mode .chat-drawer-window { width: 248px; height: 255px; max-height: 
     startCountdownInterval();
   }
 
-  function ensureRollButtonIntegrity() {
-    if (!isMatchStarted || isGamePaused || isPauseVoting || isAuctionActive) return;
-    const p = players[currentTurn];
-    const me = getMySeat();
-    if (!p || !me || p.bankrupt) return;
-    if (p.id === me.id && !hasRolled && !isMoving) {
-      const diceView = document.getElementById("diceView");
-      const cardView = document.getElementById("cardView");
-      const btnRoll = document.getElementById("btnRollMain");
-      if (diceView && diceView.style.display === "none") {
-        if (cardView) cardView.style.display = "none";
-        diceView.style.display = "flex";
-      }
-      if (btnRoll && (btnRoll.style.display === "none" || (btnRoll.disabled && p.jailWaitTurns <= 0))) {
-        showDiceScreen();
-      }
-    }
-  }
-
   function startCountdownInterval() {
     clearInterval(timerInterval);
     timerInterval = setInterval(() => {
       if (!isMatchStarted || isAuctionActive || isGamePaused || isPauseVoting) return;
-      ensureRollButtonIntegrity();
       timeLeft--;
-      if (timeLeft > 0 && timeLeft <= 10) {
-        playSfx("tick");
-      }
       updateTimerUI();
       renderInitialsRail();
+      {
+        const meT = getMySeat();
+        if (meT && currentTurn === meT.id && !meT.bankrupt && timeLeft > 0 && timeLeft <= 10) playSfx("tick");
+      }
       if (timeLeft <= 0) {
         clearInterval(timerInterval);
         const me = getMySeat();
@@ -3948,7 +3955,8 @@ body.mobile-mode .chat-drawer-window { width: 248px; height: 255px; max-height: 
     const bar = document.getElementById("timerBarFill");
     if (clk) {
       clk.textContent = `${timeLeft} sn`;
-      clk.classList.toggle("danger", timeLeft <= 10);
+      const meD = getMySeat();
+      clk.classList.toggle("danger", Boolean(meD && currentTurn === meD.id && timeLeft <= 10));
     }
     if (bar) bar.style.width = `${Math.min(100, Math.max(0, (timeLeft / maxTimerSeconds) * 100))}%`;
   }
@@ -3970,7 +3978,7 @@ body.mobile-mode .chat-drawer-window { width: 248px; height: 255px; max-height: 
     const pen = getPlayerTimeoutPenalty();
     changeMoney(p.id, -pen);
     worldBankPool += pen;
-    addLog(`⏰ SÜRE AŞIMI! ${p.name} -${pen.toLocaleString("tr-TR")} ₺ süre cezası ödedi.`, -pen);
+    addLog(`⏰ SÜRE AŞIMI! ${p.name} -${pen} ₺ ceza ödedi.`);
     checkDebtOrBankruptcy(p);
     nextTurn();
   }
@@ -3983,6 +3991,8 @@ body.mobile-mode .chat-drawer-window { width: 248px; height: 255px; max-height: 
 
     hasRolled = true;
     isMoving = true;
+    moveStartedAt = Date.now();
+    moveLandingDone = false;
     p.missedTurns = 0;
     timeLeft += 5;
     maxTimerSeconds = Math.max(maxTimerSeconds, timeLeft);
@@ -4011,10 +4021,6 @@ body.mobile-mode .chat-drawer-window { width: 248px; height: 255px; max-height: 
       d1El.textContent = d1;
       d2El.textContent = d2;
 
-      const fromTile = TILES[p.pos] || TILES[0];
-      const targetTile = TILES[(p.pos + d1 + d2) % TILES.length] || TILES[0];
-      addLog(`🎲 ${p.name} zar attı: ${d1} + ${d2} = ${d1 + d2} (${fromTile.name} ➔ ${targetTile.name})`);
-
       broadcastNetworkPayload({
         type: "DICE_ROLL_EVENT",
         playerId: p.id,
@@ -4034,6 +4040,8 @@ body.mobile-mode .chat-drawer-window { width: 248px; height: 255px; max-height: 
     if (!p) return;
     hasRolled = true;
     isMoving = true;
+    moveStartedAt = Date.now();
+    moveLandingDone = true;
     playSfx("dice");
     const d1El = document.getElementById("die1");
     const d2El = document.getElementById("die2");
@@ -4064,7 +4072,8 @@ body.mobile-mode .chat-drawer-window { width: 248px; height: 255px; max-height: 
         const sal = getPlayerLapSalary();
         changeMoney(player.id, sal);
         player.lap += 1;
-        addLog(`🏁 ${player.name} Başlangıç karesinden geçti! +${sal.toLocaleString("tr-TR")} ₺ tur maaşı aldı.`, sal);
+        const me = getMySeat();
+        addLog(`🏁 ${player.name} Başlangıçtan geçti! +${sal} ₺ maaş aldı.`, player.id === me.id ? sal : 0);
       }
       renderPawns();
       document.querySelectorAll(".tile").forEach(e => e.classList.remove("step-glow"));
@@ -4075,8 +4084,10 @@ body.mobile-mode .chat-drawer-window { width: 248px; height: 255px; max-height: 
   }
 
   function handleLanding(player, tile) {
+    moveLandingDone = true;
     let eventCard = null;
     activeCenterTileId = tile.id;
+    const me = getMySeat();
 
     if (!isDebtTimerMode) {
       timeLeft += 5;
@@ -4084,22 +4095,18 @@ body.mobile-mode .chat-drawer-window { width: 248px; height: 255px; max-height: 
       updateTimerUI();
     }
 
-    if (tile.type === "start") {
-      addLog(`📍 ${player.name} Başlangıç karesine ulaştı.`);
-    } else if (tile.type === "tax") {
+    if (tile.type === "tax") {
       const taxAmt = getPlayerTaxAmount(tile);
       changeMoney(player.id, -taxAmt);
       worldBankPool += taxAmt;
-      addLog(`💸 ${player.name}, ${tile.name} karesine geldi ve -${taxAmt.toLocaleString("tr-TR")} ₺ vergi ödedi.`, -taxAmt);
+      addLog(`💸 ${player.name}, ${tile.name} karesinde -${taxAmt} ₺ vergi ödedi.`, player.id === me.id ? -taxAmt : 0);
     } else if (tile.type === "worldbank") {
       if (worldBankPool > 0) {
         const won = worldBankPool;
         worldBankPool = 0;
         changeMoney(player.id, won);
         playSfx("plaza");
-        addLog(`🏦 ${player.name} Dünya Bankası'nda biriken +${won.toLocaleString("tr-TR")} ₺ fonu kazandı!`, won);
-      } else {
-        addLog(`🏦 ${player.name} Dünya Bankası karesine geldi (Havuzda biriken fon yok).`);
+        addLog(`🏦 ${player.name} Dünya Bankası'nda biriken +${won} ₺ fonu kazandı!`, player.id === me.id ? won : 0);
       }
     } else if (tile.type === "chance" || tile.type === "treasury") {
       const deck = tile.type === "chance" ? CHANCE_CARDS : TREASURY_CARDS;
@@ -4108,45 +4115,34 @@ body.mobile-mode .chat-drawer-window { width: 248px; height: 255px; max-height: 
       eventCard = { ...baseCard, scaledAmount: scaledAmt };
       changeMoney(player.id, scaledAmt);
       if (scaledAmt < 0) worldBankPool += Math.abs(scaledAmt);
-      addLog(`🔮 ${player.name} [${tile.name}]: ${baseCard.title} (${scaledAmt >= 0 ? "+" : ""}${scaledAmt.toLocaleString("tr-TR")} ₺)`, scaledAmt);
+      addLog(`🔮 ${player.name}: ${baseCard.title} (${scaledAmt} ₺)`, player.id === me.id ? scaledAmt : 0);
     } else if (tile.type === "jail") {
       player.jailWaitTurns = 1;
-      addLog(`🚓 ${player.name} Nezarethane karesine düştü!`);
+      addLog(`🚓 ${player.name} Nezarethaneye düştü!`);
     } else if (tile.type === "gotojail") {
       player.pos = 11;
       player.jailWaitTurns = 1;
       tile = TILES[11];
       activeCenterTileId = 11;
       addLog(`🚨 ${player.name} İnterpol tarafından Nezarethaneye gönderildi!`);
-    } else if (tile.type === "property") {
-      const hasOwner = typeof tile.owner === "number" && tile.owner >= 0 && Boolean(players[tile.owner]);
-      if (hasOwner && !tile.mortgaged) {
-        const breakdown = getRentBreakdown(tile);
-        const payableShares = breakdown.filter(b => !areTeammates(player.id, b.playerId));
-        if (payableShares.length > 0) {
-          const actualRent = payableShares.reduce((sum, b) => sum + b.amount, 0);
-          changeMoney(player.id, -actualRent);
-          const recParts = [];
-          payableShares.forEach(b => {
-            if (players[b.playerId]) {
-              changeMoney(b.playerId, b.amount);
-              recParts.push(`${players[b.playerId].name}: +${b.amount.toLocaleString("tr-TR")} ₺`);
-            }
-          });
-          addLog(`🏠 ${player.name}, ${tile.flag} ${tile.name} karesinde -${actualRent.toLocaleString("tr-TR")} ₺ kira ödedi! (${recParts.join(" | ")})`, -actualRent);
-        } else if (tile.owner === player.id) {
-          addLog(`📍 ${player.name}, kendi mülkü olan ${tile.flag} ${tile.name} karesine geldi.`);
-        } else {
-          addLog(`🤝 ${player.name}, eşinin (${players[tile.owner].name}) mülkü olan ${tile.flag} ${tile.name} karesine geldi (Eş muafiyeti: Kira ödenmedi).`);
-        }
-      } else if (hasOwner && tile.mortgaged) {
-        addLog(`📍 ${player.name}, ipotekli ${tile.flag} ${tile.name} karesine geldi (Kira ödenmedi).`);
-      } else {
-        addLog(`📍 ${player.name}, sahipsiz ${tile.flag} ${tile.name} karesine geldi (Değer: ${getPlayerPrice(tile).toLocaleString("tr-TR")} ₺).`);
+    } else if (tile.type === "property" && typeof tile.owner === "number" && tile.owner >= 0 && players[tile.owner] && !tile.mortgaged) {
+      const breakdown = getRentBreakdown(tile);
+      const totalRent = calculateRent(tile);
+      const isSoleOwner = breakdown.length === 1 && breakdown[0].playerId === player.id;
+      if (!isSoleOwner) {
+        let myNetChange = 0;
+        player.money -= totalRent;
+        if (player.id === me.id) myNetChange -= totalRent;
+        breakdown.forEach(b => {
+          if (players[b.playerId]) players[b.playerId].money += b.amount;
+          if (b.playerId === me.id) myNetChange += b.amount;
+        });
+        addLog(`🏠 ${player.name}, ${tile.name} karesinde ${totalRent} ₺ kira ödedi.`, myNetChange);
       }
     }
 
     checkDebtOrBankruptcy(player);
+    checkBankruptcyAnnouncements();
     renderBoard();
     renderRightPlayersList();
     refreshCenterLiveFlowUI();
@@ -4172,17 +4168,15 @@ body.mobile-mode .chat-drawer-window { width: 248px; height: 255px; max-height: 
       landedTile.owner = bot.id;
       landedTile.houseOwners = [];
       playSfx("buy");
-      addLog(`🤖 ${bot.name}, ${landedTile.flag} ${landedTile.name} ülkesini -${buyPrice.toLocaleString("tr-TR")} ₺ ödeyerek satın aldı.`, -buyPrice);
+      addLog(`🤖 ${bot.name}, ${landedTile.name} ülkesini satın aldı (${buyPrice} ₺).`);
     }
 
-    TILES.filter(t => t.type === "property" && typeof t.owner === "number" && areTeammates(bot.id, t.owner) && !t.mortgaged && hasFullColorGroup(bot.id, t) && t.houseOwners.length < 5 && t.lastBuiltLap !== bot.lap).forEach(prop => {
+    TILES.filter(t => t.type === "property" && t.owner === bot.id && !t.mortgaged && t.houseOwners.length < 5 && t.lastBuiltLap !== bot.lap && canBuildInSet(bot.id, t)).forEach(prop => {
       const cost = prop.houseOwners.length === 4 ? getPlayerPlazaCost(prop) : getPlayerHouseCost(prop);
       if (bot.money >= cost + 1500) {
         bot.money -= cost;
         prop.houseOwners.push(bot.id);
         prop.lastBuiltLap = bot.lap;
-        const structLabel = prop.houseOwners.length === 5 ? "PLAZA 🏙️" : `${prop.houseOwners.length}. Ev 🏠`;
-        addLog(`🏗️ ${bot.name}, ${prop.flag} ${prop.name} üzerine ${structLabel} inşa etti (-${cost.toLocaleString("tr-TR")} ₺).`, -cost);
       }
     });
 
@@ -4192,85 +4186,6 @@ body.mobile-mode .chat-drawer-window { width: 248px; height: 255px; max-height: 
     showLiveLandingScreen(landedTile.id);
     saveRoomSnapshot();
     botTimer = setTimeout(() => { if (!isGamePaused) nextTurn(); }, 1000);
-  }
-
-  function showBankruptcyOrVictoryModal(bankruptPlayer, winnerPlayer = null, winnerTeamList = null) {
-    const overlay = document.getElementById("bankruptcyEndOverlay");
-    const tagEl = document.getElementById("bankruptcyModalTag");
-    const titleEl = document.getElementById("bankruptcyModalTitle");
-    const descEl = document.getElementById("bankruptcyModalDesc");
-    if (!overlay) return;
-
-    const me = getMySeat();
-    overlay.style.display = "flex";
-    if (winnerPlayer) {
-      const teamWinners = Array.isArray(winnerTeamList) && winnerTeamList.length > 1 ? winnerTeamList : [winnerPlayer];
-      const namesStr = teamWinners.map(w => w.name).join(" & ");
-      const teamBadge = teamWinners.length > 1 && winnerPlayer.teamId > 0 ? `${getTeamShortLabel(winnerPlayer.teamId)}: ` : "";
-      tagEl.textContent = "🏆 OYUN TAMAMLANDI";
-      titleEl.textContent = `👑 Şampiyon: ${teamBadge}${namesStr}!`;
-      descEl.textContent = bankruptPlayer
-        ? `${bankruptPlayer.name} tüm nakit ve mülklerini kaybederek iflas etti. Kalan ${teamWinners.length > 1 ? "eşli takım" : "son oyuncu"} (${namesStr}) oyunu kazandı! İsterseniz hemen yeni bir oyuna başlayabilir veya tamamen çıkabilirsiniz.`
-        : `Diğer tüm rakipler iflas etti ve ${namesStr} Emlak Taciri şampiyonu oldu!`;
-      playSfx("plaza");
-    } else if (bankruptPlayer) {
-      tagEl.textContent = "💥 İFLAS BİLDİRİMİ";
-      titleEl.textContent = me && bankruptPlayer.id === me.id ? "💸 İflas Ettin!" : `💥 ${bankruptPlayer.name} İflas Etti!`;
-      descEl.textContent = `${bankruptPlayer.name} tüm parasını ve satabileceği ev/mülklerini kaybettiği için iflas etti! İsterseniz tekrar oynayabilir veya oyundan tamamen çıkabilirsiniz.`;
-      playSfx("bad");
-    }
-  }
-
-  function applyRestartMatchInRoom() {
-    clearInterval(timerInterval);
-    clearTimeout(botTimer);
-    clearTimeout(stepMoveTimer);
-    const bModal = document.getElementById("bankruptcyEndOverlay");
-    if (bModal) bModal.style.display = "none";
-
-    worldBankPool = 2500;
-    inflationSecondsLeft = 600;
-    globalTaxMultiplier = 1.0;
-    globalGeneralMultiplier = 1.0;
-    inflationWaveCount = 0;
-    currentTurn = 0;
-    activeCenterTileId = 0;
-    pinnedTileId = 5;
-    hasRolled = false;
-    isMoving = false;
-    isGamePaused = false;
-    isPauseVoting = false;
-    isDebtTimerMode = false;
-    activeOffersQueue = [];
-
-    TILES.forEach(t => {
-      delete t.owner;
-      t.houseOwners = [];
-      t.mortgaged = false;
-      t.mortgageTurnsLeft = 0;
-      t.lastBuiltLap = 0;
-    });
-
-    players.forEach((p, idx) => {
-      p.id = idx;
-      p.money = 15000;
-      p.pos = 0;
-      p.lap = 1;
-      p.turnsPlayed = 0;
-      p.jailWaitTurns = 0;
-      p.missedTurns = 0;
-      p.bankrupt = false;
-    });
-
-    isMatchStarted = true;
-    addLog("🔄 Oyun sıfırlandı ve yeniden başlatıldı! Herkese bol şans!");
-    startTurn();
-  }
-
-  function restartMatchFromBankruptcyModal() {
-    applyRestartMatchInRoom();
-    broadcastNetworkPayload({ type: "BANKRUPTCY_RESTART_MATCH", senderUid: myClientUid });
-    saveRoomSnapshot();
   }
 
   function checkDebtOrBankruptcy(player) {
@@ -4290,17 +4205,8 @@ body.mobile-mode .chat-drawer-window { width: 248px; height: 255px; max-height: 
     if (player.money < 0 && !hasSellableAssets(player.id)) {
       player.bankrupt = true;
       player.money = 0;
-      TILES.forEach(t => {
-        if (t.houseOwners) t.houseOwners = t.houseOwners.filter(id => id !== player.id);
-        if (t.owner === player.id) delete t.owner;
-      });
-      addLog(`💥 İFLAS! ${player.name} tüm varlıklarını kaybetti ve elendi!`);
-      const vic = evaluateVictoryState();
-      if (vic.ended && vic.winners.length > 0) {
-        showBankruptcyOrVictoryModal(player, vic.winners[0], vic.winners);
-      } else {
-        showBankruptcyOrVictoryModal(player, null);
-      }
+      TILES.forEach(t => { if (t.owner === player.id) delete t.owner; });
+      addLog(`💥 İFLAS! ${player.name} elendi!`);
     } else if (player.id === me.id && player.money < 0) {
       activate45SecDebtTimer();
     }
@@ -4317,7 +4223,6 @@ body.mobile-mode .chat-drawer-window { width: 248px; height: 255px; max-height: 
     clearInterval(timerInterval);
     clearTimeout(botTimer);
     clearTimeout(stepMoveTimer);
-    const prevP = players[currentTurn];
     let guard = 0;
     do {
       currentTurn = (currentTurn + 1) % players.length;
@@ -4325,133 +4230,419 @@ body.mobile-mode .chat-drawer-window { width: 248px; height: 255px; max-height: 
     } while (players[currentTurn].bankrupt && guard <= players.length);
     hasRolled = false;
     isMoving = false;
-    const nextP = players[currentTurn];
-    if (prevP && nextP && prevP.id !== nextP.id) {
-      addLog(`⏭️ ${prevP.name} turunu tamamladı, sıra ${nextP.name} oyuncusuna geçti.`);
-    }
     startTurn();
     saveRoomSnapshot();
   }
 
-  function renderGameLogs() {
-    const formatLogItemHTML = (item) => {
-      const delta = typeof item.delta === "number" ? item.delta : 0;
-      const timeTag = item.time ? `<span style="font-size:9px; color:#94a3b8; margin-left:auto;">${item.time}</span>` : "";
-      if (delta > 0) {
-        return `<div class="log-item profit"><div style="display:flex; align-items:center; gap:6px;"><span class="pnl-badge gain">📈 +${delta.toLocaleString("tr-TR")} ₺</span>${timeTag}</div><span>${item.msg}</span></div>`;
-      } else if (delta < 0) {
-        return `<div class="log-item loss"><div style="display:flex; align-items:center; gap:6px;"><span class="pnl-badge spend">📉 ${delta.toLocaleString("tr-TR")} ₺</span>${timeTag}</div><span>${item.msg}</span></div>`;
-      }
-      return `<div class="log-item"><div style="display:flex; align-items:center; justify-content:space-between;"><span>${item.msg}</span>${timeTag}</div></div>`;
-    };
-
-    const html = gameLogs.slice(0, 40).map(formatLogItemHTML).join("");
+  function addLog(msg, myNetDelta = 0) {
     const box = document.getElementById("gameLog");
-    if (box) {
-      box.innerHTML = html || `<div style="color:#64748b; font-size:11px; text-align:center; padding:10px;">Henüz bildirim yok.</div>`;
+    if (!box) return;
+    const div = document.createElement("div");
+    if (myNetDelta > 0) {
+      div.className = "log-item profit";
+      div.innerHTML = `<span class="pnl-badge gain">📈 +${myNetDelta.toLocaleString("tr-TR")} ₺</span><span>${msg}</span>`;
+    } else if (myNetDelta < 0) {
+      div.className = "log-item loss";
+      div.innerHTML = `<span class="pnl-badge spend">📉 ${myNetDelta.toLocaleString("tr-TR")} ₺</span><span>${msg}</span>`;
+    } else {
+      div.className = "log-item";
+      div.textContent = msg;
     }
-    const mobBox = document.getElementById("mobHubLogsList");
-    if (mobBox) {
-      mobBox.innerHTML = html || `<div style="color:#64748b; font-size:11px; text-align:center; padding:10px;">Henüz bildirim yok.</div>`;
-    }
-    const tickerEl = document.getElementById("centerLatestLogText");
-    if (tickerEl && gameLogs.length > 0) {
-      const latest = gameLogs[0];
-      const deltaStr = latest.delta > 0 ? ` (+${latest.delta.toLocaleString("tr-TR")} ₺)` : (latest.delta < 0 ? ` (${latest.delta.toLocaleString("tr-TR")} ₺)` : "");
-      tickerEl.textContent = `${latest.msg}${deltaStr}`;
-    }
+    box.prepend(div);
+    while (box.children.length > 20) box.removeChild(box.lastElementChild);
   }
 
-  function addLog(msg, myNetDelta = 0, broadcast = true) {
-    const entry = {
-      id: "lg_" + Date.now() + "_" + Math.random().toString(36).substring(2, 7),
-      time: new Date().toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit", second: "2-digit" }),
-      msg: String(msg || ""),
-      delta: typeof myNetDelta === "number" ? myNetDelta : 0
-    };
-    gameLogs.unshift(entry);
-    if (gameLogs.length > 45) gameLogs = gameLogs.slice(0, 45);
-    renderGameLogs();
-    if (broadcast) {
-      broadcastNetworkPayload({
-        type: "GAME_LOG_EVENT",
-        entry,
-        senderUid: myClientUid
+  /* ===================== v2.6 EKLERİ ===================== */
+
+  // ---------- Odalar (sunucular) ----------
+  const ROOM_COUNT = 10;
+
+  function getRoomRules(code) {
+    const m = /^SUNUCU(\d{1,2})$/.exec(String(code || "").trim().toUpperCase());
+    if (m) {
+      const n = parseInt(m[1], 10);
+      if (n === 1) return { kind: "solo", n, min: 1, max: 4, bots: true };
+      if (n >= 2 && n <= ROOM_COUNT) return { kind: "pair", n, min: 2, max: 2, bots: false };
+    }
+    return { kind: "invite", n: null, min: 2, max: 4, bots: true };
+  }
+
+  function renderRoomGrid() {
+    const g = document.getElementById("roomGrid");
+    if (!g) return;
+    const cur = getRoomRules(myRoomCode);
+    let html = "";
+    for (let n = 1; n <= ROOM_COUNT; n++) {
+      const solo = (n === 1);
+      html += `<button class="room-btn ${solo ? "solo" : ""} ${cur.n === n ? "selected" : ""}" onclick="selectRoomServer(${n})">
+        <span class="room-no">Sunucu ${n}</span>
+        <span class="room-sub">${solo ? "👤 Tek oyna • 1-4 kişi" : "👥 Eşli • 2 kişi"}</span>
+      </button>`;
+    }
+    g.innerHTML = html;
+  }
+
+  function updateRoomRulesUI() {
+    const r = getRoomRules(myRoomCode);
+    const t = document.getElementById("roomRulesText");
+    if (t) {
+      if (r.kind === "solo") t.textContent = "Sunucu 1 • Tek başına oynayabilirsin (1-4 kişi, bot var)";
+      else if (r.kind === "pair") t.textContent = `Sunucu ${r.n} • Sadece eşli oyun (tam 2 oyuncu, bot yok)`;
+      else t.textContent = "Davet kodlu özel oda • 2-4 oyuncu, bot var";
+    }
+    const bc = document.getElementById("hostBotControls");
+    if (bc) bc.style.display = r.bots ? "flex" : "none";
+    renderRoomGrid();
+  }
+
+  function selectRoomServer(n) {
+    const leaveBtn = document.getElementById("btnLeaveLobby");
+    if (leaveBtn && !leaveBtn.disabled) {
+      return alert("Önce mevcut odadan 'Tamamen Ayrıl' ile çıkmalısın.");
+    }
+    const inp = document.getElementById("inpRoomCode");
+    if (inp) inp.value = `SUNUCU${n}`;
+    updateRoomCodeDisplay();
+  }
+
+  function enforceRoomRulesForHost() {
+    const r = getRoomRules(myRoomCode);
+    if (!r.bots) players = players.filter(p => !p.isBot);
+    if (players.length > r.max) players = players.slice(0, r.max);
+    if (players.length === 0) {
+      players.push({
+        id: 0, name: "Sen", isBot: false, isReady: false, isHost: true, disconnected: false,
+        money: 15000, pos: 0, lap: 1, turnsPlayed: 0, jailWaitTurns: 0, missedTurns: 0,
+        color: "#f59e0b", code: "S", bankrupt: false
       });
     }
+    players.forEach((p, idx) => { p.id = idx; p.isHost = (idx === 0); });
   }
 
-  function setupDraggableChatLauncher() {
-    const launcher = document.getElementById("floatingChatLauncher");
-    const bubbleBtn = document.getElementById("btnChatBubble");
-    if (!launcher || !bubbleBtn) return;
+  // ---------- Sürüklenebilir sohbet balonu ----------
+  const CHAT_POS_KEY = "EMLAK_CHAT_BTN_POS";
 
-    let isDragging = false;
-    let hasMoved = false;
-    let startX = 0;
-    let startY = 0;
-    let origLeft = 0;
-    let origTop = 0;
+  function clampLauncher() {
+    const l = document.getElementById("chatLauncher");
+    if (!l || !l.style.left) return;
+    const r = l.getBoundingClientRect();
+    l.style.left = Math.min(Math.max(4, r.left), Math.max(4, window.innerWidth - r.width - 4)) + "px";
+    l.style.top = Math.min(Math.max(4, r.top), Math.max(4, window.innerHeight - r.height - 4)) + "px";
+  }
 
-    const onPointerDown = (e) => {
-      isDragging = true;
-      hasMoved = false;
-      const rect = launcher.getBoundingClientRect();
-      origLeft = rect.left;
-      origTop = rect.top;
-      startX = e.clientX ?? (e.touches && e.touches[0].clientX) ?? 0;
-      startY = e.clientY ?? (e.touches && e.touches[0].clientY) ?? 0;
-      launcher.style.right = "auto";
-      launcher.style.bottom = "auto";
-      launcher.style.left = `${origLeft}px`;
-      launcher.style.top = `${origTop}px`;
-    };
+  function positionChatDrawer() {
+    const d = document.getElementById("gameChatDrawer");
+    const l = document.getElementById("chatLauncher");
+    if (!d || !l || !d.classList.contains("open") || d.dataset.userMoved === "1") return;
+    const lr = l.getBoundingClientRect();
+    const dw = d.offsetWidth, dh = d.offsetHeight;
+    const vw = window.innerWidth, vh = window.innerHeight;
+    let left = Math.min(Math.max(8, lr.right - dw), Math.max(8, vw - dw - 8));
+    let top = lr.top - dh - 8;
+    if (top < 8) top = lr.bottom + 8;
+    top = Math.max(8, Math.min(top, vh - dh - 8));
+    d.style.left = left + "px";
+    d.style.top = top + "px";
+    d.style.right = "auto";
+    d.style.bottom = "auto";
+    d.style.transform = "none";
+  }
 
-    const onPointerMove = (e) => {
-      if (!isDragging) return;
-      const cx = e.clientX ?? (e.touches && e.touches[0].clientX) ?? startX;
-      const cy = e.clientY ?? (e.touches && e.touches[0].clientY) ?? startY;
-      const dx = cx - startX;
-      const dy = cy - startY;
-      if (Math.abs(dx) > 5 || Math.abs(dy) > 5) hasMoved = true;
-      if (!hasMoved) return;
-      const maxLeft = window.innerWidth - launcher.offsetWidth - 6;
-      const maxTop = window.innerHeight - launcher.offsetHeight - 6;
-      const newLeft = Math.max(6, Math.min(maxLeft, origLeft + dx));
-      const newTop = Math.max(6, Math.min(maxTop, origTop + dy));
-      launcher.style.left = `${newLeft}px`;
-      launcher.style.top = `${newTop}px`;
-      positionChatDrawerNearLauncher();
-    };
+  function setupDraggableChat() {
+    const l = document.getElementById("chatLauncher");
+    const h = document.getElementById("chatBubbleBtn");
+    const d = document.getElementById("gameChatDrawer");
+    const dh = document.getElementById("chatDrawerHeader");
+    if (!l || !h || !d || !dh) return;
 
-    const onPointerUp = () => {
-      if (!isDragging) return;
-      isDragging = false;
-    };
-
-    launcher.addEventListener("mousedown", onPointerDown);
-    window.addEventListener("mousemove", onPointerMove);
-    window.addEventListener("mouseup", onPointerUp);
-
-    launcher.addEventListener("touchstart", onPointerDown, { passive: true });
-    window.addEventListener("touchmove", onPointerMove, { passive: true });
-    window.addEventListener("touchend", onPointerUp);
-
-    bubbleBtn.addEventListener("click", (e) => {
-      if (hasMoved) {
-        e.preventDefault();
-        e.stopPropagation();
-        hasMoved = false;
-        return;
+    try {
+      const sv = JSON.parse(localStorage.getItem(CHAT_POS_KEY) || "null");
+      if (sv && typeof sv.x === "number" && typeof sv.y === "number") {
+        l.style.left = sv.x + "px"; l.style.top = sv.y + "px";
+        l.style.right = "auto"; l.style.bottom = "auto";
+        clampLauncher();
       }
-      toggleChatDrawer();
+    } catch (e) {}
+
+    let st = null;
+    h.addEventListener("pointerdown", e => {
+      const r = l.getBoundingClientRect();
+      st = { sx: e.clientX, sy: e.clientY, ox: r.left, oy: r.top, moved: false };
+      try { h.setPointerCapture(e.pointerId); } catch (_) {}
     });
+    h.addEventListener("pointermove", e => {
+      if (!st) return;
+      const dx = e.clientX - st.sx, dy = e.clientY - st.sy;
+      if (!st.moved && Math.hypot(dx, dy) < 6) return;
+      st.moved = true;
+      const r = l.getBoundingClientRect();
+      l.style.left = Math.min(Math.max(4, st.ox + dx), Math.max(4, window.innerWidth - r.width - 4)) + "px";
+      l.style.top = Math.min(Math.max(4, st.oy + dy), Math.max(4, window.innerHeight - r.height - 4)) + "px";
+      l.style.right = "auto"; l.style.bottom = "auto";
+      d.dataset.userMoved = "0";
+      positionChatDrawer();
+    });
+    h.addEventListener("pointerup", () => {
+      if (!st) return;
+      const was = st; st = null;
+      if (was.moved) {
+        try {
+          const r = l.getBoundingClientRect();
+          localStorage.setItem(CHAT_POS_KEY, JSON.stringify({ x: r.left, y: r.top }));
+        } catch (_) {}
+      } else {
+        toggleChatDrawer();
+      }
+    });
+    h.addEventListener("pointercancel", () => { st = null; });
+    h.setAttribute("tabindex", "0");
+    h.addEventListener("keydown", e => {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggleChatDrawer(); }
+    });
+
+    let ds = null;
+    dh.addEventListener("pointerdown", e => {
+      if (e.target.closest("button")) return;
+      const r = d.getBoundingClientRect();
+      ds = { sx: e.clientX, sy: e.clientY, ox: r.left, oy: r.top };
+      try { dh.setPointerCapture(e.pointerId); } catch (_) {}
+    });
+    dh.addEventListener("pointermove", e => {
+      if (!ds) return;
+      const r = d.getBoundingClientRect();
+      d.style.left = Math.min(Math.max(4, ds.ox + e.clientX - ds.sx), Math.max(4, window.innerWidth - r.width - 4)) + "px";
+      d.style.top = Math.min(Math.max(4, ds.oy + e.clientY - ds.sy), Math.max(4, window.innerHeight - r.height - 4)) + "px";
+      d.style.right = "auto"; d.style.bottom = "auto"; d.style.transform = "none";
+      d.dataset.userMoved = "1";
+    });
+    dh.addEventListener("pointerup", () => { ds = null; });
+    dh.addEventListener("pointercancel", () => { ds = null; });
+
+    window.addEventListener("resize", () => { clampLauncher(); positionChatDrawer(); });
+  }
+
+  // ---------- Zar butonu koruması ----------
+  let moveStartedAt = 0;
+  let moveLandingDone = true;
+  let turnStartedAt = Date.now();
+
+  function guardRollUI() {
+    const floatBtn = document.getElementById("floatRollBtn");
+    if (!floatBtn) return;
+    const hideFloat = () => { floatBtn.style.display = "none"; };
+    if (!isMatchStarted || isGamePaused || isPauseVoting) return hideFloat();
+    const me = getMySeat();
+    const p = players[currentTurn];
+    if (!me || !p) return hideFloat();
+    const iAmHost = (me.id === 0 || me.isHost);
+
+    // Takılı kalan hareketi kurtar
+    if (!hasRolled && isMoving) isMoving = false;
+    if (isMoving && Date.now() - moveStartedAt > 7000) {
+      isMoving = false;
+      clearTimeout(stepMoveTimer);
+      document.querySelectorAll(".tile").forEach(e => e.classList.remove("step-glow"));
+      const iAmAuth = (p.id === me.id) || (p.isBot && iAmHost);
+      if (!moveLandingDone && iAmAuth && !p.bankrupt) {
+        moveLandingDone = true;
+        handleLanding(p, TILES[p.pos]);
+      } else {
+        showLiveLandingScreen(p.pos);
+      }
+    }
+
+    // Botun zarı atmaması durumunda (kurucu tarafında) zorla at
+    if (p.isBot && !p.bankrupt && iAmHost && !hasRolled && !isMoving && !isAuctionActive &&
+        !(p.jailWaitTurns > 0) && Date.now() - turnStartedAt > 5000) {
+      turnStartedAt = Date.now();
+      triggerRoll();
+      return hideFloat();
+    }
+
+    const mineAndFree = (p.id === me.id && !p.bankrupt && !hasRolled && !isMoving);
+    if (!mineAndFree) return hideFloat();
+
+    // Merkez ekran zar ekranı olmalı
+    const dv = document.getElementById("diceView");
+    const cv = document.getElementById("cardView");
+    const btn = document.getElementById("btnRollMain");
+    if (!(p.jailWaitTurns > 0) && (dv.style.display === "none" || cv.style.display === "flex" ||
+        (btn && (btn.style.display === "none" || btn.disabled)))) {
+      showDiceScreen();
+    }
+
+    if (p.jailWaitTurns > 0 || isAuctionActive) return hideFloat();
+
+    // Merkezdeki buton gerçekten görünür ve tıklanabilir mi?
+    let centerOk = false;
+    if (btn && btn.offsetParent !== null && !btn.disabled) {
+      const r = btn.getBoundingClientRect();
+      if (r.width > 0 && r.height > 0 && r.bottom > 0 && r.top < window.innerHeight && r.right > 0 && r.left < window.innerWidth) {
+        const el = document.elementFromPoint(r.left + r.width / 2, r.top + r.height / 2);
+        centerOk = Boolean(el) && (el === btn || btn.contains(el));
+      }
+    }
+    floatBtn.style.display = centerOk ? "none" : "flex";
+  }
+
+  // ---------- İflas / Oyun sonu ----------
+  let bankruptAnnounced = new Set();
+  let gameOverAnnounced = false;
+  let endModalAutoTimer = null;
+  let lastRestartTs = 0;
+
+  function hideEndModal() {
+    clearTimeout(endModalAutoTimer);
+    const m = document.getElementById("endModal");
+    if (m) m.classList.remove("show");
+  }
+
+  function checkBankruptcyAnnouncements() {
+    if (!isMatchStarted) return;
+    const me = getMySeat();
+    const newly = players.filter(p => p.bankrupt && !bankruptAnnounced.has(p.id));
+    newly.forEach(p => bankruptAnnounced.add(p.id));
+    const alive = players.filter(p => !p.bankrupt);
+    const gameOver = alive.length <= 1 && players.length >= 2;
+    if (gameOver) {
+      if (gameOverAnnounced) return;
+      gameOverAnnounced = true;
+      showEndModal("gameover", newly, alive);
+      return;
+    }
+    if (newly.length > 0) {
+      const iAmOut = newly.some(p => me && p.id === me.id);
+      showEndModal(iAmOut ? "me-out" : "other-out", newly, alive);
+    }
+  }
+
+  function showEndModal(mode, newly, alive) {
+    clearTimeout(endModalAutoTimer);
+    const me = getMySeat();
+    const names = newly.map(p => escapeHtml(p.name)).join(", ");
+    const iWon = alive.length === 1 && me && alive[0].id === me.id;
+    const box = document.getElementById("endModalBox");
+    const btns = document.getElementById("endModalBtns");
+    let icon, title, text, cls = "";
+    const actions = [];
+
+    if (mode === "gameover") {
+      icon = iWon ? "🏆" : "🏁";
+      cls = iWon ? "win" : "lose";
+      title = iWon ? "TEBRİKLER, KAZANDIN!" : "OYUN BİTTİ";
+      text = `${newly.length ? `💥 ${names} iflas etti. ` : ""}Geriye tek oyuncu kaldı: <b>${alive[0] ? escapeHtml(alive[0].name) : "-"}</b> şampiyon!`;
+      actions.push(["🔄 Tekrar Oyna", "bg-green", endModalReplay]);
+      actions.push(["🚪 Çıkış", "bg-crimson", endModalExit]);
+    } else if (mode === "me-out") {
+      icon = "💥"; cls = "lose";
+      title = "İFLAS ETTİN!";
+      text = "Paran ve satabileceğin mülkün kalmadı. Oyun, geriye tek oyuncu kalana kadar devam ediyor. İzlemeye devam edebilir ya da çıkabilirsin.";
+      actions.push(["👁️ İzlemeye Devam Et", "bg-blue", hideEndModal]);
+      actions.push(["🚪 Çıkış", "bg-crimson", endModalExit]);
+    } else {
+      icon = "💥";
+      title = `${names} İFLAS ETTİ`;
+      text = `Parası ve satacak mülkü kalmadı. Oyun devam ediyor, geriye ${alive.length} oyuncu kaldı.`;
+      actions.push(["▶️ Devam Et", "bg-green", hideEndModal]);
+      endModalAutoTimer = setTimeout(hideEndModal, 7000);
+    }
+
+    box.className = `end-modal-box ${cls}`;
+    document.getElementById("endModalIcon").textContent = icon;
+    document.getElementById("endModalTitle").textContent = title;
+    document.getElementById("endModalText").innerHTML = text;
+    document.getElementById("endModalStats").innerHTML = players.map(p => `
+      <div class="end-score-row ${p.bankrupt ? "out" : ""}">
+        <span><b style="color:${escapeHtml(p.color)};">●</b> ${escapeHtml(p.name)}${me && p.id === me.id ? " (Sen)" : ""}</span>
+        <span>${p.bankrupt ? "💥 İflas" : p.money.toLocaleString("tr-TR") + " ₺"}</span>
+      </div>`).join("");
+    btns.innerHTML = "";
+    actions.forEach(([label, cls2, fn]) => {
+      const b = document.createElement("button");
+      b.className = `act-btn ${cls2}`;
+      b.textContent = label;
+      b.onclick = fn;
+      btns.appendChild(b);
+    });
+    document.getElementById("endModal").classList.add("show");
+    playSfx(mode === "gameover" && iWon ? "plaza" : "bad");
+  }
+
+  function endModalExit() {
+    hideEndModal();
+    completelyExitAndReset();
+  }
+
+  function endModalReplay() {
+    hideEndModal();
+    if (isRoomHost) {
+      hostRestartMatch();
+    } else if (!roomChannel && peerConnections.length === 0) {
+      hostRestartMatch();
+    } else {
+      broadcastNetworkPayload({ type: "REPLAY_REQUEST" });
+      addLog("🔄 Tekrar oyna isteği kurucuya gönderildi...");
+    }
+  }
+
+  function resetMatchStateForReplay() {
+    clearInterval(timerInterval);
+    clearTimeout(botTimer);
+    clearTimeout(stepMoveTimer);
+    TILES.forEach(t => {
+      if (t.type === "property") {
+        delete t.owner;
+        t.houseOwners = [];
+        t.mortgaged = false;
+        t.mortgageTurnsLeft = 0;
+        t.lastBuiltLap = 0;
+      }
+    });
+    players.forEach(p => {
+      p.money = 15000; p.pos = 0; p.lap = 1; p.turnsPlayed = 0;
+      p.jailWaitTurns = 0; p.missedTurns = 0; p.bankrupt = false;
+    });
+    worldBankPool = 2500;
+    inflationSecondsLeft = 600;
+    globalTaxMultiplier = 1.0;
+    globalGeneralMultiplier = 1.0;
+    globalPenaltyMultiplier = 1.0;
+    inflationWaveCount = 0;
+    currentTurn = 0;
+    hasRolled = false;
+    isMoving = false;
+    isDebtTimerMode = false;
+    isAuctionActive = false;
+    isGamePaused = false;
+    isPauseVoting = false;
+    activeOffersQueue = [];
+    currentOfferIdx = 0;
+    bankruptAnnounced.clear();
+    gameOverAnnounced = false;
+    const aucEl = document.getElementById("auctionOverlay");
+    if (aucEl) aucEl.style.display = "none";
+    const pvEl = document.getElementById("pauseVoteOverlay");
+    if (pvEl) pvEl.style.display = "none";
+    const pb = document.getElementById("btnPausePlay");
+    if (pb) { pb.textContent = "⏸️ Durdur"; pb.classList.remove("paused-state"); }
+    hideEndModal();
+  }
+
+  function hostRestartMatch() {
+    if (Date.now() - lastRestartTs < 2500) return;
+    lastRestartTs = Date.now();
+    resetMatchStateForReplay();
+    isMatchStarted = true;
+    document.getElementById("lobbyBackdrop").style.display = "none";
+    addLog("🔄 Yeni oyun başladı! Herkese bol şans!");
+    startTurn();
+    broadcastNetworkPayload({ type: "MATCH_RESTART", snap: getFullRoomSnapshot() });
+    saveRoomSnapshot();
   }
 
   function initGame() {
     detectAndApplyDeviceMode();
     setupResizablePanels();
-    setupDraggableChatLauncher();
     start10MinInflationTimer();
     const urlParams = new URLSearchParams(window.location.search);
     const roomFromUrl = urlParams.get("room");
@@ -4467,9 +4658,13 @@ body.mobile-mode .chat-drawer-window { width: 248px; height: 255px; max-height: 
     renderRightPlayersList();
     renderTradeDock();
     refreshCenterLiveFlowUI();
-    selectPinnedCardByUser(6);
+    selectPinnedCardByUser(5);
     renderInitialsRail();
     updateMicButtonsUI();
+    setupDraggableChat();
+    setInterval(guardRollUI, 500);
+    ["pointerdown", "touchstart", "keydown"].forEach(ev =>
+      document.addEventListener(ev, () => { try { ensureAudio(); } catch (e) {} }, { passive: true }));
   }
 
   window.onload = initGame;
