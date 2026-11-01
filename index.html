@@ -2,7 +2,7 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Emlak Taciri - Online & Mobil</title>
 <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
 <style>
@@ -270,7 +270,6 @@ body.mobile-mode .chat-drawer-window { left: 50%; right: auto; bottom: auto; top
 }
 body.neon-off .tile.my-here, body.neon-off .tile.my-here::after { animation: none; }
 
-.econ-cycle-banner { border-radius: 12px; text-align: center; line-height: 1.35; }
 
 /* 5 - Garantili zar butonu */
 .float-roll-btn { display: none; position: fixed; left: 50%; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); transform: translateX(-50%); z-index: 9400; padding: 14px 30px; border: 2px solid #fff; border-radius: 99px; font-size: 16px; font-weight: 900; color: #fff; background: linear-gradient(135deg, #f59e0b, #d97706); box-shadow: 0 10px 30px rgba(245, 158, 11, 0.6); cursor: pointer; align-items: center; gap: 8px; animation: floatRollPulse 0.9s infinite alternate; }
@@ -301,6 +300,8 @@ body.neon-off .tile.my-here, body.neon-off .tile.my-here::after { animation: non
 /* 4 - Sürüklenebilir sohbet balonu */
 .floating-chat-launcher { touch-action: none; }
 .floating-chat-launcher .icon-ctrl-btn { height: 44px; padding: 0 12px; border-radius: 99px; font-size: 12px; white-space: nowrap; }
+.bankrupt-toast { display: none; position: fixed; top: 12px; left: 50%; transform: translateX(-50%); z-index: 9300; background: rgba(15,23,42,0.97); border: 1.5px solid #ef4444; color: #fff; padding: 8px 14px; border-radius: 99px; font-size: 12px; font-weight: 800; box-shadow: 0 8px 24px rgba(0,0,0,0.7); max-width: 90vw; pointer-events: none; }
+.bankrupt-toast.show { display: block; }
 .floating-chat-launcher .btn-label { margin-left: 5px; }
 .chat-bubble-btn { touch-action: none; cursor: grab; }
 .chat-bubble-btn:active { cursor: grabbing; }
@@ -317,29 +318,31 @@ body.neon-off .tile.my-here, body.neon-off .tile.my-here::after { animation: non
 .room-no { font-size: 12px; font-weight: 900; }
 .room-sub { font-size: 9.5px; color: #cbd5e1; font-weight: 700; text-align: center; }
 
-/* Dönüş ipucu */
-.rotate-hint { display: none; position: fixed; left: 8px; top: calc(8px + env(safe-area-inset-top, 0px)); max-width: calc(100vw - 150px); z-index: 9100; background: rgba(15, 23, 42, 0.96); border: 1.5px solid var(--gold); color: #fde68a; padding: 6px 10px; border-radius: 14px; font-size: 10.5px; font-weight: 800; align-items: center; gap: 8px; box-shadow: 0 8px 24px rgba(0,0,0,0.7); }
-@media (orientation: portrait) and (max-width: 900px) { body.mobile-mode .rotate-hint.show { display: flex; } }
 
-/* 8 - Mobil iyileştirmeler */
-body.mobile-mode { padding: calc(2px + env(safe-area-inset-top, 0px)) calc(2px + env(safe-area-inset-right, 0px)) calc(2px + env(safe-area-inset-bottom, 0px)) calc(2px + env(safe-area-inset-left, 0px)); }
-body.mobile-mode .board-wrapper { height: calc(100dvh - 4px - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)); border-radius: 12px; gap: 2px; padding: 2px; }
-body.mobile-mode .mobile-fab-trigger { top: calc(8px + env(safe-area-inset-top, 0px)); right: calc(8px + env(safe-area-inset-right, 0px)); padding: 8px 14px; }
-body.mobile-mode .floating-chat-launcher { bottom: calc(10px + env(safe-area-inset-bottom, 0px)); right: calc(10px + env(safe-area-inset-right, 0px)); gap: 6px; }
-body.mobile-mode .floating-chat-launcher .btn-label { display: none; }
-body.mobile-mode .floating-chat-launcher .icon-ctrl-btn { width: 44px; padding: 0; display: flex; align-items: center; justify-content: center; font-size: 18px; }
-body.mobile-mode .chat-drawer-window { width: 90vw; height: 56dvh; border-radius: 18px; }
-body.mobile-mode input[type="text"], body.mobile-mode .lobby-input, body.mobile-mode .chat-input-bar input { font-size: 16px; }
-body.mobile-mode .mini-act-btn { min-height: 40px; font-size: 12px; }
-body.mobile-mode .act-btn { min-height: 40px; }
-body.mobile-mode .center-floating-hub { border-radius: 16px; }
-body.mobile-mode .float-roll-btn { bottom: calc(66px + env(safe-area-inset-bottom, 0px)); padding: 12px 26px; font-size: 15px; }
-@media (max-width: 720px) {
-  .lobby-card { padding: 14px; gap: 10px; border-radius: 16px; }
-  .lobby-card h2 { font-size: 17px !important; }
-  .room-grid { grid-template-columns: repeat(2, 1fr); }
-  .end-modal-box { padding: 18px 14px; }
-}
+
+/* ===== Küçük ses ikonları + sekmeli pencere ===== */
+.floating-chat-launcher .icon-ctrl-btn { width: 34px; height: 34px; padding: 0; border-radius: 50%; font-size: 15px; display: flex; align-items: center; justify-content: center; }
+.floating-chat-launcher .btn-label { display: none; }
+.chat-bubble-btn.playing::before { content: "♪"; position: absolute; bottom: -4px; right: -4px; background: #10b981; color: #fff; border: 2px solid #fff; border-radius: 99px; width: 20px; height: 20px; font-size: 11px; display: flex; align-items: center; justify-content: center; }
+.drawer-tabs { display: flex; gap: 4px; padding: 6px 8px 0; background: rgba(0,0,0,0.3); }
+.drawer-tab { flex: 1; padding: 7px 4px; border: 1px solid rgba(255,255,255,0.14); border-bottom: none; border-radius: 9px 9px 0 0; background: rgba(255,255,255,0.05); color: #cbd5e1; font-size: 11.5px; font-weight: 900; cursor: pointer; }
+.drawer-tab.active { background: rgba(56,189,248,0.22); color: #fff; border-color: rgba(56,189,248,0.7); }
+.drawer-pane { display: none; flex: 1; min-height: 0; flex-direction: column; }
+.drawer-pane.active { display: flex; }
+.bg-now { display: flex; align-items: center; gap: 6px; padding: 7px 9px; background: rgba(16,185,129,0.12); border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 11px; font-weight: 800; color: #6ee7b7; }
+.bg-now .bg-title { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.bg-now input[type=range] { flex: 0 0 56px; width: 56px; }
+.bg-now .mini-act-btn { flex: 0 0 auto; width: 30px; padding: 4px 0; text-align: center; }
+.bg-now .bg-title { flex: 1 1 60px; }
+.bg-list { flex: 1; min-height: 0; overflow-y: auto; padding: 7px; display: flex; flex-direction: column; gap: 5px; overscroll-behavior: contain; }
+.bg-item { display: flex; align-items: center; gap: 8px; text-align: left; padding: 8px 10px; border-radius: 9px; border: 1px solid rgba(255,255,255,0.14); background: rgba(255,255,255,0.05); color: #fff; font-size: 12px; font-weight: 800; cursor: pointer; }
+.bg-item:hover { background: rgba(56,189,248,0.16); }
+.bg-item.active { background: rgba(16,185,129,0.25); border-color: #10b981; }
+.bg-form { display: flex; flex-direction: column; gap: 5px; padding: 7px; border-top: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.3); }
+.bg-form input { background: #1e293b; border: 1px solid rgba(255,255,255,0.22); color: #fff; padding: 6px 8px; border-radius: 7px; font-size: 12px; min-width: 0; }
+.bg-row { display: flex; gap: 5px; }
+.bg-row > * { flex: 1; }
+.bg-hint { font-size: 10px; color: #94a3b8; line-height: 1.35; }
 </style>
 </head>
 <body>
@@ -726,10 +729,10 @@ body.mobile-mode .float-roll-btn { bottom: calc(66px + env(safe-area-inset-botto
 
   <div class="floating-chat-launcher" id="chatLauncher">
     <button class="icon-ctrl-btn mic-active" id="btnFloatingRemote" onclick="toggleRemoteMute()" title="Karşı tarafın sesini sustur / aç">
-      <span class="ico">🎧</span><span class="btn-label">Karşı Taraf Açık</span>
+      <span class="ico">🎧</span>
     </button>
     <button class="icon-ctrl-btn mic-active" id="btnFloatingMic" onclick="toggleVoiceMic()" title="Mikrofonu aç / kapat">
-      <span class="ico">🎙️</span><span class="btn-label">Ses Açık</span>
+      <span class="ico">🎙️</span>
     </button>
     <button class="chat-bubble-btn" id="chatBubbleBtn" title="Sohbet (sürükleyerek istediğin yere taşıyabilirsin)">
       💬
@@ -739,7 +742,8 @@ body.mobile-mode .float-roll-btn { bottom: calc(66px + env(safe-area-inset-botto
 
   <button class="float-roll-btn" id="floatRollBtn" onclick="closeMobileCenterHub(); triggerRoll();">🎲 ZAR AT</button>
 
-  <div class="rotate-hint show" id="rotateHint">📱 En iyi görünüm için telefonu yatay çevir <button class="panel-close-x" onclick="this.parentElement.classList.remove('show')">✖</button></div>
+
+  <div class="bankrupt-toast" id="bankruptToast"></div>
 
   <div class="end-modal-backdrop" id="endModal">
     <div class="end-modal-box" id="endModalBox">
@@ -753,13 +757,52 @@ body.mobile-mode .float-roll-btn { bottom: calc(66px + env(safe-area-inset-botto
 
   <div class="chat-drawer-window" id="gameChatDrawer">
     <div class="sidebar-header" id="chatDrawerHeader" title="Sürükleyerek taşıyabilirsin">
-      <h3>💬 Canlı Oyun Sohbeti</h3>
+      <h3>💬 Sohbet & Müzik</h3>
       <button class="panel-close-x" onclick="toggleChatDrawer()">✖</button>
     </div>
-    <div class="chat-messages-list" id="gameChatList"></div>
-    <div class="chat-input-bar">
-      <input type="text" id="inpGameChat" placeholder="Mesajınızı yazın..." onkeydown="if(event.key==='Enter') sendChatMessage('game')">
-      <button class="act-btn bg-blue" onclick="sendChatMessage('game')">Gönder</button>
+    <div class="drawer-tabs">
+      <button class="drawer-tab active" id="tabBtnChat" onclick="switchDrawerTab('chat')">💬 Sohbet</button>
+      <button class="drawer-tab" id="tabBtnRadio" onclick="switchDrawerTab('radio')">📻 Radyo</button>
+      <button class="drawer-tab" id="tabBtnMusic" onclick="switchDrawerTab('music')">🎵 Müziğim</button>
+    </div>
+
+    <div class="drawer-pane active" id="paneChat">
+      <div class="chat-messages-list" id="gameChatList"></div>
+      <div class="chat-input-bar">
+        <input type="text" id="inpGameChat" placeholder="Mesajınızı yazın..." onkeydown="if(event.key==='Enter') sendChatMessage('game')">
+        <button class="act-btn bg-blue" onclick="sendChatMessage('game')">Gönder</button>
+      </div>
+    </div>
+
+    <div class="drawer-pane" id="paneRadio">
+      <div class="bg-now">
+        <span>📻</span><span class="bg-title" id="radioNowTitle">Kanal seçilmedi</span>
+        <input type="range" min="0" max="100" value="60" oninput="setBgVolume(this.value)" title="Ses">
+        <button class="mini-act-btn bg-crimson" onclick="stopBgAudio()">⏹</button>
+      </div>
+      <div class="bg-list" id="radioList"></div>
+      <div class="bg-form">
+        <div class="bg-row"><input type="text" id="inpRadioName" placeholder="Kanal adı"><input type="text" id="inpRadioUrl" placeholder="Yayın adresi (https://...)"></div>
+        <button class="act-btn bg-purple" onclick="addCustomStation()">➕ Kendi Kanalımı Ekle</button>
+      </div>
+    </div>
+
+    <div class="drawer-pane" id="paneMusic">
+      <div class="bg-now">
+        <span>🎵</span><span class="bg-title" id="musicNowTitle">Parça seçilmedi</span>
+        <input type="range" min="0" max="100" value="60" oninput="setBgVolume(this.value)" title="Ses">
+        <button class="mini-act-btn bg-slate" onclick="musicPrev()">⏮</button>
+        <button class="mini-act-btn bg-green" id="btnMusicPlay" onclick="musicToggle()">▶</button>
+        <button class="mini-act-btn bg-slate" onclick="musicNext()">⏭</button>
+        <button class="mini-act-btn bg-slate" id="btnMusicShuffle" onclick="toggleMusicShuffle()" title="Karışık çal">🔀</button>
+      </div>
+      <div class="bg-list" id="musicList"></div>
+      <div class="bg-form">
+        <div class="bg-row"><input type="text" id="inpMusicRepo" placeholder="GitHub: kullanıcı/depo"><input type="text" id="inpMusicBranch" placeholder="Dal (main)"></div>
+        <input type="text" id="inpMusicPath" placeholder="Klasör (boş = ana dizin, örn: muzikler)">
+        <button class="act-btn bg-blue" onclick="loadMusicFromGitHub()">📂 Müziklerimi Yükle</button>
+        <div class="bg-hint" id="musicStatus">GitHub deponuzdaki mp3 / ogg / m4a / wav dosyaları burada listelenir.</div>
+      </div>
     </div>
   </div>
   <div id="remoteAudioContainer" style="display:none;"></div>
@@ -1010,7 +1053,8 @@ body.mobile-mode .float-roll-btn { bottom: calc(66px + env(safe-area-inset-botto
     }
     if (floatBtn) {
       floatBtn.className = `icon-ctrl-btn ${isMicMuted ? "mic-muted" : "mic-active"}`;
-      floatBtn.innerHTML = `<span class="ico">${isMicMuted ? "🔇" : "🎙️"}</span><span class="btn-label">${isMicMuted ? "Ses Kapalı" : "Ses Açık"}</span>`;
+      floatBtn.innerHTML = `<span class="ico">${isMicMuted ? "🔇" : "🎙️"}</span>`;
+      floatBtn.title = isMicMuted ? "Mikrofon kapalı (açmak için tıkla)" : "Mikrofonu kapat";
     }
     if (drawerBtn) {
       drawerBtn.className = `act-btn ${isMicMuted ? "bg-crimson" : "bg-green"}`;
@@ -1918,7 +1962,8 @@ body.mobile-mode .float-roll-btn { bottom: calc(66px + env(safe-area-inset-botto
     const fb = document.getElementById("btnFloatingRemote");
     if (fb) {
       fb.className = `icon-ctrl-btn ${m ? "mic-muted" : "mic-active"}`;
-      fb.innerHTML = `<span class="ico">${m ? "🔕" : "🎧"}</span><span class="btn-label">${m ? "Karşı Taraf Susturuldu" : "Karşı Taraf Açık"}</span>`;
+      fb.innerHTML = `<span class="ico">${m ? "🔕" : "🎧"}</span>`;
+      fb.title = m ? "Karşı tarafın sesi susturuldu (açmak için tıkla)" : "Karşı tarafı sustur";
     }
     const lb = document.getElementById("btnLobbyRemote");
     if (lb) {
@@ -2289,6 +2334,7 @@ body.mobile-mode .float-roll-btn { bottom: calc(66px + env(safe-area-inset-botto
       positionChatDrawer();
       const lst = document.getElementById("gameChatList");
       if (lst) lst.scrollTop = lst.scrollHeight;
+      if (currentDrawerTab === "radio") renderRadioList();
     }
   }
 
@@ -2540,7 +2586,7 @@ body.mobile-mode .float-roll-btn { bottom: calc(66px + env(safe-area-inset-botto
     const el = document.getElementById("econCycleBanner");
     if (el) {
       const genPct = Math.round((globalGeneralMultiplier - 1) * 100);
-      el.textContent = `📈 Enflasyon: ${timeStr} • Maaş: +${getPlayerLapSalary().toLocaleString("tr-TR")} ₺ • Zam: +%${genPct} • Vergi: ×${globalTaxMultiplier.toFixed(2)} • Süre Cezası: ${getPlayerTimeoutPenalty().toLocaleString("tr-TR")} ₺`;
+      el.textContent = `📈 Enflasyon: ${timeStr} • Maaş: +${getPlayerLapSalary().toLocaleString("tr-TR")} ₺ • Zam: +%${genPct}`;
     }
     renderInitialsRail();
   }
@@ -3304,7 +3350,7 @@ body.mobile-mode .float-roll-btn { bottom: calc(66px + env(safe-area-inset-botto
       if (offer <= 0 || offer > me.money) return alert("Nakit yetersiz!");
       if (targetP.isBot) {
         if (offer >= Math.round((effPrice + tile.houseOwners.length * getPlayerHouseCost(tile)) * 1.1)) {
-          changeMoney(me.id, -offer, `${tile.name} Alımı`);
+          silentMoney = true; changeMoney(me.id, -offer, `${tile.name} Alımı`); silentMoney = false; playSfx("buy");
           distributeSaleProceedsByShare(tile, offer, `${tile.name} Satışı`);
           tile.owner = me.id;
           addLog(`🤝 ${targetP.name}, ${offer} ₺ teklifini kabul etti ve ${tile.name} tapusunu devretti!`, -offer);
@@ -3340,7 +3386,7 @@ body.mobile-mode .float-roll-btn { bottom: calc(66px + env(safe-area-inset-botto
       if (offer <= 0 || offer > me.money) return alert("Nakit yetersiz!");
       if (targetP.isBot) {
         if (offer >= Math.round(effHouse * 0.95)) {
-          changeMoney(me.id, -offer, "Ortaklık");
+          silentMoney = true; changeMoney(me.id, -offer, "Ortaklık"); silentMoney = false; playSfx("buy");
           changeMoney(targetP.id, offer, "Ortaklık");
           if (tile.houseOwners.length < 5) tile.houseOwners.push(me.id);
           addLog(`🏠 Artık ${tile.name} mülkünün hissedarısın (-${offer} ₺).`, -offer);
@@ -3380,7 +3426,7 @@ body.mobile-mode .float-roll-btn { bottom: calc(66px + env(safe-area-inset-botto
       if (me.money < cash) return alert("Nakit yetersiz!");
       if (targetP.isBot) {
         if (getPlayerPrice(myTile) + cash >= getPlayerPrice(tile) * 0.92) {
-          changeMoney(me.id, -cash, "Takas");
+          silentMoney = true; changeMoney(me.id, -cash, "Takas"); silentMoney = false; playSfx("buy");
           changeMoney(targetP.id, cash, "Takas");
           myTile.owner = targetP.id;
           tile.owner = me.id;
@@ -3500,7 +3546,7 @@ body.mobile-mode .float-roll-btn { bottom: calc(66px + env(safe-area-inset-botto
     } else if (tile.mortgaged && me.money >= fullAmount) {
       tile.mortgaged = false;
       delete tile.mortgageTurnsLeft;
-      changeMoney(me.id, -fullAmount);
+      silentMoney = true; changeMoney(me.id, -fullAmount); silentMoney = false; playSfx("offer");
       addLog(`🔓 ${tile.name} ipoteği kaldırıldı (-${fullAmount} ₺).`, -fullAmount);
     }
     afterUserOwnPinAction(tile.id);
@@ -3778,12 +3824,6 @@ body.mobile-mode .float-roll-btn { bottom: calc(66px + env(safe-area-inset-botto
 
     document.getElementById("fsCountryTitle").textContent = `${tile.flag} ${tile.name}`;
     document.getElementById("fsCountryDesc").textContent = customEventCard ? customEventCard.desc : tile.sub;
-    const spBox = document.getElementById("fsSpecialBox");
-    if (spBox) {
-      spBox.innerHTML = customEventCard
-        ? `<div class="event-card-pill ${customEventCard.good ? "good" : "bad"}"><b>${customEventCard.good ? "🍀" : "⚠️"} ${customEventCard.title}</b><span>${customEventCard.scaledAmount > 0 ? "+" : ""}${customEventCard.scaledAmount.toLocaleString("tr-TR")} ₺</span></div>`
-        : "";
-    }
 
     const effTax = getPlayerTaxAmount(tile);
     const effPrice = getPlayerPrice(tile);
@@ -3939,14 +3979,9 @@ body.mobile-mode .float-roll-btn { bottom: calc(66px + env(safe-area-inset-botto
 
   function autoLiquidateRandomAssetForDebt() {
     const me = getMySeat();
-    while (me.money < 0 && hasSellableAssets(me.id)) {
-      const myAssets = TILES.filter(t => t.type === "property" && !t.mortgaged && (t.owner === me.id || (t.houseOwners && t.houseOwners.includes(me.id))));
-      if (myAssets.length === 0) break;
-      const randTile = myAssets[0];
-      if (randTile.owner === me.id) sellFullBundleToBank(randTile);
-      else sellHousesCount(randTile, 1);
-    }
-    checkDebtOrBankruptcy(me);
+    isDebtTimerMode = false;
+    settleDebtAutomatically(me);
+    checkBankruptcyAnnouncements();
     if (me.money >= 0 || me.bankrupt) nextTurn();
   }
 
@@ -3967,6 +4002,7 @@ body.mobile-mode .float-roll-btn { bottom: calc(66px + env(safe-area-inset-botto
     if (p.missedTurns >= 3) {
       p.bankrupt = true;
       p.money = 0;
+      p.afk = true;
       TILES.forEach(t => {
         if (t.houseOwners) t.houseOwners = t.houseOwners.filter(id => id !== p.id);
         if (t.owner === p.id) delete t.owner;
@@ -3980,6 +4016,7 @@ body.mobile-mode .float-roll-btn { bottom: calc(66px + env(safe-area-inset-botto
     worldBankPool += pen;
     addLog(`⏰ SÜRE AŞIMI! ${p.name} -${pen} ₺ ceza ödedi.`);
     checkDebtOrBankruptcy(p);
+    if (p.money < 0 && !p.bankrupt) settleDebtAutomatically(p);
     nextTurn();
   }
 
@@ -4188,26 +4225,60 @@ body.mobile-mode .float-roll-btn { bottom: calc(66px + env(safe-area-inset-botto
     botTimer = setTimeout(() => { if (!isGamePaused) nextTurn(); }, 1000);
   }
 
+  function liquidateStep(p) {
+    // 1) Önce evleri sat (en az kayıp), 2) sonra ülkeyi kasaya sat
+    let t = TILES.find(x => x.type === "property" && !x.mortgaged && (x.houseOwners || []).includes(p.id));
+    if (t) {
+      const gain = getPlayerHouseCost(t);
+      t.houseOwners.splice(t.houseOwners.indexOf(p.id), 1);
+      changeMoney(p.id, gain, "Ev Satışı");
+      addLog(`🏘️ ${p.name} borcunu kapatmak için ${t.name} ülkesinde 1 ev sattı (+${gain} ₺).`);
+      return true;
+    }
+    t = TILES.find(x => x.type === "property" && !x.mortgaged && x.owner === p.id);
+    if (t) {
+      const total = getPlayerPrice(t) + (t.houseOwners || []).length * getPlayerHouseCost(t);
+      const dist = distributeSaleProceedsByShare(t, total, "İcra Satışı");
+      delete t.owner;
+      t.houseOwners = [];
+      t.mortgaged = false;
+      delete t.mortgageTurnsLeft;
+      addLog(`🏦 ${p.name} borcunu kapatmak için ${t.name} ülkesini kasaya sattı (${total} ₺). [${dist}]`);
+      return true;
+    }
+    return false;
+  }
+
+  function bankruptPlayer(p) {
+    p.bankrupt = true;
+    p.money = 0;
+    TILES.forEach(t => {
+      if (t.type !== "property") return;
+      if (t.owner === p.id) { delete t.owner; t.houseOwners = []; t.mortgaged = false; delete t.mortgageTurnsLeft; }
+      else if (t.houseOwners) t.houseOwners = t.houseOwners.filter(id => id !== p.id);
+    });
+    addLog(`💥 İFLAS! ${p.name} tüm mülklerini ve evlerini sattı, hâlâ borçlu olduğu için elendi!`);
+  }
+
+  function settleDebtAutomatically(p) {
+    if (p.bankrupt) return;
+    let guard = 0;
+    while (p.money < 0 && guard++ < 300 && liquidateStep(p)) {}
+    if (p.money < 0) bankruptPlayer(p);
+    else addLog(`✅ ${p.name} mülk/ev satarak iflastan kurtuldu.`);
+  }
+
   function checkDebtOrBankruptcy(player) {
     if (player.money >= 0 || player.bankrupt) return;
-    if (player.isBot) {
-      for (const t of TILES) {
-        if (player.money >= 0) break;
-        if (t.type === "property" && t.owner === player.id && !t.mortgaged) {
-          const totalBundle = getPlayerPrice(t) + (t.houseOwners || []).length * getPlayerHouseCost(t);
-          distributeSaleProceedsByShare(t, totalBundle, "Bot İcra");
-          delete t.owner;
-          t.houseOwners = [];
-        }
-      }
-    }
     const me = getMySeat();
-    if (player.money < 0 && !hasSellableAssets(player.id)) {
-      player.bankrupt = true;
-      player.money = 0;
-      TILES.forEach(t => { if (t.owner === player.id) delete t.owner; });
-      addLog(`💥 İFLAS! ${player.name} elendi!`);
-    } else if (player.id === me.id && player.money < 0) {
+    if (player.isBot || !me || player.id !== me.id) {
+      settleDebtAutomatically(player);
+      return;
+    }
+    if (!hasSellableAssets(player.id)) {
+      bankruptPlayer(player);
+    } else {
+      addLog(`⚠️ ${player.name} borçlu! İflastan kurtulmak için mülk/ev sat (45 sn).`);
       activate45SecDebtTimer();
     }
   }
@@ -4466,12 +4537,15 @@ body.mobile-mode .float-roll-btn { bottom: calc(66px + env(safe-area-inset-botto
     const dv = document.getElementById("diceView");
     const cv = document.getElementById("cardView");
     const btn = document.getElementById("btnRollMain");
-    if (!(p.jailWaitTurns > 0) && (dv.style.display === "none" || cv.style.display === "flex" ||
+    const hubOpen = document.getElementById("mobileCenterHub");
+    if (!(hubOpen && hubOpen.classList.contains("open")) && !(p.jailWaitTurns > 0) && (dv.style.display === "none" || cv.style.display === "flex" ||
         (btn && (btn.style.display === "none" || btn.disabled)))) {
       showDiceScreen();
     }
 
     if (p.jailWaitTurns > 0 || isAuctionActive) return hideFloat();
+    const hubEl = document.getElementById("mobileCenterHub");
+    if (hubEl && hubEl.classList.contains("open")) { floatBtn.style.display = "flex"; return; }
 
     // Merkezdeki buton gerçekten görünür ve tıklanabilir mi?
     let centerOk = false;
@@ -4512,7 +4586,17 @@ body.mobile-mode .float-roll-btn { bottom: calc(66px + env(safe-area-inset-botto
     }
     if (newly.length > 0) {
       const iAmOut = newly.some(p => me && p.id === me.id);
-      showEndModal(iAmOut ? "me-out" : "other-out", newly, alive);
+      if (iAmOut) {
+        showEndModal("me-out", newly, alive);
+      } else {
+        const tt = document.getElementById("bankruptToast");
+        if (tt) {
+          tt.textContent = `${newly.map(p => p.afk ? `🚫 ${p.name} elendi (3 tur oynamadı)` : `💥 ${p.name} iflas etti`).join(" • ")} • Kalan oyuncu: ${alive.length}`;
+          tt.classList.add("show");
+          setTimeout(() => tt.classList.remove("show"), 5000);
+        }
+        playSfx("bad");
+      }
     }
   }
 
@@ -4639,6 +4723,242 @@ body.mobile-mode .float-roll-btn { bottom: calc(66px + env(safe-area-inset-botto
     broadcastNetworkPayload({ type: "MATCH_RESTART", snap: getFullRoomSnapshot() });
     saveRoomSnapshot();
   }
+
+  /* ===================== RADYO & MÜZİK ===================== */
+  // Kanal listesini buradan düzenleyebilirsin (ad + yayın adresi).
+  const RADIO_STATIONS = [
+    { name: "SomaFM • Groove Salad (Chill)", url: "https://ice1.somafm.com/groovesalad-128-mp3" },
+    { name: "SomaFM • Lush (Yumuşak)", url: "https://ice1.somafm.com/lush-128-mp3" },
+    { name: "SomaFM • Secret Agent (Lounge)", url: "https://ice1.somafm.com/secretagent-128-mp3" },
+    { name: "SomaFM • Sonic Universe (Caz)", url: "https://ice1.somafm.com/sonicuniverse-128-mp3" },
+    { name: "SomaFM • Beat Blender (Elektronik)", url: "https://ice1.somafm.com/beatblender-128-mp3" },
+    { name: "SomaFM • Indie Pop Rocks", url: "https://ice1.somafm.com/indiepop-128-mp3" },
+    { name: "SomaFM • Folk Forward", url: "https://ice1.somafm.com/folkfwd-128-mp3" },
+    { name: "SomaFM • Drone Zone (Sakin)", url: "https://ice1.somafm.com/dronezone-128-mp3" },
+    { name: "SomaFM • Space Station", url: "https://ice1.somafm.com/spacestation-128-mp3" },
+    { name: "Radio Paradise • Ana Kanal", url: "https://stream.radioparadise.com/mp3-128" },
+    { name: "Radio Paradise • Mellow", url: "https://stream.radioparadise.com/mellow-128" },
+    { name: "Radio Paradise • Rock", url: "https://stream.radioparadise.com/rock-128" },
+    { name: "I Love Radio • Pop", url: "https://streams.ilovemusic.de/iloveradio1.mp3" },
+    { name: "I Love Radio • Dance", url: "https://streams.ilovemusic.de/iloveradio2.mp3" }
+  ];
+  // Müziklerin GitHub deposunu burada sabitleyebilirsin (boş bırakırsan pencereden girersin).
+  const MUSIC_DEFAULT = { repo: "", path: "", branch: "main" };
+
+  const bgAudio = new Audio();
+  bgAudio.preload = "none";
+  let bgMode = null;            // "radio" | "music" | null
+  let currentStationUrl = null;
+  let musicTracks = [];
+  let musicIndex = -1;
+  let musicShuffle = false;
+  let musicUrlTry = 0;
+  let currentDrawerTab = "chat";
+  let customStations = [];
+
+  function lsGet(k, def) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : def; } catch (e) { return def; } }
+  function lsSet(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+
+  function allStations() { return RADIO_STATIONS.concat(customStations); }
+
+  function switchDrawerTab(tab) {
+    currentDrawerTab = tab;
+    ["chat", "radio", "music"].forEach(t => {
+      const pane = document.getElementById("pane" + t.charAt(0).toUpperCase() + t.slice(1));
+      const btn = document.getElementById("tabBtn" + t.charAt(0).toUpperCase() + t.slice(1));
+      if (pane) pane.classList.toggle("active", t === tab);
+      if (btn) btn.classList.toggle("active", t === tab);
+    });
+    if (tab === "chat") {
+      renderChatLists();
+      const lst = document.getElementById("gameChatList");
+      if (lst) lst.scrollTop = lst.scrollHeight;
+    } else if (tab === "radio") {
+      renderRadioList();
+    } else if (tab === "music") {
+      const cfg = lsGet("EMLAK_MUSIC_CFG", MUSIC_DEFAULT);
+      const r = document.getElementById("inpMusicRepo");
+      if (r && !r.value) {
+        r.value = cfg.repo || "";
+        document.getElementById("inpMusicPath").value = cfg.path || "";
+        document.getElementById("inpMusicBranch").value = cfg.branch || "main";
+      }
+      if (musicTracks.length === 0 && cfg.repo) loadMusicFromGitHub();
+      else renderMusicList();
+    }
+  }
+
+  function setBgVolume(v) {
+    bgAudio.volume = Math.max(0, Math.min(1, (parseInt(v, 10) || 0) / 100));
+    document.querySelectorAll("#gameChatDrawer input[type=range]").forEach(r => { r.value = v; });
+  }
+
+  function updateBgUI() {
+    const bubble = document.getElementById("chatBubbleBtn");
+    if (bubble) bubble.classList.toggle("playing", Boolean(bgMode) && !bgAudio.paused);
+    const rt = document.getElementById("radioNowTitle");
+    if (rt) {
+      const st = allStations().find(s => s.url === currentStationUrl);
+      rt.textContent = (bgMode === "radio" && st) ? `▶ ${st.name}` : "Kanal seçilmedi";
+    }
+    const mt = document.getElementById("musicNowTitle");
+    if (mt) mt.textContent = (musicIndex >= 0 && musicTracks[musicIndex]) ? `${bgMode === "music" && !bgAudio.paused ? "▶" : "⏸"} ${musicTracks[musicIndex].title}` : "Parça seçilmedi";
+    const pb = document.getElementById("btnMusicPlay");
+    if (pb) pb.textContent = (bgMode === "music" && !bgAudio.paused) ? "⏸" : "▶";
+    const sb = document.getElementById("btnMusicShuffle");
+    if (sb) sb.className = `mini-act-btn ${musicShuffle ? "bg-gold" : "bg-slate"}`;
+    if (currentDrawerTab === "radio") renderRadioList();
+    if (currentDrawerTab === "music") renderMusicList();
+  }
+
+  function stopBgAudio() {
+    try { bgAudio.pause(); } catch (e) {}
+    bgAudio.removeAttribute("src");
+    try { bgAudio.load(); } catch (e) {}
+    bgMode = null;
+    currentStationUrl = null;
+    updateBgUI();
+  }
+
+  function playBg(url) {
+    bgAudio.src = url;
+    const pr = bgAudio.play();
+    if (pr && pr.catch) pr.catch(() => {
+      const st = document.getElementById("musicStatus");
+      if (bgMode === "radio") { const rt = document.getElementById("radioNowTitle"); if (rt) rt.textContent = "⚠️ Bu kanal açılamadı"; }
+      else if (st) st.textContent = "⚠️ Parça açılamadı.";
+    });
+  }
+
+  // ---- Radyo
+  function renderRadioList() {
+    const box = document.getElementById("radioList");
+    if (!box) return;
+    box.innerHTML = "";
+    allStations().forEach((s, i) => {
+      const b = document.createElement("button");
+      const active = (bgMode === "radio" && s.url === currentStationUrl);
+      b.className = `bg-item ${active ? "active" : ""}`;
+      b.textContent = `${active ? "🔊" : "📻"} ${s.name}`;
+      b.onclick = () => playStation(i);
+      box.appendChild(b);
+    });
+  }
+
+  function playStation(i) {
+    const s = allStations()[i];
+    if (!s) return;
+    bgMode = "radio";
+    currentStationUrl = s.url;
+    playBg(s.url);
+    updateBgUI();
+  }
+
+  function addCustomStation() {
+    const name = document.getElementById("inpRadioName").value.trim();
+    const url = document.getElementById("inpRadioUrl").value.trim();
+    if (!name || !/^https?:\/\//i.test(url)) return alert("Kanal adı ve https:// ile başlayan yayın adresi gir.");
+    customStations.push({ name, url });
+    lsSet("EMLAK_RADIO_CUSTOM", customStations);
+    document.getElementById("inpRadioName").value = "";
+    document.getElementById("inpRadioUrl").value = "";
+    renderRadioList();
+  }
+
+  // ---- GitHub müziklerim
+  function trackUrls(cfg, name) {
+    const folder = cfg.path ? cfg.path.split("/").filter(Boolean).map(encodeURIComponent).join("/") + "/" : "";
+    const file = encodeURIComponent(name);
+    return [
+      `https://raw.githubusercontent.com/${cfg.repo}/${encodeURIComponent(cfg.branch)}/${folder}${file}`,
+      `https://cdn.jsdelivr.net/gh/${cfg.repo}@${encodeURIComponent(cfg.branch)}/${folder}${file}`
+    ];
+  }
+
+  function loadMusicFromGitHub() {
+    const repo = document.getElementById("inpMusicRepo").value.trim().replace(/^https?:\/\/github\.com\//i, "").replace(/\/+$/, "");
+    const path = document.getElementById("inpMusicPath").value.trim().replace(/^\/+|\/+$/g, "");
+    const branch = document.getElementById("inpMusicBranch").value.trim() || "main";
+    const st = document.getElementById("musicStatus");
+    if (!/^[\w.-]+\/[\w.-]+$/.test(repo)) { st.textContent = "⚠️ Depo adı 'kullanıcı/depo' biçiminde olmalı."; return; }
+    const cfg = { repo, path, branch };
+    lsSet("EMLAK_MUSIC_CFG", cfg);
+    st.textContent = "⏳ Müzikler yükleniyor...";
+    const api = `https://api.github.com/repos/${repo}/contents/${path.split("/").filter(Boolean).map(encodeURIComponent).join("/")}?ref=${encodeURIComponent(branch)}`;
+    fetch(api).then(r => {
+      if (!r.ok) throw new Error(r.status === 404 ? "Depo/klasör bulunamadı (depo herkese açık olmalı)." : `GitHub hatası (${r.status}).`);
+      return r.json();
+    }).then(list => {
+      if (!Array.isArray(list)) throw new Error("Bu yol bir klasör değil.");
+      musicTracks = list.filter(f => f.type === "file" && /\.(mp3|ogg|m4a|wav|aac|flac|opus)$/i.test(f.name))
+        .sort((a, b) => a.name.localeCompare(b.name, "tr"))
+        .map(f => ({ title: f.name.replace(/\.[^.]+$/, ""), name: f.name, urls: trackUrls(cfg, f.name) }));
+      musicIndex = -1;
+      st.textContent = musicTracks.length ? `✅ ${musicTracks.length} parça bulundu.` : "⚠️ Bu klasörde ses dosyası bulunamadı.";
+      renderMusicList();
+    }).catch(e => { st.textContent = "⚠️ " + (e.message || "Yüklenemedi.") ; });
+  }
+
+  function renderMusicList() {
+    const box = document.getElementById("musicList");
+    if (!box) return;
+    box.innerHTML = "";
+    if (musicTracks.length === 0) {
+      box.innerHTML = `<div style="color:#64748b; text-align:center; margin:auto; font-size:12px;">Henüz müzik yüklenmedi.</div>`;
+      return;
+    }
+    musicTracks.forEach((t, i) => {
+      const b = document.createElement("button");
+      const active = (i === musicIndex && bgMode === "music");
+      b.className = `bg-item ${active ? "active" : ""}`;
+      b.textContent = `${active ? "🔊" : "🎵"} ${t.title}`;
+      b.onclick = () => playTrack(i);
+      box.appendChild(b);
+    });
+  }
+
+  function playTrack(i) {
+    const t = musicTracks[i];
+    if (!t) return;
+    musicIndex = i;
+    musicUrlTry = 0;
+    bgMode = "music";
+    currentStationUrl = null;
+    playBg(t.urls[0]);
+    updateBgUI();
+  }
+
+  function musicNext() {
+    if (musicTracks.length === 0) return;
+    const n = musicShuffle ? Math.floor(Math.random() * musicTracks.length) : (musicIndex + 1) % musicTracks.length;
+    playTrack(n);
+  }
+  function musicPrev() {
+    if (musicTracks.length === 0) return;
+    playTrack((musicIndex - 1 + musicTracks.length) % musicTracks.length);
+  }
+  function musicToggle() {
+    if (bgMode === "music" && !bgAudio.paused) { bgAudio.pause(); }
+    else if (bgMode === "music" && bgAudio.src) { bgAudio.play().catch(() => {}); }
+    else if (musicTracks.length) { playTrack(musicIndex >= 0 ? musicIndex : 0); }
+    updateBgUI();
+  }
+  function toggleMusicShuffle() { musicShuffle = !musicShuffle; updateBgUI(); }
+
+  bgAudio.addEventListener("ended", () => { if (bgMode === "music") musicNext(); });
+  bgAudio.addEventListener("play", updateBgUI);
+  bgAudio.addEventListener("pause", updateBgUI);
+  bgAudio.addEventListener("error", () => {
+    if (bgMode === "music" && musicTracks[musicIndex] && musicUrlTry < musicTracks[musicIndex].urls.length - 1) {
+      musicUrlTry++;
+      playBg(musicTracks[musicIndex].urls[musicUrlTry]);
+      return;
+    }
+    if (bgMode === "radio") { const rt = document.getElementById("radioNowTitle"); if (rt) rt.textContent = "⚠️ Bu kanal açılamadı, başka kanal dene"; }
+    if (bgMode === "music") { const st = document.getElementById("musicStatus"); if (st) st.textContent = "⚠️ Parça çalınamadı (dosya adı/biçimi veya bağlantı)."; }
+  });
+  bgAudio.volume = 0.6;
+  customStations = lsGet("EMLAK_RADIO_CUSTOM", []);
 
   function initGame() {
     detectAndApplyDeviceMode();
