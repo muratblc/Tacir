@@ -2797,21 +2797,37 @@ body.neon-off .tile.my-here, body.neon-off .tile.my-here::after { animation: non
     return h === 4 ? fourHouseRent : Math.round(fourHouseRent * 1.5);
   }
 
+  const LAND_STAKE_UNITS = 2;
   function getOwnershipShares(tile) {
-    if (tile.owner === undefined) return [];
+    if (tile.owner === undefined || tile.owner === null) return [];
     const hOwners = tile.houseOwners || [];
-    if (hOwners.length > 0) {
-      const counts = {};
-      hOwners.forEach(pid => { counts[pid] = (counts[pid] || 0) + 1; });
-      const totalH = hOwners.length;
-      return Object.keys(counts).map(pidStr => {
-        const pid = parseInt(pidStr);
-        const c = counts[pid];
-        const ratio = c / totalH;
-        return { playerId: pid, houseCount: c, totalHouses: totalH, ratio, percent: Math.round(ratio * 100) };
-      });
-    }
-    return [{ playerId: tile.owner, houseCount: 0, totalHouses: 0, ratio: 1, percent: 100 }];
+    const units = {};
+    const houseCounts = {};
+    units[tile.owner] = LAND_STAKE_UNITS;
+    hOwners.forEach(pid => {
+      units[pid] = (units[pid] || 0) + 1;
+      houseCounts[pid] = (houseCounts[pid] || 0) + 1;
+    });
+    const total = LAND_STAKE_UNITS + hOwners.length;
+    return Object.keys(units).map(pidStr => {
+      const pid = parseInt(pidStr);
+      const ratio = units[pid] / total;
+      return { playerId: pid, houseCount: houseCounts[pid] || 0, totalHouses: hOwners.length, ratio, percent: Math.round(ratio * 100) };
+    });
+  }
+
+  // Ortaklık: boş hisse varsa yeni hisse eklenir, tablo doluysa satıcının kendi hissesi alıcıya devredilir
+  function canGrantPartnerStake(tile, sellerId) {
+    const h = tile.houseOwners || [];
+    return h.length < 5 || h.includes(sellerId);
+  }
+  function grantPartnerStake(tile, partnerId, sellerId) {
+    tile.houseOwners = tile.houseOwners || [];
+    if (tile.houseOwners.length < 5) { tile.houseOwners.push(partnerId); return true; }
+    const idx = tile.houseOwners.indexOf(sellerId);
+    if (idx === -1) return false;
+    tile.houseOwners[idx] = partnerId;
+    return true;
   }
 
   function getRentBreakdown(tile) {
@@ -3158,7 +3174,9 @@ body.neon-off .tile.my-here, body.neon-off .tile.my-here::after { animation: non
     if (hasOwner && tile.owner !== me.id && !tile.mortgaged) {
       const ownerP = players[tile.owner];
       actBox.appendChild(makeBtn(`💵 Tapu Teklifi`, "bg-gold", () => openSubformOfferDeed(tile, ownerP, subform)));
-      actBox.appendChild(makeBtn(`🤝 Ortaklık Teklifi`, "bg-purple", () => openSubformOfferPartnership(tile, ownerP, subform)));
+      const bPart = makeBtn(canGrantPartnerStake(tile, tile.owner) ? `🤝 Ortaklık Teklifi` : `🔒 Ortaklık İçin Hisse Yok`, "bg-purple", () => openSubformOfferPartnership(tile, ownerP, subform));
+      bPart.disabled = !canGrantPartnerStake(tile, tile.owner);
+      actBox.appendChild(bPart);
       actBox.appendChild(makeBtn(`🔄 Takas Yap`, "bg-blue full", () => openSubformSwapOffer(tile, ownerP, subform)));
     }
 
@@ -3185,6 +3203,13 @@ body.neon-off .tile.my-here, body.neon-off .tile.my-here::after { animation: non
         if (hCount === 0) {
           actBox.appendChild(makeBtn(`🏦 İpotek Et (+${effPrice} ₺)`, "bg-crimson", () => toggleMortgageTile(tile)));
         }
+        const otherHolders = [...new Set((tile.houseOwners || []).filter(x => x !== me.id))];
+        otherHolders.forEach(pid => {
+          const hp = players[pid];
+          if (!hp || hp.bankrupt) return;
+          const cnt = countHousesOf(tile, pid);
+          actBox.appendChild(makeBtn(`🏘️ ${hp.name}'in ${cnt} evini geri al`, "bg-purple full", () => openSubformBuyBackHouses(tile, hp, cnt, subform)));
+        });
         actBox.appendChild(makeBtn(`🔨 Açık Arttırma`, "bg-gold", () => openSubformStartAuction(tile, subform)));
         actBox.appendChild(makeBtn(`🏷️ Sabit Fiyatla Sat`, "bg-blue", () => openSubformFixedPriceSale(tile, subform)));
 
@@ -3368,11 +3393,73 @@ body.neon-off .tile.my-here, body.neon-off .tile.my-here::after { animation: non
     };
   }
 
+  // ===== Evleri geri alma (kart sahibi, başkasına ait evleri satın alır) =====
+  function countHousesOf(tile, pid) { return (tile.houseOwners || []).filter(x => x === pid).length; }
+
+  function settleBuyBackHouses(tile, ownerId, holderId, cash, count) {
+    const owner = players[ownerId], holder = players[holderId];
+    if (!owner || !holder || tile.owner !== ownerId) return false;
+    const have = countHousesOf(tile, holderId);
+    const n = Math.min(count || have, have);
+    if (n <= 0) { addLog(`❌ ${holder.name}'in ${tile.name} ülkesinde satılacak evi kalmamış.`); return false; }
+    if (owner.money < cash) { addLog(`❌ ${owner.name}'in nakdi yetersiz, ev satın alma gerçekleşmedi.`); return false; }
+    let left = n;
+    tile.houseOwners = tile.houseOwners.map(x => (x === holderId && left-- > 0) ? ownerId : x);
+    silentMoney = true; changeMoney(ownerId, -cash, "Ev Geri Alım"); silentMoney = false;
+    changeMoney(holderId, cash, "Ev Satışı");
+    playSfx("buy");
+    addLog(`🏘️ ${owner.name}, ${holder.name}'in ${tile.name} ülkesindeki ${n} evini ${cash.toLocaleString("tr-TR")} ₺ karşılığında geri aldı. Evler artık ${owner.name} adına!`, ownerId === (getMySeat() || {}).id ? -cash : (holderId === (getMySeat() || {}).id ? cash : 0));
+    return true;
+  }
+
+  function openSubformBuyBackHouses(tile, targetP, count, sub) {
+    const me = getMySeat();
+    const effHouse = getPlayerHouseCost(tile);
+    const fair = count * effHouse;
+    sub.innerHTML = `
+      <label>🏘️ <b>${targetP.name}</b>'in <b>${tile.name}</b> ülkesindeki <b>${count}</b> evi için teklifin (₺):</label>
+      <input type="number" class="inp-val" value="${fair}" step="50">
+      <div style="font-size:10px; color:#94a3b8;">Evlerin değeri: ${fair.toLocaleString("tr-TR")} ₺. Karşı taraf teklifi kabul ederse evler sana geçer.</div>
+      <div style="display:flex; gap:4px;">
+        <button class="mini-act-btn bg-purple btn-send">📨 Gönder</button>
+        <button class="mini-act-btn bg-slate btn-cancel">İptal</button>
+      </div>
+    `;
+    sub.classList.add("open");
+    sub.querySelector(".btn-cancel").onclick = () => sub.classList.remove("open");
+    sub.querySelector(".btn-send").onclick = () => {
+      const offer = parseInt(sub.querySelector(".inp-val").value) || 0;
+      if (offer <= 0 || offer > me.money) return alert("Nakit yetersiz!");
+      if (targetP.isBot) {
+        if (offer >= Math.round(fair * 0.95)) {
+          settleBuyBackHouses(tile, me.id, targetP.id, offer, count);
+          afterUserOwnPinAction(tile.id);
+        } else {
+          playSfx("bad");
+          addLog(`❌ ${targetP.name} evleri bu fiyata satmayı reddetti.`);
+        }
+      } else {
+        const offObj = { senderId: me.id, targetId: targetP.id, tileId: tile.id, kind: "buyHouses", cash: offer, count };
+        broadcastNetworkPayload({ type: "OFFER_PROPOSAL", offer: offObj });
+        onReceiveTradeOffer(offObj);
+        addLog(`📨 ${targetP.name}'e evleri için ${offer.toLocaleString("tr-TR")} ₺ teklif gönderdin.`);
+      }
+      sub.classList.remove("open");
+    };
+  }
+
+  function offerText(offer, sender, tile, linkHtml) {
+    if (offer.kind === "buyHouses") {
+      return `<b>${sender.name}</b>, ${linkHtml} ülkesindeki <b>${offer.count || ""} evini</b> <b>${offer.cash.toLocaleString("tr-TR")} ₺</b> karşılığında geri almak istiyor!`;
+    }
+    return null;
+  }
+
   function openSubformOfferPartnership(tile, targetP, sub) {
     const me = getMySeat();
     const effHouse = getPlayerHouseCost(tile);
     sub.innerHTML = `
-      <label>🤝 <b>${tile.name}</b> 1 Ev Hissesi Teklifin (₺):</label>
+      <label>🤝 <b>${tile.name}</b> 1 Ev Hissesi Teklifin (₺) — kira payın: ~%${Math.round(100 / (LAND_STAKE_UNITS + (tile.houseOwners || []).length + ((tile.houseOwners || []).length < 5 ? 1 : 0)))}:</label>
       <input type="number" class="inp-val" value="${effHouse}" step="50">
       <div style="display:flex; gap:4px;">
         <button class="mini-act-btn bg-purple btn-send">📨 Gönder</button>
@@ -3385,11 +3472,15 @@ body.neon-off .tile.my-here, body.neon-off .tile.my-here::after { animation: non
       const offer = parseInt(sub.querySelector(".inp-val").value) || 0;
       if (offer <= 0 || offer > me.money) return alert("Nakit yetersiz!");
       if (targetP.isBot) {
-        if (offer >= Math.round(effHouse * 0.95)) {
+        if (!canGrantPartnerStake(tile, targetP.id)) {
+          playSfx("bad");
+          addLog(`❌ ${tile.name} mülkünde satılabilecek hisse kalmadı, ortaklık kurulamadı (paran çekilmedi).`);
+        } else if (offer >= Math.round(effHouse * 0.95)) {
+          grantPartnerStake(tile, me.id, targetP.id);
           silentMoney = true; changeMoney(me.id, -offer, "Ortaklık"); silentMoney = false; playSfx("buy");
           changeMoney(targetP.id, offer, "Ortaklık");
-          if (tile.houseOwners.length < 5) tile.houseOwners.push(me.id);
-          addLog(`🏠 Artık ${tile.name} mülkünün hissedarısın (-${offer} ₺).`, -offer);
+          const myPct = (getOwnershipShares(tile).find(s => s.playerId === me.id) || { percent: 0 }).percent;
+          addLog(`🏠 Artık ${tile.name} mülkünün hissedarısın (%${myPct} kira payı, -${offer} ₺).`, -offer);
           afterUserOwnPinAction(tile.id);
         } else {
           playSfx("bad");
@@ -3613,7 +3704,7 @@ body.neon-off .tile.my-here, body.neon-off .tile.my-here::after { animation: non
 
     playSfx("offer");
     toast.classList.add("show");
-    txt.innerHTML = `<b>${sender.name}</b>, senin <b>${tile.flag} ${tile.name}</b> mülkün için <b>+${offer.cash.toLocaleString("tr-TR")} ₺</b> (${offer.kind === "partner" ? "Ortaklık" : "Tapu Satışı"}) teklif ediyor!`;
+    txt.innerHTML = offerText(offer, sender, tile, `<b>${tile.flag} ${tile.name}</b>`) || `<b>${sender.name}</b>, senin <b>${tile.flag} ${tile.name}</b> mülkün için <b>+${offer.cash.toLocaleString("tr-TR")} ₺</b> (${offer.kind === "partner" ? "Ortaklık" : "Tapu Satışı"}) teklif ediyor!`;
 
     clearInterval(mobileOfferTimer);
     mobileOfferCountdown = 10;
@@ -3637,11 +3728,18 @@ body.neon-off .tile.my-here, body.neon-off .tile.my-here::after { animation: non
         distributeSaleProceedsByShare(tile, offer.cash, "Teklif Satışı");
         tile.owner = sender.id;
         tile.houseOwners = (tile.houseOwners || []).map(() => sender.id);
+      } else if (offer.kind === "buyHouses") {
+        settleBuyBackHouses(tile, sender.id, getMySeat().id, offer.cash, offer.count);
       } else {
         const me = getMySeat();
-        changeMoney(me.id, offer.cash);
-        changeMoney(sender.id, -offer.cash);
-        if (tile.houseOwners.length < 5) tile.houseOwners.push(sender.id);
+        if (!canGrantPartnerStake(tile, me.id)) {
+          addLog(`❌ ${tile.name} mülkünde satılabilecek hisse kalmadı, ortaklık kurulamadı.`);
+        } else {
+          grantPartnerStake(tile, sender.id, me.id);
+          changeMoney(me.id, offer.cash);
+          changeMoney(sender.id, -offer.cash);
+          addLog(`🤝 ${sender.name} artık ${tile.name} hissedarı.`);
+        }
       }
       afterUserOwnPinAction(tile.id);
     };
@@ -3664,7 +3762,8 @@ body.neon-off .tile.my-here, body.neon-off .tile.my-here::after { animation: non
     activeOffersQueue = activeOffersQueue.filter(of => {
       const t = TILES[of.tileId];
       const bot = players[of.botId ?? of.senderId];
-      return t && t.owner === me.id && !t.mortgaged && bot && !bot.bankrupt;
+      if (!t || t.mortgaged || !bot || bot.bankrupt) return false;
+      return of.kind === "buyHouses" ? ((t.houseOwners || []).includes(me.id) && t.owner === of.senderId) : t.owner === me.id;
     });
     const total = activeOffersQueue.length;
     document.getElementById("offerCounterText").textContent = total > 0 ? `Teklif: ${currentOfferIdx + 1} / ${total}` : `Teklif: 0 / 0`;
@@ -3682,7 +3781,14 @@ body.neon-off .tile.my-here, body.neon-off .tile.my-here::after { animation: non
     const tile = TILES[offer.tileId];
     const link = `<span class="offer-country-link" onclick="highlightAndFocusTile(${tile.id})">${tile.flag} ${tile.name} 🔍</span>`;
 
-    dock.innerHTML = `
+    const customTxt = offerText(offer, bot, tile, link);
+    dock.innerHTML = customTxt ? `
+      <div>${customTxt}</div>
+      <div style="display:flex; gap:6px; margin-top:6px;">
+        <button class="mini-act-btn bg-green" id="dockAcceptBtn">✅ Kabul Et</button>
+        <button class="mini-act-btn bg-crimson" id="dockRejectBtn">✖ Reddet</button>
+      </div>
+    ` : `
       <div><b>${bot.name}:</b> Senin ${link} mülkün için <b>+${offer.cash.toLocaleString("tr-TR")} ₺</b> (${offer.kind === "partner" ? "Ortaklık" : "Tapu"}) teklif ediyor!</div>
       <div style="display:flex; gap:6px; margin-top:6px;">
         <button class="mini-act-btn bg-green" id="dockAcceptBtn">✅ Kabul Et</button>
@@ -3696,10 +3802,17 @@ body.neon-off .tile.my-here, body.neon-off .tile.my-here::after { animation: non
         distributeSaleProceedsByShare(tile, offer.cash, "Teklif Satışı");
         tile.owner = bot.id;
         tile.houseOwners = (tile.houseOwners || []).map(() => bot.id);
+      } else if (offer.kind === "buyHouses") {
+        settleBuyBackHouses(tile, bot.id, me.id, offer.cash, offer.count);
       } else {
-        changeMoney(me.id, offer.cash);
-        changeMoney(bot.id, -offer.cash);
-        if (tile.houseOwners.length < 5) tile.houseOwners.push(bot.id);
+        if (!canGrantPartnerStake(tile, me.id)) {
+          addLog(`❌ ${tile.name} mülkünde satılabilecek hisse kalmadı, ortaklık kurulamadı.`);
+        } else {
+          grantPartnerStake(tile, bot.id, me.id);
+          changeMoney(me.id, offer.cash);
+          changeMoney(bot.id, -offer.cash);
+          addLog(`🤝 ${bot.name} artık ${tile.name} hissedarı.`);
+        }
       }
       removeOfferAtIndex(currentOfferIdx);
       afterUserOwnPinAction(tile.id);
